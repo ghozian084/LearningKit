@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Revised Guided Worksheets - Making Sense of Algebra</title>
+    <!-- MathJax Configuration -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --concept: #ebf8ff;
+            --example: #f0fff4;
+            --scaffold: #fffff0;
+            --case: #fff5f5;
+            --exercise: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { padding: 0; font-size: 10pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ws-title { font-size: 1.3em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 4px; width: 250px;}
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        /* Section Blocks */
+        .section-block {
+            padding: 12px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            position: relative;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 4px;
+        }
+
+        /* Specific Backgrounds */
+        .b-concept { background-color: var(--concept); border-left: 5px solid #3182ce; }
+        .b-example { background-color: var(--example); border-left: 5px solid #38a169; }
+        .b-scaffold { background-color: var(--scaffold); border-left: 5px solid #d69e2e; }
+        .b-case { background-color: var(--case); border-left: 5px solid #e53e3e; }
+        .b-exercise { background-color: var(--exercise); border-left: 5px solid #718096; }
+
+        .fill-blank {
+            display: inline-block; min-width: 40px; border-bottom: 1px solid #333; text-align: center;
+        }
+        
+        /* Shrunk working boxes for more questions */
+        .work-box {
+            border: 1.5px dashed #a0aec0; min-height: 60px; margin-top: 5px; padding: 8px;
+            border-radius: 5px; background-image: linear-gradient(#f7fafc 1px, transparent 1px), linear-gradient(90deg, #f7fafc 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* Grid for mass exercises */
+        .exercise-grid {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+
+        .page-break { page-break-after: always; }
+        p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheets</button>
+
+    <!-- =====================================================================
+         MEETING 1: VARIABLES & TRANSLATION
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M1: Letters as Unknowns<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <!-- 1. Basic Concept -->
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Variables and Translation</div>
+            <p><strong>Variable:</strong> A letter ($x, y$) representing an unknown value. <br>
+            <strong>Coefficient:</strong> The number multiplying the variable ($4x$ means $4 \times x$). We do not write $\times$ in algebra! <br>
+            <strong>Translation:</strong> "Sum/More" $\rightarrow +$ | "Difference/Less" $\rightarrow -$ | "Product" $\rightarrow$ multiply | "Quotient/Half" $\rightarrow$ divide.</p>
+        </div>
+
+        <!-- 2. Example & Solution -->
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Write an algebraic expression for "5 less than double a number $y$".</p>
+            <p><strong>Solution:</strong> "Double a number $y$" is written as $2y$. "5 less than" means subtract 5 at the end.<br>
+            <strong>Answer:</strong> $2y - 5$.</p>
+        </div>
+
+        <!-- 3. Question with Scaffolding -->
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Bandeng Presto)</div>
+            <p><strong>Context:</strong> You visit Pasar Bandeng in Ungaran. Let $b$ represent a sealed box of Bandeng Presto containing an unknown number of fish. Let regular numbers represent loose, individual fish.</p>
+            <p>Write the algebraic expression for the following purchases:</p>
+            <p>a) You buy 3 sealed boxes: <span class="fill-blank" style="width: 100px;"></span></p>
+            <p>b) You buy 2 sealed boxes and 5 loose fish: <span class="fill-blank" style="width: 100px;"></span></p>
+            <p>c) You buy 4 sealed boxes, but give 2 loose fish to your friend: <span class="fill-blank" style="width: 100px;"></span></p>
+        </div>
+
+        <div class="page-break"></div> <!-- Split exactly to 2 pages -->
+
+        <!-- 4. Case -->
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Sequential Changes (The Angkot Journey)</div>
+            <p>Sometimes expressions change in steps. An Angkot starts with $p$ passengers. Follow the journey:</p>
+            <p>a) Stop 1: 4 new passengers get on. Expression: <span class="fill-blank" style="width: 120px;"></span></p>
+            <p>b) Stop 2: 2 passengers get off. Expression: <span class="fill-blank" style="width: 120px;"></span> (Hint: Simplify your previous answer)</p>
+            <p>c) Stop 3: The number of passengers suddenly doubles. <br>Expression: <span class="fill-blank" style="width: 120px;"></span> (Hint: Use brackets!)</p>
+        </div>
+
+        <!-- 5. Exercises -->
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Translate the following English phrases into algebraic expressions:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. A number $m$ increased by 12.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. The product of 8 and a number $k$.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. A number $x$ divided by 4.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. 10 less than a number $y$. <em>(Careful with order!)</em></p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. Triple a number $w$, then add 6.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>6. The sum of $a$ and $b$, divided by 2.</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 2: MATH MODELING
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M2: Math Modeling with Formulas<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Building a Formula</div>
+            <p>A formula uses an equals sign ($=$) to link variables together as a rule.<br>
+            In the real world, costs often have a fixed part and a changing part:<br>
+            <strong>Total ($C$) = (Fixed Constant) + (Variable Rate $\times$ Quantity)</strong></p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> A plumber charges a call-out fee of Rp 50,000, plus Rp 20,000 for every hour ($h$) he works. Write a formula for his total charge ($C$).</p>
+            <p><strong>Solution:</strong> The fixed constant is 50,000. The variable rate is 20,000 multiplied by $h$.<br>
+            <strong>Answer:</strong> $C = 50000 + 20000h$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Lawang Sewu Trip)</div>
+            <p><strong>Context:</strong> The OSIS is renting a bus to Lawang Sewu. The bus costs a flat rate of Rp 500,000. The entry ticket costs Rp 10,000 per student. Let $n$ be the number of students.</p>
+            <p><strong>Step 1:</strong> Identify the constant cost (never changes): Rp <span class="fill-blank" style="width: 80px;"></span></p>
+            <p><strong>Step 2:</strong> Identify the variable coefficient: <span class="fill-blank" style="width: 80px;"></span> $\times n$</p>
+            <p><strong>Step 3:</strong> Write the complete formula for the Total Cost ($C$).</p>
+            <div class="work-box" style="min-height: 40px; text-align: center; font-size: 1.2em; font-weight: bold;">
+                $C = $
+            </div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Multi-Variable Modeling</div>
+            <p>Formulas can have more than one variable. For example, a builder making a traditional Javanese <em>Joglo</em> house tracks wood ($W$) and tiles ($T$). If Teak wood is Rp 400k/block and tiles are Rp 5k/piece, the total cost formula is:<br>
+            $C = 400000W + 5000T$.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Write a mathematical formula for each of the real-world scenarios below:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. A taxi charges Rp 12,000 to start, plus Rp 4,000 per kilometer ($k$). Find Fare ($F$).</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. A phone plan costs Rp 45,000 monthly, plus Rp 10,000 per extra GB of data ($d$). Find Bill ($B$).</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. You have Rp 100,000. You buy $x$ notebooks that cost Rp 8,000 each. Find the Change ($C$) left.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. A bakery sells Cakes ($C$) for Rp 50,000 and Breads ($B$) for Rp 15,000. Find Total Revenue ($R$).</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 3: SUBSTITUTION
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M3: Substitution<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Substitution</div>
+            <p>Substitution means replacing a letter with a specific number.<br>
+            <strong>Golden Rule:</strong> ALWAYS put the number in brackets when substituting, especially if it is negative! Example: If $x = -3$, then $x^2 \rightarrow (-3)^2 = 9$.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Evaluate $3a - b^2$ when $a = 4$ and $b = -2$.</p>
+            <p><strong>Solution:</strong> Substitute with brackets: $3(4) - (-2)^2$<br>
+            Calculate powers first: $(-2)^2 = 4$<br>
+            Multiply: $12 - 4$<br>
+            <strong>Answer:</strong> $8$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Evaluating Models)</div>
+            <p><strong>Context:</strong> Let's test the Lawang Sewu formula from Meeting 2: $C = 500000 + 10000n$.</p>
+            <p>Calculate the Total Cost ($C$) if exactly $n = 35$ students go on the trip.</p>
+            <p><strong>Step 1:</strong> Substitute $n = 35$ into the formula.<br>
+            $C = 500000 + 10000($ <span class="fill-blank" style="width: 40px;"></span> $)$</p>
+            <p><strong>Step 2:</strong> Follow BODMAS. Multiply first.<br>
+            $C = 500000 + $ <span class="fill-blank" style="width: 80px;"></span></p>
+            <p><strong>Step 3:</strong> Add to find the final cost.<br>
+            $C = $ <span class="fill-blank" style="width: 80px;"></span></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Working Backwards (Inverse)</div>
+            <p>Sometimes you are given the Total and need to find the variable. If a taxi formula is $F = 12000 + 4000k$, and you paid Rp 32,000, you set it up as: $32000 = 12000 + 4000k$ and solve for $k$.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Given the values $x = 3$, $y = -4$, and $z = 5$, evaluate the following expressions:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $4x + y$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. $y^2 - z$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. $2x - 3y$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. $\frac{x + y + z}{2}$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. Inverse: If $B = 50 + 15d$, and $B = 110$, find $d$.</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>6. $x^2 + y^2$</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 4: COLLECTING LIKE TERMS
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M4: Collecting Like Terms<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Like Terms</div>
+            <p><strong>Like Terms</strong> must have the EXACT same letters and powers. ($x$ and $x^2$ are different!).<br>
+            You can only add or subtract like terms. The sign ($+$ or $-$) belongs to the term immediately to its <strong>right</strong>.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Simplify $5a - 2b + 3a + 5b$.</p>
+            <p><strong>Solution:</strong> Group the $a$ terms and $b$ terms together WITH their signs.<br>
+            $a$ terms: $5a + 3a = 8a$<br>
+            $b$ terms: $-2b + 5b = +3b$<br>
+            <strong>Answer:</strong> $8a + 3b$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Geometric Perimeter)</div>
+            <p><strong>Context:</strong> A triangular piece of land has sides measuring $2x$, $x+3$, and $3x-1$. Write an expression for the total perimeter, then simplify it fully.</p>
+            <p><strong>Step 1:</strong> Write out the sum of all three sides.<br>
+            Perimeter = $(2x) + ($ <span class="fill-blank" style="width: 50px;"></span> $) + ($ <span class="fill-blank" style="width: 50px;"></span> $)$</p>
+            <p><strong>Step 2:</strong> Group the $x$ terms together: $2x + x + 3x =$ <span class="fill-blank" style="width: 40px;"></span></p>
+            <p><strong>Step 3:</strong> Group the constant numbers together: $+3 - 1 =$ <span class="fill-blank" style="width: 40px;"></span></p>
+            <p><strong>Final Answer:</strong> <span class="fill-blank" style="width: 80px;"></span></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Powers Matter!</div>
+            <p>In algebra, $x$ is a length, $x^2$ is an area, and $x^3$ is a volume. You cannot add length to area! Therefore, $3x^2 + 2x$ cannot be simplified any further.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Simplify the following expressions fully by collecting like terms:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $4x + 7x - 2x$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. $5y + 3 + 2y + 6$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. $8m - 3n - 2m + 5n$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. $4x^2 - 3x + 5 - x^2 + 7x$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. $10a - a + 4b - 4b$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>6. Perimeter of a rectangle with length $2x+1$ and width $x$.</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 5: SINGLE BRACKETS
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M5: Single Brackets<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Distributive Law</div>
+            <p><strong>Expanding</strong> means multiplying the term outside the bracket by EVERYTHING inside the bracket. $a(b + c) = ab + ac$.<br>
+            Draw "rainbow arrows" to make sure you don't miss a term. Watch your signs: negative $\times$ negative = positive!</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Expand $-3(2y - 4)$.</p>
+            <p><strong>Solution:</strong><br>
+            Arrow 1: $-3 \times 2y = -6y$<br>
+            Arrow 2: $-3 \times -4 = +12$<br>
+            <strong>Answer:</strong> $-6y + 12$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Sawah Model)</div>
+            <p><strong>Context:</strong> A farmer has a Sawah (rice paddy) with a length of $5$m and a width of $(x + 3)$m. Expand the expression to find the total Area.</p>
+            <p><strong>Step 1:</strong> Set up the multiplication: Area = $5(x + 3)$</p>
+            <p><strong>Step 2:</strong> Distribute the 5 to the $x$: $5 \times x =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Step 3:</strong> Distribute the 5 to the 3: $5 \times 3 =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Final Answer:</strong> <span class="fill-blank" style="width: 100px;"></span></p>
+        </div>
+
+
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Expanding and Simplifying</div>
+            <p>If an expression has multiple brackets, expand them separately first, then collect the like terms to find the final simplified answer.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Expand (and simplify where possible):</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $4(2a - 5)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. $-2(x + 6)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. $x(x + 5)$ <em>(Hint: $x \times x = x^2$)</em></p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. $3y(2y - 1)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. $3(x + 2) + 2(x + 4)$</p>
+                    <div class="work-box" style="min-height: 80px;"></div>
+                </div>
+                <div>
+                    <p>6. $5(2m - 1) - 2(m - 3)$</p>
+                    <div class="work-box" style="min-height: 80px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 6: DOUBLE BRACKETS
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M6: Double Brackets<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Box Method & FOIL</div>
+            <p>When expanding two brackets $(x+a)(x+b)$, every term in the first bracket must multiply every term in the second bracket.<br>
+            <strong>FOIL:</strong> First, Outer, Inner, Last.<br>
+            Then, collect the like terms in the middle!</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Expand $(x + 2)(x + 4)$.</p>
+            <p><strong>Solution:</strong><br>
+            First: $x \times x = x^2$ | Outer: $x \times 4 = 4x$ | Inner: $2 \times x = 2x$ | Last: $2 \times 4 = 8$<br>
+            Result: $x^2 + 4x + 2x + 8$. Combine middle terms: <strong>$x^2 + 6x + 8$</strong>.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (2D Expansion)</div>
+            <p><strong>Context:</strong> A 2D rectangular plot has length $(x+5)$ and width $(x-3)$. Expand to find Area.</p>
+            <p><strong>Step 1 (First):</strong> $x \times x =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Step 2 (Outer):</strong> $x \times -3 =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Step 3 (Inner):</strong> $5 \times x =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Step 4 (Last):</strong> $5 \times -3 =$ <span class="fill-blank" style="width: 50px;"></span></p>
+            <p><strong>Step 5:</strong> Write it out and combine the middle $x$ terms.<br>
+            <span class="fill-blank" style="width: 150px;"></span></p>
+        </div>
+
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Perfect Squares</div>
+            <p>Be careful with $(x - 5)^2$. It does NOT equal $x^2 - 25$! A power of 2 means the entire bracket is multiplied by itself: $(x - 5)(x - 5)$. You must expand all 4 terms.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Expand and simplify the following binomials:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $(x + 4)(x + 3)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. $(y - 2)(y + 7)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. $(m - 5)(m - 4)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. $(2x + 1)(x + 3)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. $(x + 6)^2$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>6. $(3x - 2)(x - 1)$</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 7: INTRO TO INDICES
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M7: Intro to Indices<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Zero, Negative & Fractional Indices</div>
+            <p><strong>Zero Index:</strong> Anything to the power of 0 equals 1. ($x^0 = 1$)<br>
+            <strong>Negative Index:</strong> Creates a fraction. Flips the base. ($x^{-n} = \frac{1}{x^n}$)<br>
+            <strong>Fractional Index:</strong> Represents a root. ($x^{1/2} = \sqrt{x}$)</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Evaluate $3^{-2}$ and $25^{1/2}$.</p>
+            <p><strong>Solution:</strong><br>
+            $3^{-2} = \frac{1}{3^2} = \frac{1}{9}$.<br>
+            $25^{1/2} = \sqrt{25} = 5$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Pattern Discovery)</div>
+            <p>Follow the division pattern below to logically prove why the zero and negative index rules work.</p>
+            <p><strong>Step 1:</strong> $2^3 = 8$</p>
+            <p><strong>Step 2:</strong> $2^2 = 4$ <em>(We divided the answer by 2)</em></p>
+            <p><strong>Step 3:</strong> $2^1 =$ <span class="fill-blank" style="width: 30px;"></span> <em>(Divide by 2 again)</em></p>
+            <p><strong>Step 4:</strong> $2^0 =$ <span class="fill-blank" style="width: 30px;"></span> <em>(Divide by 2 again)</em></p>
+            <p><strong>Step 5:</strong> $2^{-1} =$ <span class="fill-blank" style="width: 30px;"></span> <em>(Divide by 2 again... write as a fraction!)</em></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Fractional Powers on Big Numbers</div>
+            <p>If you see a fractional index like $144^{1/2}$, it simply means you are looking for the square root of 144. Just ask yourself: "What number multiplied by itself makes 144?"</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Evaluate the exact numerical value of the following indices:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $8^0$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>2. $5^{-2}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>3. $49^{1/2}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>4. $2^{-3}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>5. $100^{1/2}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>6. $1^{15} + 12^0$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 8: RULES OF INDICES
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M8: Rules of Indices<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: The 3 Laws</div>
+            <p><strong>Multiply:</strong> Add the powers $\rightarrow a^m \times a^n = a^{m+n}$<br>
+            <strong>Divide:</strong> Subtract the powers $\rightarrow \frac{a^m}{a^n} = a^{m-n}$<br>
+            <strong>Power of Power:</strong> Multiply the powers $\rightarrow (a^m)^n = a^{mn}$</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Simplify $x^4 \times x^5$.</p>
+            <p><strong>Solution:</strong> Since we are multiplying the bases, we ADD the indices. $4 + 5 = 9$.<br>
+            <strong>Answer:</strong> $x^9$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Deriving the Rule)</div>
+            <p><strong>Context:</strong> Let's prove why we add the powers when multiplying.</p>
+            <p>Expand out $x^3 \times x^4$ into its full multiplication form:</p>
+            <p><strong>Step 1:</strong> Expand $x^3 \rightarrow (x \cdot x \cdot x)$</p>
+            <p><strong>Step 2:</strong> Expand $x^4 \rightarrow ($ <span class="fill-blank" style="width: 80px;"></span> $)$</p>
+            <p><strong>Step 3:</strong> Put them together and count the total number of $x$'s.<br>
+            $(x \cdot x \cdot x) \times ($ <span class="fill-blank" style="width: 80px;"></span> $) = x^{\dots}$ <br>
+            Shortcut: $3 + 4 =$ <span class="fill-blank" style="width: 30px;"></span></p>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Coefficients with Indices</div>
+            <p>When there is a big number (coefficient) attached, deal with the numbers normally, and deal with the powers using the rules! Example: $2x^3 \times 4x^5$. Multiply $2 \times 4 = 8$. Add powers $3+5=8$. Answer: $8x^8$.</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Fluency Drill)</div>
+            <p>Simplify the following expressions using the laws of indices:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. $y^6 \times y^2$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>2. $\frac{m^{10}}{m^3}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>3. $(p^4)^3$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>4. $3a^2 \times 5a^4$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>5. $\frac{12x^7}{4x^2}$</p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+                <div>
+                    <p>6. $(2y^3)^4$ <em>(Careful!)</em></p>
+                    <div class="work-box" style="min-height: 40px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 9: CHAPTER REVIEW
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M9: Chapter Review<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Making Sense of Algebra</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Synthesis</div>
+            <p>In algebra, it is critical to know what operation you are performing. Are you Substituting (plugging numbers in)? Expanding (removing brackets)? Simplifying (collecting like terms)? Or applying Index Laws?</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> If $x = -2$, find the value of $x^2 + 5x$.</p>
+            <p><strong>Solution:</strong> Substitute with brackets: $(-2)^2 + 5(-2) = 4 - 10 = -6$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Question with Scaffolding (Multi-step)</div>
+            <p><strong>Context:</strong> A rectangle has a length of $(x+5)$ and a width of $(x-2)$.</p>
+            <p><strong>Step 1:</strong> Find the simplified expression for its <strong>Area</strong>. (Expand $(x+5)(x-2)$)</p>
+            <div class="work-box" style="min-height: 60px;"></div>
+            <p><strong>Step 2:</strong> Find the simplified expression for its <strong>Perimeter</strong>. (Add all 4 sides!)</p>
+            <div class="work-box" style="min-height: 60px;"></div>
+        </div>
+
+        <div class="page-break"></div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Self-Verification</div>
+            <p>You can check if your expansion is correct by substituting a random number! If you expanded $(x+1)(x+2)$ into $x^2 + 3x + 2$, test $x=2$ in both the original and the answer. Both should equal 12!</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="section-title">5. Exercise (Chapter Test Prep)</div>
+            <p>Mixed Review:</p>
+            <div class="exercise-grid">
+                <div>
+                    <p>1. Simplify: $4a - 2b + a + 5b$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>2. Expand & simplify: $3(2x-1) - 2(x-4)$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>3. Evaluate $3y^2$ when $y = -4$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>4. Expand & simplify: $(x-6)^2$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>5. Simplify: $\frac{15a^6}{3a^2}$</p>
+                    <div class="work-box"></div>
+                </div>
+                <div>
+                    <p>6. Evaluate exactly: $49^{1/2} + 5^0$</p>
+                    <div class="work-box"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

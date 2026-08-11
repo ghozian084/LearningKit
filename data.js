@@ -53,11 +53,12 @@ const LEARNING_KIT_DATA = {
                 { index: 2, file: "im-02.html", title: "Interactive Media 2" },
               ],
             },
-            ws: {
+             ws: {
               label: "Worksheet",
               files: [
                 { index: 1, file: "ws-01.html", title: "Worksheet 1" },
                 { index: 2, file: "ws-02.html", title: "Worksheet 2" },
+                { index: 3, file: "ws-03.html", title: "Worksheet 3" },
               ],
             },
             ha: { label: "Hands-on Activity", files: [{ index: 1, file: "ha-01.html", title: "Hands-on Activity 1" }] },

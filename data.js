@@ -70,6 +70,15 @@ const LEARNING_KIT_DATA = {
           title: "Lines, Angles and Shapes",
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1" }] },
+            ws: {
+              label: "Worksheet",
+              files: [
+                { index: 1, file: "ws-01.html", title: "Worksheet 1" },
+                { index: 2, file: "ws-02.html", title: "Worksheet 2" },
+              ],
+            },
+            ha: { label: "Hands-on Activity", files: [{ index: 1, file: "ha-01.html", title: "Hands-on Activity 1" }] },
           },
         },
         {

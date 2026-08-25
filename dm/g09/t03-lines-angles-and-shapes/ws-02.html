@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full-Page Scaffolded Worksheets - Geometry M3-M6</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --concept: #ebf8ff;
+            --example: #f0fff4;
+            --scaffold: #fffff0;
+            --case: #fff5f5;
+            --exercise: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 0; 
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { font-size: 10pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ws-title { font-size: 1.2em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 4px; width: 250px; font-size: 0.9em;}
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        /* Section Blocks */
+        .section-block {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 4px;
+        }
+
+        /* Specific Backgrounds */
+        .b-concept { background-color: var(--concept); border-left: 5px solid #3182ce; }
+        .b-example { background-color: var(--example); border-left: 5px solid #38a169; }
+        .b-scaffold { background-color: var(--scaffold); border-left: 5px solid #d69e2e; }
+        .b-case { background-color: var(--case); border-left: 5px solid #e53e3e; }
+        .b-exercise { background-color: var(--exercise); border-left: 5px solid #718096; border: none; padding: 0;}
+
+        /* Scaffolding elements */
+        .scaffold-step {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #ecc94b;
+        }
+        .fill-line {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 1px solid #333;
+        }
+
+        /* Working boxes */
+        .work-box {
+            border: 1.5px dashed #a0aec0; margin-top: 5px; padding: 8px;
+            border-radius: 5px; background-image: linear-gradient(#f7fafc 1px, transparent 1px), linear-gradient(90deg, #f7fafc 1px, transparent 1px);
+            background-size: 20px 20px; position: relative;
+        }
+        .draw-box {
+            border: 2px solid #2d3748; margin-top: 5px; padding: 8px; border-radius: 5px; background-color: white; position: relative;
+        }
+        .work-label {
+            position: absolute; top: 5px; right: 10px; font-size: 0.8em; color: #a0aec0; font-style: italic; font-weight: bold;
+        }
+        
+        /* Grid for mass exercises */
+        .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ex-item { background: white; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; }
+        
+        .page-break { page-break-after: always; }
+        p { margin: 4px 0; }
+        
+        /* SVG Geometry Styling */
+        svg { display: block; background-color: white; border: 1px solid #e2e8f0; border-radius: 5px; margin: 0;}
+        text { font-family: 'Segoe UI', sans-serif; font-size: 14px; fill: #2d3748; }
+        .geo-line { stroke: #2b6cb0; stroke-width: 2; fill: none; }
+        .geo-angle { fill: rgba(49, 130, 206, 0.2); stroke: #3182ce; stroke-width: 1; }
+    </style>
+</head>
+<body style="padding: 20px;">
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheets</button>
+
+    <!-- =====================================================================
+         MEETING 3: QUADRILATERALS (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M3: Quadrilaterals (Page 1)<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Special Quadrilaterals</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p>The 4 interior angles of ANY quadrilateral sum to <strong>$360^\circ$</strong>.</p>
+                    <ul>
+                        <li><strong>Parallelogram:</strong> Opposite angles are EQUAL. Adjacent angles sum to $180^\circ$ (C-shape rule).</li>
+                        <li><strong>Rhombus:</strong> All sides equal. Diagonals cross exactly at $90^\circ$.</li>
+                        <li><strong>Kite:</strong> Adjacent sides equal. Exactly ONE pair of opposite angles is equal.</li>
+                    </ul>
+                </div>
+                <svg width="150" height="110" viewBox="0 0 150 120">
+                    <polygon points="20,100 120,100 140,20 40,20" class="geo-line" />
+                    <!-- Diagonals -->
+                    <line x1="20" y1="100" x2="140" y2="20" stroke="#cbd5e0" stroke-dasharray="4" />
+                    <line x1="120" y1="100" x2="40" y2="20" stroke="#cbd5e0" stroke-dasharray="4" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> In a parallelogram, angle A is $70^\circ$. Find the adjacent angle B and opposite angle C.</p>
+            <p><strong>Solution:</strong><br>
+            Opposite angles are equal $\implies$ Angle C = $70^\circ$.<br>
+            Adjacent angles sum to $180^\circ \implies$ Angle B = $180^\circ - 70^\circ = 110^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Layang-layang (Kite)</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> A traditional Indonesian Kite (<em>Layang-layang</em>) has a top vertex angle of $80^\circ$ and a bottom vertex angle of $40^\circ$. Find the size of the "wing tip" angles.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Find the sum of known angles</strong><br>
+                        Top + Bottom = $80^\circ + 40^\circ =$ <span class="fill-line"></span>$^\circ$
+                    </div>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 2: Subtract from total interior sum</strong><br>
+                        Total sum is $360^\circ$. <br>
+                        Remaining = $360^\circ -$ <span class="fill-line"></span>$^\circ = $ <span class="fill-line"></span>$^\circ$
+                    </div>
+
+                    <div class="scaffold-step">
+                        <strong>Step 3: Apply Kite properties</strong><br>
+                        A kite has 1 pair of equal opposite angles (the wing tips). <br>
+                        Wing tip angle = <span class="fill-line"></span> $\div 2 =$ <span class="fill-line"></span>$^\circ$
+                    </div>
+                </div>
+                <svg width="120" height="150" viewBox="0 0 100 150">
+                    <polygon points="50,10 90,50 50,140 10,50" class="geo-line" />
+                    <text x="40" y="30">80°</text>
+                    <text x="40" y="125">40°</text>
+                    <text x="15" y="55">x</text>
+                    <text x="75" y="55">x</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Algebraic Quadrilateral</div>
+            <p><strong>Context:</strong> The 4 angles of an irregular piece of land are $x$, $2x$, $x+10$, and $3x-20$. Find $x$.</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Set up the equation</strong><br>
+                $(x) + (2x) + (x+10) + (3x-20) = $ <span class="fill-line" style="width: 80px;"></span>
+            </div>
+            
+            <div class="scaffold-step">
+                <strong>Step 2: Collect Like Terms & Solve</strong><br>
+                Combine $x$'s: <span class="fill-line"></span>$x$<br>
+                Combine numbers: <span class="fill-line"></span><br>
+                Equation: <span class="fill-line"></span>$x - 10 = 360 \implies$ <span class="fill-line"></span>$x = 370 \implies x =$ <span class="fill-line"></span>$^\circ$
+            </div>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M3 -->
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Diagonals forming Triangles</div>
+            <p>If you draw a diagonal across a quadrilateral, it splits the shape into two triangles. Inside a Rhombus or Kite, these diagonals cross at $90^\circ$, creating 4 right-angled triangles! You can use triangle angle rules ($180^\circ$) to find missing pieces inside the shapes.</p>
+        </div>
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> A parallelogram has an angle of $105^\circ$. What are the sizes of the other three angles?</p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> The angles of a quadrilateral are $2x$, $3x$, $4x$, and $6x$. Find the value of $x$, then calculate the <em>largest</em> angle.</p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> A kite has wing tip angles of $110^\circ$ each. The top angle is $60^\circ$. Find the bottom angle.</p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> In a rhombus, one of the interior angles is $120^\circ$. A diagonal line is drawn connecting the two $120^\circ$ corners. What are the angles of the two triangles formed?</p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> Three angles of a quadrilateral are $85^\circ$, $95^\circ$, and $100^\circ$. Find the fourth angle.</p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q6. Multi-step:</strong> In Parallelogram ABCD, angle A = $3x+20$ and angle B = $x+40$. Find the value of $x$. <em>(Hint: Are they opposite or adjacent?)</em></p>
+                    <div class="work-box" style="min-height: 160px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 4: POLYGONS (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M4: Polygons (Page 1)<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Polygon Formulas</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Interior Sum:</strong> $(n - 2) \times 180^\circ$ (where $n$ is the number of sides).<br>
+                    <strong>Exterior Sum:</strong> ALWAYS $360^\circ$ (for any convex polygon).<br>
+                    <strong>Regular Polygon:</strong> All sides and angles are equal. <br>
+                    ONE exterior angle = $\frac{360^\circ}{n}$. <br>
+                    Interior + Exterior = $180^\circ$.</p>
+                </div>
+                <svg width="130" height="120" viewBox="0 0 140 140">
+                    <polygon points="70,10 120,40 120,100 70,130 20,100 20,40" class="geo-line" />
+                    <line x1="120" y1="100" x2="150" y2="120" class="geo-line" stroke-dasharray="4" />
+                    <text x="95" y="100">Int</text>
+                    <text x="125" y="100">Ext</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Find the size of ONE interior angle of a regular pentagon ($n=5$).</p>
+            <p><strong>Solution Method (Faster Exterior Rule):</strong><br>
+            Exterior angle = $360 \div 5 = 72^\circ$.<br>
+            Interior angle = $180 - 72 = 108^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Ungaran Paving Blocks</div>
+            <p><strong>Context:</strong> The city square in Ungaran uses hexagonal paving blocks. They are regular hexagons ($n=6$). Prove what the interior angle is using the "Faster" method.</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Find ONE exterior angle</strong><br>
+                Sum of exterior is always 360.<br>
+                Exterior Angle = $360^\circ \div$ <span class="fill-line"></span> $= $ <span class="fill-line"></span>$^\circ$
+            </div>
+
+            <div class="scaffold-step">
+                <strong>Step 2: Find ONE interior angle</strong><br>
+                Interior and Exterior angles lie on a straight line.<br>
+                Interior Angle = $180^\circ -$ <span class="fill-line"></span>$^\circ = $ <span class="fill-line"></span>$^\circ$
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Finding the Number of Sides ($n$)</div>
+            <p><strong>Context:</strong> A mysterious regular polygon is drawn on a blueprint. You measure ONE exterior angle to be exactly $24^\circ$. How many sides does it have?</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Set up the formula backwards</strong><br>
+                Exterior Angle = $\frac{360}{n}$. So, $n = \frac{360}{\text{Exterior Angle}}$.
+            </div>
+            
+            <div class="scaffold-step">
+                <strong>Step 2: Calculate $n$</strong><br>
+                $n = 360 \div$ <span class="fill-line"></span> $= $ <span class="fill-line"></span> sides.
+            </div>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M4 -->
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Non-Regular Polygons</div>
+            <p>If a polygon is NOT regular, you cannot simply divide by $n$ to find one angle. You must use the full formula $(n-2) \times 180$ to find the TOTAL sum, then subtract all the known angles to find the missing one!</p>
+        </div>
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> Calculate the sum of the interior angles of a Decagon ($n=10$). Then, calculate the size of ONE interior angle if it is regular.</p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> A regular polygon has an exterior angle measuring $18^\circ$. How many sides ($n$) does it have?</p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> The interior angle of a regular polygon is $144^\circ$. <br>a) What is the exterior angle? <br>b) How many sides does it have?</p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> The sum of the interior angles of a polygon is $1260^\circ$. How many sides does it have? <em>(Hint: Divide by 180, then add 2)</em></p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> An irregular pentagon ($n=5$) has 4 known angles: $100^\circ$, $120^\circ$, $80^\circ$, and $110^\circ$. Find the 5th missing angle.</p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q6.</strong> Is it possible to have a regular polygon with an interior angle of $150^\circ$? Show math to prove your answer.</p>
+                    <div class="work-box" style="min-height: 170px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 5: CIRCLES (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M5: Circles & Theorems (Page 1)<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Circle Theorems</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <ul>
+                        <li><strong>Semicircle:</strong> Angle in a semicircle is $90^\circ$.</li>
+                        <li><strong>Center/Circumference:</strong> Angle at the center is TWICE the angle at the circumference (from the same arc).</li>
+                        <li><strong>Cyclic Quadrilateral:</strong> Opposite angles sum to $180^\circ$. (All 4 corners must touch the edge).</li>
+                    </ul>
+                </div>
+                <svg width="150" height="120" viewBox="0 0 150 150">
+                    <circle cx="75" cy="75" r="60" class="geo-line" />
+                    <!-- Central Angle -->
+                    <polygon points="75,75 120,115 30,115" fill="none" stroke="#2b6cb0" stroke-width="2" />
+                    <!-- Circumference Angle -->
+                    <polygon points="75,15 120,115 30,115" fill="none" stroke="#e53e3e" stroke-width="2" />
+                    <circle cx="75" cy="75" r="3" fill="#333" />
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> The angle subtended by an arc at the center is $140^\circ$. Find the angle at the circumference.</p>
+            <p><strong>Solution:</strong> The angle at the circumference is half the angle at the center. $140^\circ \div 2 = 70^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Gamelan Gong (Cyclic Quad)</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> A designer marks 4 points on the edge of a circular Gamelan Gong, creating a cyclic quadrilateral $ABCD$. The angle at $A$ is $85^\circ$ and the angle at $B$ is $110^\circ$.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Identify Opposite Angles</strong><br>
+                        Opposite angles sum to $180^\circ$. The angle opposite to $A$ is Angle <span class="fill-line"></span>.
+                    </div>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 2: Calculate Angle C</strong><br>
+                        Angle $C = 180^\circ -$ <span class="fill-line"></span>$^\circ = $ <span class="fill-line"></span>$^\circ$
+                    </div>
+
+                    <div class="scaffold-step">
+                        <strong>Step 3: Calculate Angle D</strong><br>
+                        Angle $D = 180^\circ -$ <span class="fill-line"></span>$^\circ = $ <span class="fill-line"></span>$^\circ$
+                    </div>
+                </div>
+                <svg width="120" height="120" viewBox="0 0 150 150">
+                    <circle cx="75" cy="75" r="60" class="geo-line" />
+                    <polygon points="20,50 90,20 125,110 40,120" fill="none" stroke="#2d3748" stroke-width="2" />
+                    <text x="10" y="45">A</text>
+                    <text x="90" y="15">B</text>
+                    <text x="135" y="125">C</text>
+                    <text x="25" y="135">D</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Angle in Semicircle</div>
+            <p><strong>Context:</strong> A triangle is drawn inside a circle. Its base passes exactly through the center (it is the diameter). One of the other angles is $35^\circ$. Find the missing third angle.</p>
+            <p><strong>Step 1:</strong> Because the base is the diameter, the angle touching the curve is exactly <span class="fill-line"></span>$^\circ$.</p>
+            <p><strong>Step 2:</strong> Use triangle rules ($180^\circ$) to find the missing angle: $180 - ($ <span class="fill-line"></span> $+ 35) =$ <span class="fill-line"></span>$^\circ$.</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M5 -->
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Finding the Hidden Isosceles Triangle</div>
+            <p>If you draw lines from the center of the circle to the edge, those lines are <strong>Radii</strong>. All radii in the same circle are equal in length! This means a triangle formed by two radii and a chord is ALWAYS an <strong>Isosceles Triangle</strong>. You can use this to find missing angles!</p>
+        </div>
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> The angle at the center of a circle is $150^\circ$. What is the angle at the circumference?</p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> The angle at the circumference is $42^\circ$. What is the angle at the center?</p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> ABCD is a cyclic quadrilateral. Angle A is $105^\circ$ and Angle B is $60^\circ$. Find C and D.</p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> A triangle is inside a semicircle. One angle is $22^\circ$. Find the other two angles.</p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> Two radii form a triangle with a chord. The angle between the radii at the center is $100^\circ$. Find the two base angles. <em>(Hint: Isosceles!)</em></p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q6. Multi-step:</strong> Points A, B, C lie on a circle. Angle AOB at the center is $120^\circ$. Find Angle ACB at the circumference.</p>
+                    <div class="work-box" style="min-height: 180px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 6: CONSTRUCTIONS (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M6: Constructions (Page 1)<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Compass and Straightedge</div>
+            <p>In geometry construction, we don't guess angles. We use a compass to measure exact lengths and find intersections.<br>
+            <strong>SSS Construction (Side-Side-Side):</strong><br>
+            1. Draw the longest base with a ruler.<br>
+            2. Open your compass to the second length, place the point on one end, and draw an arc.<br>
+            3. Repeat for the third length from the other end.<br>
+            4. Connect the intersection down to the base.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Problem</div>
+            <p><strong>Question:</strong> Construct a triangle with sides 4cm, 5cm, and 6cm.</p>
+            <p><strong>Solution Strategy:</strong> Draw 6cm line. Set compass to 4cm, draw arc from left. Set compass to 5cm, draw arc from right. Connect the point where the arcs cross!</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Guided Practice: Equilateral Triangle</div>
+            <p>Construct a perfect equilateral triangle with sides exactly 5cm long.</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1:</strong> Draw a straight line exactly 5cm long below.
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 2:</strong> Open your compass to exactly 5cm. Place the spike on the left edge, draw a large arc above the line.
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 3:</strong> Keep the compass at 5cm. Place the spike on the right edge, draw an arc crossing the first one. Connect the dots!
+            </div>
+            
+            <div class="draw-box" style="min-height: 250px;">
+                <em>Drafting Area (Leave all compass marks visible!)</em>
+            </div>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M6 -->
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Leave Your Marks!</div>
+            <p><strong>CRITICAL RULE:</strong> Never erase your construction arcs. They are the mathematical proof that you used a compass to find the intersection logically, and didn't just guess with a ruler!</p>
+        </div>
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Engineering Blueprints)</div>
+            
+            <div style="padding: 15px; display: flex; flex-direction: column; gap: 20px; height: 100%;">
+                
+                <div>
+                    <p><strong>Task 1:</strong> You are an architect designing a triangular truss for a bridge. Using ONLY a compass, ruler, and pencil, construct a triangle with sides measuring exactly <strong>6 cm, 7 cm, and 9 cm</strong>.</p>
+                    <div class="draw-box" style="min-height: 350px;">
+                        <em>Drafting Area 1</em>
+                    </div>
+                </div>
+
+                <div>
+                    <p><strong>Task 2:</strong> Construct a triangle with sides <strong>5 cm, 8 cm, and 10 cm</strong>.</p>
+                    <p>After you draw it, use a protractor to measure the largest angle inside your triangle and write it down.</p>
+                    <div class="draw-box" style="min-height: 350px;">
+                        <em>Drafting Area 2</em>
+                    </div>
+                    <p style="margin-top: 10px; font-weight: bold; color: var(--secondary);">My largest angle measurement is: <span class="fill-line" style="width: 80px;"></span>$^\circ$</p>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

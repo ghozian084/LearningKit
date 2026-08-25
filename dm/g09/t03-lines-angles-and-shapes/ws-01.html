@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Density Scaffolded Worksheets - Geometry</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --concept: #ebf8ff;
+            --example: #f0fff4;
+            --scaffold: #fffff0;
+            --case: #fff5f5;
+            --exercise: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 0; 
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { font-size: 10pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ws-title { font-size: 1.2em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 4px; width: 250px; font-size: 0.9em;}
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        /* Section Blocks */
+        .section-block {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 4px;
+        }
+
+        /* Specific Backgrounds */
+        .b-concept { background-color: var(--concept); border-left: 5px solid #3182ce; }
+        .b-example { background-color: var(--example); border-left: 5px solid #38a169; }
+        .b-scaffold { background-color: var(--scaffold); border-left: 5px solid #d69e2e; }
+        .b-case { background-color: var(--case); border-left: 5px solid #e53e3e; }
+        .b-exercise { background-color: var(--exercise); border-left: 5px solid #718096; border: none; padding: 0;}
+
+        /* Scaffolding elements */
+        .scaffold-step {
+            margin-bottom: 8px;
+            padding-left: 10px;
+            border-left: 3px solid #ecc94b;
+        }
+        .fill-line {
+            display: inline-block;
+            min-width: 60px;
+            border-bottom: 1px solid #333;
+        }
+
+        /* Working boxes */
+        .work-box {
+            border: 1.5px dashed #a0aec0; margin-top: 5px; padding: 8px;
+            border-radius: 5px; background-image: linear-gradient(#f7fafc 1px, transparent 1px), linear-gradient(90deg, #f7fafc 1px, transparent 1px);
+            background-size: 20px 20px; position: relative;
+        }
+        .work-label {
+            position: absolute; top: 5px; right: 10px; font-size: 0.8em; color: #a0aec0; font-style: italic; font-weight: bold;
+        }
+        
+        /* Grid for mass exercises */
+        .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ex-item { background: white; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; }
+        
+        .page-break { page-break-after: always; }
+        p { margin: 4px 0; }
+        
+        /* SVG Geometry Styling */
+        svg { display: block; background-color: white; border: 1px solid #e2e8f0; border-radius: 5px; margin: 0;}
+        text { font-family: 'Segoe UI', sans-serif; font-size: 13px; fill: #2d3748; font-weight: bold;}
+        .geo-line { stroke: #2b6cb0; stroke-width: 2; fill: none; }
+    </style>
+</head>
+<body style="padding: 20px;">
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheets</button>
+
+    <!-- =====================================================================
+         MEETING 1: LINES & ANGLES 
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M1: Lines & Angles<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Transversals on Parallel Lines</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p>When a line (transversal) cuts across two parallel lines, look for these shapes:</p>
+                    <ul>
+                        <li><strong>Corresponding (F-shape):</strong> Angles are EQUAL.</li>
+                        <li><strong>Alternate Interior (Z-shape):</strong> Angles are EQUAL.</li>
+                        <li><strong>Co-interior (C-shape):</strong> Angles ADD UP to $180^\circ$.</li>
+                    </ul>
+                </div>
+                <svg width="180" height="90" viewBox="0 0 200 120">
+                    <line x1="20" y1="40" x2="180" y2="40" class="geo-line" />
+                    <line x1="20" y1="90" x2="180" y2="90" class="geo-line" />
+                    <line x1="60" y1="10" x2="140" y2="110" stroke="#e53e3e" stroke-width="2" />
+                    <text x="65" y="35">a</text><text x="85" y="35">b</text>
+                    <text x="80" y=55>c</text><text x="100" y="55">d</text>
+                    <text x="100" y="85">e</text><text x="125" y="85">f</text>
+                    <text x="110" y=100>g</text><text x="135" y="100">h</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> If angle $a = 110^\circ$, find the sizes of angles $b$ and $c$.</p>
+            <p><strong>Solution:</strong><br>
+            Angle $b$: Vertically opposite to $a$, so $b = 110^\circ$.<br>
+            Angle $c$: Alternate interior (Z-shape) to $b$, so $c = 110^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Algebraic Alternate Angles</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> Two parallel threads on a <em>Kain Tenun Lurik</em> are crossed by a diagonal thread. The Alternate Interior angles are $(3x - 10)^\circ$ and $(2x + 20)^\circ$. Find $x$.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Identify Rule</strong><br>
+                        Alternate Interior Angles (Z-shape) are <span class="fill-line"></span> (Equal / Add to 180).
+                    </div>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 2: Set up & Solve</strong><br>
+                        $(3x - 10) =$ <span class="fill-line" style="width: 100px;"></span><br>
+                        Subtract $2x$: <span class="fill-line"></span> $ - 10 = 20$<br>
+                        Add 10: $x =$ <span class="fill-line"></span>
+                    </div>
+                </div>
+                <svg width="150" height="110" viewBox="0 0 200 130">
+                    <line x1="10" y1="30" x2="190" y2="30" class="geo-line" />
+                    <line x1="10" y1="100" x2="190" y2="100" class="geo-line" />
+                    <line x1="40" y1="10" x2="160" y2="120" stroke="#e53e3e" stroke-width="2" />
+                    <text x="85" y="45">3x - 10</text>
+                    <text x="70" y="95">2x + 20</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Co-Interior Angles</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> Two Co-interior angles inside a bridge truss are given as $(4y)^\circ$ and $(5y - 18)^\circ$.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Identify Rule</strong><br>
+                        Co-interior (C-shape) add up to <span class="fill-line"></span>$^\circ$.
+                    </div>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 2: Set up & Solve</strong><br>
+                        $(4y) + (5y - 18) =$ <span class="fill-line" style="width: 60px;"></span><br>
+                        Combine: <span class="fill-line"></span> $y - 18 = 180$<br>
+                        Add 18: $9y =$ <span class="fill-line"></span> $\implies y =$ <span class="fill-line"></span>
+                    </div>
+                </div>
+                <svg width="150" height="110" viewBox="0 0 200 130">
+                    <line x1="10" y1="30" x2="190" y2="30" class="geo-line" />
+                    <line x1="10" y1="100" x2="190" y2="100" class="geo-line" />
+                    <line x1="150" y1="10" x2="50" y2="120" stroke="#e53e3e" stroke-width="2" />
+                    <text x="130" y="45">4y</text>
+                    <text x="85" y="95">5y - 18</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Co-Interior Angles (C-Shape)</div>
+            <p>If angles are Co-interior (inside the parallel lines, on the SAME side of the transversal), they <strong>do not equal each other</strong>. They are supplementary. You must set up the equation as: <strong>Angle 1 + Angle 2 = 180</strong>.</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M1 -->
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            <p style="padding-left: 10px;">For each question, state the geometric rule you used, set up the equation, and solve for the unknown variable.</p>
+            
+            <!-- 2x3 Grid to fill the entire A4 page -->
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> Two Alternate interior angles are $3m$ and $m + 60$. Find $m$.</p>
+                    <p><em>Rule:</em> <span class="fill-line" style="width: 150px;"></span></p>
+                    <div class="work-box" style="min-height: 200px;"><div class="work-label">Eq & Solve</div></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> Two Corresponding angles (F-shape) are $(2x + 15)^\circ$ and $85^\circ$. Find $x$.</p>
+                    <p><em>Rule:</em> <span class="fill-line" style="width: 150px;"></span></p>
+                    <div class="work-box" style="min-height: 200px;"><div class="work-label">Eq & Solve</div></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> Angles on a straight line are $(x)$ and $(x + 40)$. Find $x$.</p>
+                    <p><em>Rule:</em> <span class="fill-line" style="width: 150px;"></span></p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> Two Co-interior angles are $2y$ and $4y + 30$. Find $y$.</p>
+                    <p><em>Rule:</em> <span class="fill-line" style="width: 150px;"></span></p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> Vertically opposite angles are $5k - 10$ and $3k + 20$. Find $k$.</p>
+                    <p><em>Rule:</em> <span class="fill-line" style="width: 150px;"></span></p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q6. Multi-step:</strong> Line 1 and Line 2 are parallel. Angle $a = 120^\circ$. Find the alternate interior angle, then find its co-interior neighbor.</p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 2: TRIANGLES 
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M2: Triangles<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Geometry</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Triangle Properties</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Interior Sum:</strong> The 3 inside angles always add up to $180^\circ$.<br>
+                    <strong>Isosceles Triangle:</strong> Has 2 equal sides, which means the 2 base angles are exactly equal.<br>
+                    <strong>Exterior Angle Theorem:</strong> An outside angle equals the sum of the two opposite inside angles.</p>
+                </div>
+                <svg width="150" height="90" viewBox="0 0 180 120">
+                    <polygon points="40,90 120,90 80,30" class="geo-line" />
+                    <!-- Extended line -->
+                    <line x1="120" y1="90" x2="160" y2="90" class="geo-line" stroke-dasharray="4" />
+                    <text x="130" y="85">Ext</text>
+                    <text x="75" y="55">a</text><text x="55" y="85">b</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> A triangle has interior angles $50^\circ$, $x$, and $2x$. Find $x$.</p>
+            <p><strong>Solution:</strong> $50 + x + 2x = 180 \implies 3x + 50 = 180 \implies 3x = 130 \implies x = 43.3^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Rumah Gadang Roof (Isosceles)</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> A traditional Minangkabau <em>Rumah Gadang</em> has a perfectly isosceles triangular roof. The exterior angle extending from its base is $115^\circ$. Find the top vertex angle.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Find interior base angle</strong><br>
+                        Interior base = $180^\circ - 115^\circ =$ <span class="fill-line"></span>$^\circ$
+                    </div>
+
+                    <div class="scaffold-step">
+                        <strong>Step 2: Apply Isosceles Properties</strong><br>
+                        The OTHER base angle must be: <span class="fill-line"></span>$^\circ$
+                    </div>
+
+                    <div class="scaffold-step">
+                        <strong>Step 3: Find the top vertex angle</strong><br>
+                        Top angle = $180^\circ - ($ <span class="fill-line"></span> $+$ <span class="fill-line"></span> $) = $ <span class="fill-line"></span>$^\circ$
+                    </div>
+                </div>
+                <svg width="150" height="110" viewBox="0 0 200 130">
+                    <polygon points="60,100 140,100 100,20" class="geo-line" />
+                    <line x1="75" y1="60" x2="85" y2="60" stroke="#2d3748" stroke-width="2"/>
+                    <line x1="115" y1="60" x2="125" y2="60" stroke="#2d3748" stroke-width="2"/>
+                    <line x1="140" y1="100" x2="180" y2="100" class="geo-line" stroke-dasharray="4"/>
+                    <text x="145" y="95">115°</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Exterior Angle Theorem</div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="flex: 1;">
+                    <p><strong>Context:</strong> A triangular wooden truss has an exterior angle of $130^\circ$. The two opposite interior angles are given as $2x$ and $3x+10$.</p>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 1: Set up the equation</strong><br>
+                        Exterior Angle = Inside 1 + Inside 2.<br>
+                        $130 = ($ <span class="fill-line"></span> $) + ($ <span class="fill-line" style="width: 80px;"></span> $)$
+                    </div>
+                    
+                    <div class="scaffold-step">
+                        <strong>Step 2: Solve for $x$</strong><br>
+                        Combine: $130 = 5x + 10$<br>
+                        Subtract 10: <span class="fill-line"></span> $= 5x \implies x = $ <span class="fill-line"></span>
+                    </div>
+                </div>
+                <svg width="150" height="110" viewBox="0 0 200 130">
+                    <polygon points="40,100 130,100 80,30" class="geo-line" />
+                    <line x1="130" y1="100" x2="180" y2="100" class="geo-line" stroke-dasharray="4"/>
+                    <text x="140" y="95">130°</text>
+                    <text x="75" y="55">2x</text>
+                    <text x="45" y="95">3x+10</text>
+                </svg>
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Ratio of Angles</div>
+            <p>If angles in a triangle are given in a ratio like $2:3:4$, attach an $x$ to them. The angles are $2x$, $3x$, and $4x$. Since they must sum to $180^\circ$, set up the equation $2x + 3x + 4x = 180$. Solve for $x$, then multiply back to find the actual angles.</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M2 -->
+
+        <div class="section-block b-exercise">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> The angles in a triangle are in the ratio $1:2:3$. Calculate the size of the largest angle.</p>
+                    <p><em>Equation:</em> <span class="fill-line" style="width: 150px;"></span> $= 180$</p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> In an isosceles triangle, the top angle is $40^\circ$. Find the size of the two base angles.</p>
+                    <p><em>Logic:</em> $(180 - 40) \div 2 =$ <span class="fill-line"></span></p>
+                    <div class="work-box" style="min-height: 200px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> A triangle has interior angles $(x)$, $(x + 20)$, and $(x - 10)$. Set up an equation and find $x$.</p>
+                    <div class="work-box" style="min-height: 220px;"><div class="work-label">Solve</div></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> The exterior angle of a triangle is $140^\circ$. The two opposite interior angles are $3x$ and $4x$. Find $x$.</p>
+                    <div class="work-box" style="min-height: 220px;"><div class="work-label">Solve</div></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> An equilateral triangle has an exterior angle extending from its base. What is the exact size of this exterior angle?</p>
+                    <div class="work-box" style="min-height: 220px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q6.</strong> Two angles of a triangle are $45^\circ$ and $75^\circ$. Calculate the size of the third angle, then calculate its exterior angle.</p>
+                    <div class="work-box" style="min-height: 220px;"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>

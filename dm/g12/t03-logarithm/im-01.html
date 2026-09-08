@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Lab - Logarithms & Exponentials</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #ebf8ff;
+            --success: #38a169;
+            --warning: #dd6b20;
+            --bg-color: #f7fafc;
+            --box-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #2d3748;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        header h1 { margin: 0; font-size: 1.5em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+
+        /* Navigation Tabs */
+        .tabs {
+            display: flex;
+            background-color: #2d3748;
+            padding: 0 20px;
+            overflow-x: auto;
+        }
+        .tab-btn {
+            background: none; border: none; color: #a0aec0; padding: 15px 20px;
+            font-size: 1.1em; cursor: pointer; font-weight: bold; transition: 0.3s;
+            border-bottom: 4px solid transparent; white-space: nowrap;
+        }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+
+        /* Main Content */
+        .main-content {
+            flex: 1; padding: 30px; overflow-y: auto; display: flex;
+            flex-direction: column; align-items: center;
+        }
+
+        .section-container {
+            display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out;
+        }
+        .section-container.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Lab Modules */
+        .module {
+            background: var(--box-bg); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .module h2 {
+            margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px; display: flex; align-items: center; gap: 10px;
+        }
+
+        /* Buttons */
+        button.action-btn {
+            background-color: var(--secondary); color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; font-size: 1em; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        button.action-btn:hover { background-color: var(--primary); }
+        button.action-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+
+        /* General Simulation Area */
+        .sim-area {
+            min-height: 250px; background: #edf2f7; border-radius: 8px;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; padding: 20px; margin-top: 15px; overflow: hidden;
+            border: 1px solid #cbd5e0;
+        }
+        .sim-text {
+            font-size: 1.2em; font-weight: bold; color: var(--primary);
+            text-align: center; margin-top: 15px; min-height: 30px;
+        }
+        canvas {
+            background-color: white; border: 2px solid #cbd5e0; border-radius: 8px;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.05); width: 100%; max-width: 600px;
+        }
+
+        /* Step-by-Step Box */
+        .step-box {
+            background: #fffff0; border-left: 5px solid #ecc94b;
+            padding: 15px; margin-top: 15px; border-radius: 5px;
+        }
+        .step { display: none; margin-top: 10px; font-size: 1.1em; padding: 8px; background: white; border-radius: 4px; border: 1px solid #e2e8f0;}
+        .step.active { display: block; animation: fadeIn 0.3s; }
+
+        /* Exercise Inputs */
+        .exercise-input {
+            padding: 10px; font-size: 1.1em; font-family: monospace;
+            border: 2px solid var(--secondary); border-radius: 5px;
+            width: 200px; margin-right: 10px;
+        }
+        .feedback { font-weight: bold; font-size: 1.1em; margin-top: 10px; display: none; }
+        .feedback.correct { color: var(--success); display: block;}
+        .feedback.incorrect { color: #e53e3e; display: block;}
+
+        .controls { display: flex; gap: 15px; margin-bottom: 15px; align-items: center; }
+        .slider-label { font-weight: bold; color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔬 Web Lab: Logarithmic & Exponential Functions</h1>
+        <div class="badge">SMA Semesta • Grade 12</div>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sec1')">1. Inverse Graphs</button>
+        <button class="tab-btn" onclick="openTab('sec2')">2. Log Laws</button>
+        <button class="tab-btn" onclick="openTab('sec3')">3. Solving Exponentials</button>
+        <button class="tab-btn" onclick="openTab('sec4')">4. Linear Forms (PjBL)</button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ================= SECTION 1: INVERSE GRAPHS ================= -->
+        <div id="sec1" class="section-container active">
+            <div class="module">
+                <h2>🎮 Simulation: Exponentials vs Logarithms</h2>
+                <p>A logarithm is the mathematical inverse of an exponential. Watch how they reflect across the line $y=x$. Adjust the Base ($a$)!</p>
+                <div class="controls">
+                    <label class="slider-label">Base ($a$): <span id="valBase">2.0</span></label>
+                    <input type="range" id="sliderBase" min="1.5" max="10" step="0.5" value="2" oninput="drawGraph1()">
+                </div>
+                <div class="sim-area">
+                    <canvas id="canvas1" width="600" height="400"></canvas>
+                    <div class="sim-text" style="display: flex; gap: 20px;">
+                        <span style="color: #e53e3e;">$y = a^x$</span>
+                        <span style="color: #3182ce;">$y = \log_a(x)$</span>
+                        <span style="color: #718096; font-style: italic;">Mirror: $y = x$</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example</h2>
+                <p><strong>Problem:</strong> Convert the equation $5^3 = 125$ into logarithmic form.</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex1" onclick="nextStep('ex1', 3)">Show Next Step</button>
+                    <div class="step ex1-1"><strong>Step 1:</strong> Identify the Base. The base of the exponent is 5. This becomes the base of the log.</div>
+                    <div class="step ex1-2"><strong>Step 2:</strong> The Logarithm isolates the <em>power</em>. The power is 3. So, the equation will equal 3.</div>
+                    <div class="step ex1-3"><strong>Step 3:</strong> Assemble the formula: $\log_5(125) = 3$.</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>Evaluate exactly without a calculator: $\log_2(32)$</p>
+                <input type="text" id="ans1" class="exercise-input" placeholder="Type answer...">
+                <button class="action-btn" onclick="checkAns('ans1', ['5'], 'fb1')">Check Answer</button>
+                <div class="feedback" id="fb1"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 2: LOG LAWS ================= -->
+        <div id="sec2" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: The Product Law</h2>
+                <p>Before calculators, astronomers added logarithms to multiply massive numbers! Let's prove $\log_2(A) + \log_2(B) = \log_2(A \times B)$.</p>
+                <div class="sim-area">
+                    <div style="font-size: 1.5em; text-align: center; line-height: 2;">
+                        Let $A = 8$ and $B = 4$. <br>
+                        $\log_2(8) = 3$ <br>
+                        $\log_2(4) = 2$ <br>
+                        <strong>Add them:</strong> $3 + 2 = 5$ <br>
+                        <hr>
+                        Now calculate $\log_2(8 \times 4) = \log_2(32)$. <br>
+                        $2^5 = 32$, so <strong>$\log_2(32) = 5$</strong>. <br>
+                        <span style="color: var(--success);">The results match! Addition of logs = Multiplication of values.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example</h2>
+                <p><strong>Problem:</strong> Write $2\log_a x - \log_a y$ as a single logarithm.</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex2" onclick="nextStep('ex2', 3)">Show Next Step</button>
+                    <div class="step ex2-1"><strong>Step 1:</strong> Use the Power Law to move the coefficient. $2\log_a x \rightarrow \log_a(x^2)$.</div>
+                    <div class="step ex2-2"><strong>Step 2:</strong> Substitute back into the expression: $\log_a(x^2) - \log_a y$.</div>
+                    <div class="step ex2-3"><strong>Step 3:</strong> Use the Quotient Law for subtraction: $\log_a \left(\frac{x^2}{y}\right)$.</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>Compress into a single log: $\log 5 + \log 4$.</p>
+                <input type="text" id="ans2" class="exercise-input" placeholder="e.g. log20">
+                <button class="action-btn" onclick="checkAns('ans2', ['log20', 'log(20)', 'lg20'], 'fb2')">Check Answer</button>
+                <div class="feedback" id="fb2"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 3: SOLVING EXPONENTIALS ================= -->
+        <div id="sec3" class="section-container">
+            <div class="module">
+                <h2>🎮 Concept: Bringing the Power Down</h2>
+                <p>When the unknown ($x$) is trapped in the exponent, we cannot divide to get it out. We must take the log (or natural log, $\ln$) of both sides!</p>
+                <div class="sim-area">
+                    <div style="font-size: 1.5em; font-family: monospace; color: var(--primary);">
+                        Solve: $3^x = 20$<br><br>
+                        1. $\ln(3^x) = \ln(20)$<br>
+                        2. $x \cdot \ln(3) = \ln(20)$ &nbsp; <span style="color: var(--warning); font-size: 0.8em;">(Power Law drops the x!)</span><br>
+                        3. $x = \frac{\ln(20)}{\ln(3)}$<br>
+                        4. $x \approx 2.727$
+                    </div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example</h2>
+                <p><strong>Problem:</strong> Solve the inequality $0.5^x < 10$.</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex3" onclick="nextStep('ex3', 4)">Show Next Step</button>
+                    <div class="step ex3-1"><strong>Step 1:</strong> Take $\log$ of both sides. $\log(0.5^x) < \log(10)$.</div>
+                    <div class="step ex3-2"><strong>Step 2:</strong> Use the power law. $x \log(0.5) < \log(10)$.</div>
+                    <div class="step ex3-3"><strong>Step 3:</strong> Divide by $\log(0.5)$. <strong>CRITICAL:</strong> $\log(0.5)$ is a negative number! When dividing by a negative, the inequality sign MUST FLIP.</div>
+                    <div class="step ex3-4"><strong>Step 4:</strong> $x > \frac{\log 10}{\log 0.5} \implies x > -3.32$.</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>Solve $e^{2x} = 15$ to two decimal places. (Hint: Use $\ln$).</p>
+                <input type="text" id="ans3" class="exercise-input" placeholder="e.g. 1.35">
+                <button class="action-btn" onclick="checkAns('ans3', ['1.35'], 'fb3')">Check Answer</button>
+                <div class="feedback" id="fb3"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 4: LINEAR FORMS (PjBL) ================= -->
+        <div id="sec4" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Straightening the Cooling Curve</h2>
+                <p>Your <em>Teh Panas</em> cools down following the exponential model $y = Ae^{kt}$. <br>
+                Click "Transform Data" to take the Natural Log ($\ln$) of the y-axis and straighten the curve into $Y = mX + C$!</p>
+                <div class="controls">
+                    <button class="action-btn" id="btn-transform" onclick="toggleTransform()">Transform Data (Take ln)</button>
+                </div>
+                <div class="sim-area">
+                    <canvas id="canvas4" width="600" height="300"></canvas>
+                    <div class="sim-text" id="sim4-text">Model: $y = 50e^{-0.1t}$</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example</h2>
+                <p><strong>Problem:</strong> Convert $y = k x^n$ to a linear form.</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex4" onclick="nextStep('ex4', 3)">Show Next Step</button>
+                    <div class="step ex4-1"><strong>Step 1:</strong> Take $\log$ of both sides. $\log y = \log(k x^n)$.</div>
+                    <div class="step ex4-2"><strong>Step 2:</strong> Use Product Law to split the right side. $\log y = \log k + \log(x^n)$.</div>
+                    <div class="step ex4-3"><strong>Step 3:</strong> Use Power Law to bring $n$ down. $\log y = n\log x + \log k$. <br> This is now the line $Y = mX + C$, where $Y = \log y$, $X = \log x$, gradient $m = n$, and intercept $C = \log k$.</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>A graph of $\ln y$ against $t$ produces a straight line equation $\ln y = 3t + 2$. <br>The original curve is $y = A e^{kt}$. What is the exact value of $A$?</p>
+                <input type="text" id="ans4" class="exercise-input" placeholder="Type answer...">
+                <button class="action-btn" onclick="checkAns('ans4', ['e^2', 'e2', '7.39'], 'fb4')">Check Answer</button>
+                <div class="feedback" id="fb4"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Logic Script -->
+    <script>
+        // Tab Navigation
+        function openTab(tabId) {
+            document.querySelectorAll('.section-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tabId).classList.add('active');
+            event.currentTarget.classList.add('active');
+            
+            if (window.MathJax) MathJax.typesetPromise();
+            if (tabId === 'sec1') drawGraph1();
+            if (tabId === 'sec4') drawGraph4();
+        }
+
+        // Step-by-Step Logic
+        let stepCounters = { ex1: 0, ex2: 0, ex3: 0, ex4: 0 };
+        function nextStep(exId, maxSteps) {
+            if(stepCounters[exId] < maxSteps) {
+                stepCounters[exId]++;
+                document.querySelector(`.${exId}-${stepCounters[exId]}`).classList.add('active');
+                if(stepCounters[exId] === maxSteps) {
+                    let btn = document.getElementById(`btn-${exId}`);
+                    btn.disabled = true;
+                    btn.innerText = "All Steps Shown";
+                }
+            }
+        }
+
+        // Exercise Checking Logic
+        function checkAns(inputId, correctArray, fbId) {
+            let userAns = document.getElementById(inputId).value;
+            userAns = userAns.replace(/\s/g, '').toLowerCase(); 
+            
+            const fb = document.getElementById(fbId);
+            if(correctArray.includes(userAns)) {
+                fb.innerText = "✅ Correct! Great job.";
+                fb.className = "feedback correct";
+            } else {
+                fb.innerText = "❌ Incorrect. Check your math and try again.";
+                fb.className = "feedback incorrect";
+            }
+        }
+
+        // ================= LAB 1: INVERSE GRAPHS =================
+        function drawGraph1() {
+            const canvas = document.getElementById('canvas1');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width; const h = canvas.height;
+            const cx = w / 2; const cy = h / 2;
+            const scale = 30; // pixels per unit
+
+            let a = parseFloat(document.getElementById('sliderBase').value);
+            document.getElementById('valBase').innerText = a.toFixed(1);
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Axes
+            ctx.strokeStyle = '#cbd5e0'; ctx.lineWidth = 2;
+            ctx.beginPath(); ctx.moveTo(0, cy); ctx.lineTo(w, cy); ctx.stroke(); // X
+            ctx.beginPath(); ctx.moveTo(cx, 0); ctx.lineTo(cx, h); ctx.stroke(); // Y
+
+            // Draw y = x (Mirror)
+            ctx.strokeStyle = '#718096'; ctx.setLineDash([5, 5]); ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            ctx.moveTo(cx - 10*scale, cy + 10*scale);
+            ctx.lineTo(cx + 10*scale, cy - 10*scale);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw Exponential y = a^x (Red)
+            ctx.strokeStyle = '#e53e3e'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            for(let x = -10; x <= 5; x += 0.1) {
+                let y = Math.pow(a, x);
+                let px = cx + x * scale;
+                let py = cy - y * scale;
+                if(x === -10) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+
+            // Draw Logarithmic y = log_a(x) (Blue)
+            ctx.strokeStyle = '#3182ce'; ctx.lineWidth = 3;
+            ctx.beginPath();
+            for(let x = 0.01; x <= 10; x += 0.1) {
+                let y = Math.log(x) / Math.log(a); // Change of base to calculate
+                let px = cx + x * scale;
+                let py = cy - y * scale;
+                if(x === 0.01) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.stroke();
+        }
+
+        // ================= LAB 4: LINEAR FORMS =================
+        let isTransformed = false;
+        function toggleTransform() {
+            isTransformed = !isTransformed;
+            const btn = document.getElementById('btn-transform');
+            const txt = document.getElementById('sim4-text');
+            
+            if(isTransformed) {
+                btn.innerText = "Revert to Exponential Curve";
+                txt.innerHTML = "Linear Form: $\\ln y = -0.1t + \\ln 50$ <br><span style='font-size:0.8em; color:#718096;'>A straight line! Gradient = -0.1, Y-intercept = ln(50)</span>";
+            } else {
+                btn.innerText = "Transform Data (Take ln)";
+                txt.innerHTML = "Model: $y = 50e^{-0.1t}$";
+            }
+            if(window.MathJax) MathJax.typesetPromise([txt]);
+            drawGraph4();
+        }
+
+        function drawGraph4() {
+            const canvas = document.getElementById('canvas4');
+            if(!canvas) return;
+            const ctx = canvas.getContext('2d');
+            const w = canvas.width; const h = canvas.height;
+            
+            // Plot area margins
+            const padding = 40;
+            const plotW = w - padding * 2;
+            const plotH = h - padding * 2;
+            const originX = padding;
+            const originY = h - padding;
+
+            ctx.clearRect(0, 0, w, h);
+
+            // Draw Axes
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(originX, originY); ctx.lineTo(w - 10, originY); // X axis
+            ctx.moveTo(originX, originY); ctx.lineTo(originX, 10); // Y axis
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#2d3748'; ctx.font = '14px Arial';
+            ctx.fillText("Time (t)", w / 2, h - 10);
+            
+            ctx.save();
+            ctx.translate(15, h / 2);
+            ctx.rotate(-Math.PI / 2);
+            ctx.fillText(isTransformed ? "ln(Temp)" : "Temp (y)", -20, 0);
+            ctx.restore();
+
+            // Data Parameters
+            const A = 50;
+            const k = -0.1;
+            const maxT = 40; // 40 minutes
+            
+            ctx.beginPath();
+            ctx.strokeStyle = isTransformed ? '#38a169' : '#e53e3e'; // Green line, Red curve
+            ctx.lineWidth = 3;
+
+            for(let t = 0; t <= maxT; t += 1) {
+                let y = A * Math.exp(k * t);
+                
+                let plotX = originX + (t / maxT) * plotW;
+                let plotY;
+
+                if (isTransformed) {
+                    // Plot ln(y). Max ln(50) ≈ 3.91. Min ln(50*e^-4) ≈ -0.08. 
+                    // Let's scale Y from 0 to 4.
+                    let lnY = Math.log(y);
+                    plotY = originY - (lnY / 4) * plotH;
+                } else {
+                    // Plot y. Max 50, Min ~1. Scale Y from 0 to 50.
+                    plotY = originY - (y / A) * plotH;
+                }
+
+                if(t === 0) ctx.moveTo(plotX, plotY);
+                else ctx.lineTo(plotX, plotY);
+            }
+            ctx.stroke();
+
+            // Draw data points (dots)
+            ctx.fillStyle = '#2b6cb0';
+            for(let t = 0; t <= maxT; t += 10) {
+                let y = A * Math.exp(k * t);
+                let plotX = originX + (t / maxT) * plotW;
+                let plotY = isTransformed ? originY - (Math.log(y) / 4) * plotH : originY - (y / A) * plotH;
+                
+                ctx.beginPath();
+                ctx.arc(plotX, plotY, 5, 0, 2*Math.PI);
+                ctx.fill();
+            }
+        }
+
+        window.onload = () => {
+            drawGraph1();
+            drawGraph4();
+        }
+    </script>
+</body>
+</html>

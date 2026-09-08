@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan - Logarithmic & Exponential Functions - SMA Semesta</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent-bg: #ebf8ff;
+            --mindful: #2980b9;
+            --meaningful: #27ae60;
+            --joyful: #d35400;
+            --rme: #8e44ad;
+            --char: #c0392b;
+            
+            /* WALT & WILT Colors */
+            --walt-header: #1e3a8a;
+            --walt-bg: #e0f2fe;
+            --wilt-header: #831843;
+            --wilt-bg: #fce7f3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 50px;
+            background-color: #fff;
+        }
+        mjx-container { font-size: 1.15em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Print Styles */
+        @page { size: A4; margin: 12mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 9.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            h1, h2, h3 { page-break-after: avoid; margin-top: 15px; margin-bottom: 5px;}
+            .header, .info-grid { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-style: italic; color: #555; }
+
+        /* Header Elements */
+        .header { display: flex; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .header img { width: 90px; margin-right: 20px; }
+        .header-text h1 { margin: 0; font-size: 1.5em; color: var(--primary); }
+        .header-text p { margin: 2px 0; font-size: 0.95em; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 12px; border: 1px solid #dee2e6; margin-bottom: 15px; }
+        .info-grid p { margin: 3px 0; }
+        
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 1.2em;}
+        
+        .char-dev, .rme, .joyful, .mindful, .meaningful { font-weight: bold; }
+        .char-dev { color: var(--char); } .rme { color: var(--rme); } .joyful { color: var(--joyful); } .mindful { color: var(--mindful); } .meaningful { color: var(--meaningful); }
+
+        /* WALT & WILT Section */
+        .ww-container {
+            display: flex;
+            width: 100%;
+            margin-bottom: 20px;
+            border: 1px solid #cbd5e0;
+            page-break-inside: avoid;
+        }
+        .ww-col {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        .ww-header {
+            color: white;
+            font-weight: bold;
+            text-align: center;
+            padding: 8px;
+            font-size: 1.1em;
+        }
+        .ww-body {
+            padding: 15px;
+            flex: 1;
+            font-size: 0.95em;
+        }
+        .walt-col .ww-header { background-color: var(--walt-header); }
+        .walt-col .ww-body { background-color: var(--walt-bg); color: #1e3a8a;}
+        .wilt-col .ww-header { background-color: var(--wilt-header); }
+        .wilt-col .ww-body { background-color: var(--wilt-bg); color: #831843;}
+        .ww-body h4 { margin-top: 0; margin-bottom: 5px; font-size: 1em;}
+        .ww-body ul, .ww-body ol { margin-top: 5px; padding-left: 20px; margin-bottom: 10px;}
+        .ww-body li { margin-bottom: 5px; }
+
+        /* 5E Phase Detailed Table Design */
+        .phase-container {
+            border: 1px solid var(--secondary); margin-bottom: 10px; page-break-inside: avoid; display: flex; flex-direction: column;
+        }
+        .phase-header {
+            background-color: var(--secondary); color: white; padding: 5px 12px;
+            font-weight: bold; display: flex; justify-content: space-between; font-size: 0.95em;
+        }
+        .phase-body { display: flex; width: 100%; }
+        .phase-left {
+            width: 22%; background-color: var(--accent-bg); padding: 10px;
+            font-style: italic; color: var(--primary); font-weight: bold;
+            border-right: 1px solid #cbd5e0; font-size: 0.85em;
+        }
+        .phase-right {
+            width: 78%; padding: 10px; background-color: white; font-size: 0.9em;
+        }
+        .phase-right h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 1em; }
+        .phase-right ul { margin: 0 0 5px 0; padding-left: 20px; }
+        .phase-right li { margin-bottom: 3px; }
+        .scaffold-text {
+            color: var(--secondary); font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #f0f4f8; padding: 4px 8px; border-left: 3px solid var(--secondary);
+        }
+
+        /* Differentiation Table Styles */
+        .diff-header {
+            display: flex; align-items: center; color: var(--primary); font-size: 1.2em; font-weight: bold;
+            margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; page-break-after: avoid;
+        }
+        .diff-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: avoid; font-size: 0.9em;}
+        .diff-table th, .diff-table td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; vertical-align: top; }
+        .diff-table th { background-color: #f8f9fa; color: #2d3748; font-weight: bold; }
+        .diff-table td:first-child { font-weight: bold; color: #2c3e50; width: 25%; }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; page-break-inside: avoid; font-size: 0.9em;}
+        .signature-block { width: 45%; text-align: left; }
+        .signature-title { margin-bottom: 50px; line-height: 1.2; }
+        .signature-name { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Lesson Plan</button>
+
+    <div class="header">
+        <img src="https://semesta.sch.id/wp-content/uploads/2025/09/cropped-Logo-Semesta-2017-200x200-1-1-300x300.png" alt="SMA Semesta Logo">
+        <div class="header-text">
+            <h1>Lesson Plan: Logarithmic and Exponential Functions</h1>
+            <p><strong>School:</strong> SMA Semesta 2026/2025 | <strong>Grade:</strong> 12</p>
+            <p><strong>Time Allocation:</strong> 12 Meetings (2 x 40 minutes = 80 mins per meeting)</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div>
+            <p><strong>📌 Topic:</strong> 2. Logarithmic and exponential functions</p>
+            <p><strong>Reference:</strong> Cambridge Mathematics Pure Math 2-3 A Level</p>
+            <p><strong>Method:</strong> 5E, Problem & Project Based Learning (PjBL)</p>
+        </div>
+        <div>
+            <p><strong>Approach:</strong> Math Modelling & Hands-on Activity</p>
+            <p><strong>Character Focus:</strong> <span class="char-dev">Self-Regulated, Collaboration, Creativity, Critical Thinking</span></p>
+            <p><strong>Differentiation:</strong> Extension, Scaffolding, EAL, SEN</p>
+        </div>
+    </div>
+
+    <h2>🎯 Objectives</h2>
+    <ul style="font-size: 0.9em;">
+        <li><strong>2.2.1 / 3.2.1:</strong> Understand the relationship between logarithms and exponentials, and use the laws of logarithms (including change of base).</li>
+        <li><strong>2.2.2 / 3.2.2:</strong> Solve equations of the form $a^x = b$. Solve equations involving exponential and logarithmic expressions.</li>
+        <li><strong>2.2.3:</strong> Transform a relationship to linear form to determine constants, e.g. $y = kx^n$ to $\lg y = \lg k + n \lg x$, or $y = ka^x$ to $\lg y = \lg k + x \lg a$.</li>
+    </ul>
+
+    <!-- WALT & WILT SECTION -->
+    <div class="ww-container">
+        <div class="ww-col walt-col">
+            <div class="ww-header">WALT — We Are Learning To...</div>
+            <div class="ww-body">
+                <h4>Learning Objective:</h4>
+                <p>Understand the relationship between logarithms and exponentials, apply the laws of logarithms to solve complex equations, and transform non-linear relationships into linear forms to find unknown constants through mathematical modelling.</p>
+                <br>
+                <h4>Bloom's Level:</h4>
+                <p>Apply, Analyse & Evaluate (Levels 3–5)</p>
+            </div>
+        </div>
+        <div class="ww-col wilt-col">
+            <div class="ww-header">WILT — What I'm Looking For...</div>
+            <div class="ww-body">
+                <h4>Success Criteria (self-assessable):</h4>
+                <ol>
+                    <li>I can convert fluently between exponential and logarithmic forms.</li>
+                    <li>I can apply the product, quotient, and power laws to simplify log expressions.</li>
+                    <li>I can use the change of base formula to solve equations with different bases.</li>
+                    <li>I can solve exponential equations and inequalities by taking the logarithm of both sides.</li>
+                    <li>I can transform equations like $y = ka^x$ into a linear straight line $Y = mX + C$ and use a graph to determine the constants.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 1
+    =========================================== -->
+    <h2>📅 Meeting 1: Logarithms to Base 10 (Subtopic 2.1)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E2 | Engage & Explore</span><span>[35 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Teacher-led & Hands-on</div>
+            <div class="phase-right">
+                <h4>Hook — Richter Scale (15 min):</h4>
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> Display news about a 5.0 and 6.0 earthquake in Indonesia. "Is a 6.0 just slightly stronger than a 5.0? No, it's 10 times stronger! This is a Logarithmic Scale."</li>
+                </ul>
+                <h4>Explore — The Inverse Function (20 min):</h4>
+                <ul>
+                    <li>Ask students to solve $10^x = 100$ and $10^x = 1000$. Then ask them to solve $10^x = 500$.</li>
+                    <li>Students realize they need a mathematical tool to "undo" an exponent. Define $\log_{10}(x)$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>E3 & E4 | Explain & Elaborate</span><span>[45 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Practice</div>
+            <div class="phase-right">
+                <h4>Direct Instruction — Slides 1-3 (20 min):</h4>
+                <ul>
+                    <li>Define $y = \log_{10} x \iff 10^y = x$.</li>
+                    <li>Notation: $\log_{10}$ is often written as $\lg$ or simply $\log$.</li>
+                    <li>Model graphing $y = 10^x$ and $y = \log_{10} x$. Show they are reflections across $y = x$.</li>
+                </ul>
+                <h4>Elaborate (25 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 1 converting back and forth between exponent and log forms.</li>
+                    <li><span class="scaffold-text">Scaffold: Remind students that logs cannot take negative inputs! (Domain of log is $x > 0$).</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 2
+    =========================================== -->
+    <h2>📅 Meeting 2: Logarithms to Base $a$ (Subtopic 2.2)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E2 | Engage & Explore</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Concept Building</div>
+            <div class="phase-right">
+                <h4>Hook — Computer Binary (10 min):</h4>
+                <ul>
+                    <li>"Computers operate on base 2. If memory doubles every generation, we use $2^x$. How do we find $x$?" We use $\log_2$!</li>
+                </ul>
+                <h4>Explore (20 min):</h4>
+                <ul>
+                    <li>Students evaluate $\log_2 8$, $\log_3 81$, and $\log_5 125$ by mental trial and error.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>E3 & E4 | Explain & Elaborate</span><span>[50 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Practice</div>
+            <div class="phase-right">
+                <h4>Direct Instruction (20 min):</h4>
+                <ul>
+                    <li>General definition: $y = \log_a x \iff a^y = x$.</li>
+                    <li>Special values: $\log_a a = 1$ and $\log_a 1 = 0$.</li>
+                </ul>
+                <h4>Elaborate & Evaluate (30 min):</h4>
+                <ul>
+                    <li>Worksheet 2: Solving simple expressions like $\log_4 x = 3$ or $\log_x 64 = 2$.</li>
+                    <li><strong>Exit Ticket:</strong> Evaluate $\log_7 49$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 3
+    =========================================== -->
+    <h2>📅 Meeting 3: The Laws of Logarithms (Subtopic 2.3)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E2 | Engage & Explore</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Historical Context & Discovery</div>
+            <div class="phase-right">
+                <h4>Hook — Napier's Bones (10 min):</h4>
+                <ul>
+                    <li>"Before calculators, astronomers multiplied 8-digit numbers by adding their logarithms using a Slide Rule. Let's see how."</li>
+                </ul>
+                <h4>Discovery (20 min):</h4>
+                <ul>
+                    <li>Have students calculate $\log_{10}(100) + \log_{10}(1000)$ and compare it to $\log_{10}(100 \times 1000)$.</li>
+                    <li><span class="joyful">Joyful:</span> Students deduce the Product Law naturally!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>E3 & E4 | Formalizing the 3 Laws</span><span>[50 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Practice</div>
+            <div class="phase-right">
+                <h4>Direct Instruction (20 min):</h4>
+                <ul>
+                    <li>1. Product Law: $\log_a (xy) = \log_a x + \log_a y$</li>
+                    <li>2. Quotient Law: $\log_a (x/y) = \log_a x - \log_a y$</li>
+                    <li>3. Power Law: $\log_a (x^n) = n \log_a x$</li>
+                </ul>
+                <h4>Elaborate (30 min):</h4>
+                <ul>
+                    <li>Worksheet 3: Compressing and expanding logarithmic expressions.</li>
+                    <li><span class="scaffold-text">Scaffold: Emphasize that $\log(A+B)$ is NOT $\log A + \log B$. A common A-Level trap!</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 4 & 5
+    =========================================== -->
+    <h2>📅 Meeting 4 & 5: Solving Logarithmic Equations & Change of Base (Subtopics 2.4 & 3.2.1)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E2 | Combining Laws to Solve</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Problem Based Learning</div>
+            <div class="phase-right">
+                <h4>Hook (Meeting 4) (15 min):</h4>
+                <ul>
+                    <li>"Solve $\log_3 x + \log_3(x-2) = 1$."</li>
+                    <li>Groups attempt to solve. They must realize they must use the Product Law to combine the logs first before converting to exponential form!</li>
+                </ul>
+                <h4>Explore (25 min):</h4>
+                <ul>
+                    <li>Groups solve and get a quadratic equation: $x^2 - 2x - 3 = 0$.</li>
+                    <li><span class="mindful">Mindful:</span> They get $x=3$ and $x=-1$. Ask: "Can we use $x=-1$?" (No, cannot log a negative number. Reject extraneous roots!).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>E3 & E4 | Change of Base Theorem</span><span>[120 mins across M4/M5]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction</div>
+            <div class="phase-right">
+                <h4>Direct Instruction (Meeting 5) (30 min):</h4>
+                <ul>
+                    <li>What if the bases don't match? Solve $\log_2 x + \log_4 x = 3$.</li>
+                    <li>Introduce Change of Base Formula: $\log_a b = \frac{\log_c b}{\log_c a}$.</li>
+                    <li>Show the special case: $\log_a b = \frac{1}{\log_b a}$.</li>
+                </ul>
+                <h4>Elaborate & Evaluate (90 min over two days):</h4>
+                <ul>
+                    <li>Worksheets 4 & 5. High-level algebraic manipulation requiring substitution (e.g., let $u = \log_2 x$) to solve hidden quadratics.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 6 & 7
+    =========================================== -->
+    <h2>📅 Meeting 6 & 7: Exponential Equations & Inequalities (Subtopics 2.5 & 2.6)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E3 | The Power of Bringing it Down</span><span>[60 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Teacher-led Instruction</div>
+            <div class="phase-right">
+                <h4>Direct Instruction (Meeting 6):</h4>
+                <ul>
+                    <li>Solving $a^x = b$. (e.g., $3^x = 20$).</li>
+                    <li>Method: Take $\log$ or $\ln$ of both sides. Use Power Law to bring $x$ down. $x \log 3 = \log 20$.</li>
+                    <li>Solving complex forms: $2^{x+1} = 3^{2x-1}$. Requires careful expansion and factorisation of $x$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>E3 & E4 | Inequalities & Negative Logs</span><span>[100 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Guided Practice & Elaboration</div>
+            <div class="phase-right">
+                <h4>Direct Instruction (Meeting 7):</h4>
+                <ul>
+                    <li>Solving $0.5^x < 10$. Take logs: $x \log(0.5) < \log(10)$.</li>
+                    <li><span class="char-dev">Critical Thinking:</span> Since $0.5 < 1$, $\log(0.5)$ is a NEGATIVE number. When dividing by a negative, the inequality sign MUST FLIP!</li>
+                </ul>
+                <h4>Elaborate:</h4>
+                <ul>
+                    <li>Worksheets 6 & 7. Solving exponential inequalities and hidden quadratics ($3^{2x} - 4(3^x) + 3 = 0$, let $u = 3^x$).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ==========================================
+         MEETING 8
+    =========================================== -->
+    <h2>📅 Meeting 8: Natural Logarithms (Subtopic 2.7)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>E1 & E3 | Euler's Number (e)</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Concept Building</div>
+            <div class="phase-right">
+                <h4>Hook — Continuous Compounding (10 min):</h4>
+                <ul>
+                    <li>If an Indonesian bank offers 100% interest compounded yearly, you get 2x. If compounded monthly? Daily? Every second? It approaches a magical limit: $e \approx 2.718$.</li>
+                </ul>
+                <h4>Direct Instruction (30 min):</h4>
+                <ul>
+                    <li>Define $e$ as the base of natural growth.</li>
+                    <li>Define $\ln x$ as $\log_e x$. Explain that $\ln(e) = 1$ and $\ln(e^x) = x$.</li>
+                    <li>Solve continuous decay problems (e.g., radioactive isotopes).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- =====================================================================
+         MEETINGS 9 - 12: MATHEMATICAL MODELLING PROJECT (LINEAR FORMS)
+    ====================================================================== -->
+    <h2>📅 Meetings 9-12: PjBL - Transforming to Linear Form (Subtopic 2.8)</h2>
+    
+    <div class="phase-container">
+        <div class="phase-header"><span>PjBL Phase 1 & 2 | Concept & Project Launch (Meeting 9)</span><span>[80 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction &<br>Project Design</div>
+            <div class="phase-right">
+                <h4>Concept: Linear Form (40 min):</h4>
+                <ul>
+                    <li>Scientists collect data that follows an exponential curve $y = A b^x$. It's hard to find $A$ and $b$ from a curve.</li>
+                    <li>Take $\log$ of both sides: $\log y = \log A + x \log b$.</li>
+                    <li>Map this to $Y = mX + c$. So plotting $\log y$ against $x$ gives a straight line with gradient $\log b$ and intercept $\log A$!</li>
+                </ul>
+                <h4><span class="hook-hl">🪝 Project Launch: "The Cooling Curve" (40 min):</span></h4>
+                <ul>
+                    <li><strong>Task:</strong> In groups, you will model the exponential cooling of hot tea (or water draining) in the lab.</li>
+                    <li><strong>Design:</strong> Plan your equipment (thermometers, stopwatches) and data table ($t$ vs $Temp$).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="phase-container">
+        <div class="phase-header"><span>PjBL Phase 3 | Data Collection (Meeting 10)</span><span>[80 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Hands-On Lab Work</div>
+            <div class="phase-right">
+                <h4>Lab Execution:</h4>
+                <ul>
+                    <li>Groups boil water, pour it into a cup, and measure the temperature every 2 minutes for 40 minutes.</li>
+                    <li><span class="char-dev">Collaboration:</span> One reads thermometer, one manages stopwatch, one records data.</li>
+                    <li>Calculate $(T - T_{\text{room}})$ to get the true exponential decay value $y$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="phase-container">
+        <div class="phase-header"><span>PjBL Phase 4 | Mathematical Modelling (Meeting 11)</span><span>[80 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Data Processing</div>
+            <div class="phase-right">
+                <h4>Graphing & Analysis:</h4>
+                <ul>
+                    <li>Groups create a new column for $\ln y$ (Natural log of temperature difference).</li>
+                    <li>Plot $\ln y$ on the vertical axis against time $t$ on the horizontal axis using graph paper.</li>
+                    <li>Draw a Line of Best Fit.</li>
+                    <li>Calculate the gradient ($m$) and y-intercept ($c$).</li>
+                    <li><span class="meaningful">Meaningful:</span> Reverse the log process to find the original formula constants $A$ and $k$ for their specific cup of tea! $y = A e^{kt}$.</li>
+                </ul>
+                <span class="scaffold-text">Scaffold students: Provide Excel/Desmos to check their manual gradient calculations if they get stuck.</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="phase-container">
+        <div class="phase-header"><span>PjBL Phase 5 & Summative | Showcase & Exam (Meeting 12)</span><span>[80 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Evaluation</div>
+            <div class="phase-right">
+                <h4>Project Showcase (30 min):</h4>
+                <ul>
+                    <li>Groups display their graphs and final mathematical model formulas. Brief class discussion on whose cup cooled the fastest (which $k$ value was largest) and why (insulation, surface area).</li>
+                </ul>
+                <h4>Chapter 2 Summative Evaluation (50 min):</h4>
+                <ul>
+                    <li>Cambridge A-Level standard test covering Laws of Logs, solving log/exponential equations, and a theoretical Linear Form question.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ==========================================
+         DIFFERENTIATION STRATEGIES
+    =========================================== -->
+    <div class="diff-header">
+        🌟 Differentiation Strategies
+    </div>
+    <table class="diff-table">
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Strategies & Actions in Class</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Extension (High Achievers)</td>
+                <td>Assign complex hidden quadratic equations ($e^{2x} - 5e^x + 6 = 0$). For the Linear Form project, ask them to transform $y = k x^n$ (power model) instead of $y = kb^x$ and explain the difference in the graph ($X$-axis becomes $\log x$).</td>
+            </tr>
+            <tr>
+                <td>Scaffolding (Middle/Low)</td>
+                <td>Provide a physical "Laws of Logs" cheat sheet to keep on their desk. For the PjBL graph, provide axes that are pre-scaled, and guide them carefully on picking two points far apart to calculate the gradient.</td>
+            </tr>
+            <tr>
+                <td>EAL (English Additional Language)</td>
+                <td>Clarify vocabulary: <em>Base (Basis), Exponent/Power (Pangkat), Gradient (Gradien/Kemiringan), Intercept (Titik potong)</em>.</td>
+            </tr>
+            <tr>
+                <td>SEN (Special Educational Needs)</td>
+                <td>During the PjBL, assign clear, structured roles (e.g., Timekeeper). Use large-grid graph paper to plot the Linear Form data to reduce visual strain.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-title">Acknowledged by,<br><strong>Principal</strong></div>
+            <div class="signature-name">Ahmad Nurani, S.T., M.Pd.</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-title"><br><strong>Subject Teacher</strong></div>
+            <div class="signature-name">Muhammad Ghozian Kafi Ahsan, S.Pd., M.Pd., Gr.</div>
+        </div>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+    <script>document.getElementById('print-footer').style.display = 'block';</script>
+</body>
+</html>

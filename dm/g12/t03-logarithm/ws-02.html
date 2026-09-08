@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PjBL Project: The Cooling Curve - Logarithms</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #ebf8ff;
+            --guide: #f6e05e;
+            --pjbl: #16a085;
+            --pjbl-light: #e0fbf7;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.5;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 0; 
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { font-size: 10.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Header */
+        .project-header {
+            text-align: center;
+            border-bottom: 2px solid var(--pjbl);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .project-header h1 { color: var(--pjbl); margin: 0; font-size: 1.8em; }
+        .project-header p { margin: 5px 0; font-size: 1.1em; color: #4a5568; }
+        
+        .project-info {
+            background-color: var(--pjbl-light);
+            border-left: 5px solid var(--pjbl);
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+        }
+        .project-info h2 { margin-top: 0; color: var(--pjbl); font-size: 1.3em; border-bottom: 1px solid #a7e0d3; padding-bottom: 5px; margin-bottom: 10px;}
+        .project-info ul { list-style-type: disc; margin-left: 20px; margin-bottom: 10px;}
+        .project-info ol { list-style-type: decimal; margin-left: 20px; margin-bottom: 10px;}
+
+        /* Section Blocks */
+        .section-block {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            position: relative;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 5px;
+            color: var(--primary);
+        }
+
+        /* Scaffolding elements */
+        .guide-box {
+            background-color: #fffff0;
+            border-left: 5px solid #ecc94b;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+        .guide-title { font-weight: bold; color: #b7791f; margin-bottom: 5px; display: block;}
+        .fill-line {
+            display: inline-block; min-width: 60px; border-bottom: 1px solid #333; text-align: center;
+        }
+
+        /* Data Table */
+        .data-table {
+            width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 20px;
+        }
+        .data-table th, .data-table td {
+            border: 1px solid #a0aec0; padding: 8px 12px; text-align: center;
+        }
+        .data-table th { background-color: #ebf8ff; color: var(--primary); font-weight: bold; }
+        .data-table td.header { background-color: #f7fafc; font-weight: bold; }
+
+        /* Graph Paper Placeholder */
+        .graph-area {
+            border: 2px dashed #a0aec0; height: 350px; margin-top: 15px;
+            background-image: linear-gradient(0deg, transparent 0.9px, #e2e8f0 1px),
+                              linear-gradient(90deg, transparent 0.9px, #e2e8f0 1px);
+            background-size: 20px 20px;
+            position: relative;
+            display: flex; justify-content: center; align-items: center;
+            color: #a0aec0; font-style: italic;
+        }
+        .graph-label { position: absolute; bottom: 5px; right: 5px; font-weight: bold;}
+
+        /* Rubric */
+        .rubric-table {
+            width: 100%; border-collapse: collapse; margin-top: 15px;
+        }
+        .rubric-table th, .rubric-table td {
+            border: 1px solid #a0aec0; padding: 8px 12px; text-align: left; vertical-align: top;
+        }
+        .rubric-table th { background-color: var(--pjbl); color: white; font-weight: bold; }
+        .rubric-table td.criteria { font-weight: bold; color: var(--primary); width: 25%; }
+
+        .page-break { page-break-after: always; }
+        p { margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Project Guide</button>
+
+    <div class="project-header">
+        <h1>Project-Based Learning: The Cooling Curve</h1>
+        <p>Mathematical Modelling with Logarithms & Exponentials</p>
+        <p><strong>Grade 12 - SMA Semesta 2026/2025</strong></p>
+    </div>
+
+    <div class="project-info">
+        <h2>Project Overview & Objectives</h2>
+        <p>In this project, you will act as a scientific researcher modeling the cooling process of hot liquid (like Indonesian <em>Teh Panas</em>). You will collect real-world data, use logarithms to transform a non-linear relationship into a straight line, and then use your linear model to determine unknown constants for your cooling curve.</p>
+        
+        <h3>Learning Objectives:</h3>
+        <ul>
+            <li>Apply the laws of logarithms to transform exponential relationships.</li>
+            <li>Use graphical methods to determine unknown constants from real data.</li>
+            <li>Develop critical thinking and collaboration skills in a scientific context.</li>
+        </ul>
+        <h3>Success Criteria:</h3>
+        <ol>
+            <li>Collect accurate temperature vs. time data.</li>
+            <li>Successfully transform your data to produce a straight-line graph ($\ln y$ vs $t$).</li>
+            <li>Accurately calculate the gradient and y-intercept of your line of best fit.</li>
+            <li>Determine the unknown constants for your cooling model.</li>
+            <li>Present your findings clearly.</li>
+        </ol>
+    </div>
+
+    <div class="section-block">
+        <div class="section-title">Project Timeline & Meeting Focus</div>
+        <ul>
+            <li><strong>Meeting 9: Project Launch & Planning</strong> (Subtopic 2.8 Concept)</li>
+            <li><strong>Meeting 10: Data Collection Lab</strong> (Hands-on activity)</li>
+            <li><strong>Meeting 11: Data Processing & Analysis</strong> (Graphing & Calculations)</li>
+            <li><strong>Meeting 12: Project Showcase & Chapter Evaluation</strong></li>
+        </ul>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 9: PROJECT LAUNCH & PLANNING
+    ====================================================================== -->
+    <div class="section-block">
+        <div class="section-title">Meeting 9: Project Launch & Planning</div>
+        <p><strong>Focus:</strong> Understanding Linear Forms & Designing Your Experiment</p>
+        <div class="guide-box">
+            <span class="guide-title">Background: Transforming to Linear Form ($y = A e^{kt}$)</span>
+            <p>Real-world exponential relationships (like cooling, decay, or growth) are often modeled by $y = A e^{kt}$. Plotting $y$ vs $t$ gives a curve. To find $A$ and $k$ from a graph, we need a straight line!<br>
+            <strong>Step 1: Take $\ln$ of both sides:</strong> $\ln y = \ln(A e^{kt})$<br>
+            <strong>Step 2: Use Product Law:</strong> $\ln y = \ln A + \ln(e^{kt})$<br>
+            <strong>Step 3: Simplify:</strong> $\ln y = kt + \ln A$<br>
+            This is now in the form $Y = mX + C$! <br>
+            <strong>So, you will plot:</strong> $Y = \ln y$ (vertical axis) against $X = t$ (horizontal axis).</p>
+        </div>
+
+        <h3>Task 1: Experiment Design (Group Activity)</h3>
+        <p>Your group will need to gather simple materials for Meeting 10.</p>
+        <ul>
+            <li><strong>Liquid:</strong> Hot water (or <em>Teh Panas</em>, <em>Kopi Panas</em>).</li>
+            <li><strong>Container:</strong> A cup or mug (ensure it's safe for hot liquids).</li>
+            <li><strong>Measuring:</strong> Thermometer (digital or analog) and a stopwatch/phone timer.</li>
+            <li><strong>Recording:</strong> This project guide (for the data table).</li>
+        </ul>
+        <p><strong>Discussion Points:</strong></p>
+        <ul>
+            <li>How often will you take temperature readings? (e.g., every 1 or 2 minutes for 40 minutes).</li>
+            <li>What is the room temperature ($T_{room}$)? (You'll need this for your 'y' value transformation later).</li>
+            <li>Who will be responsible for each role (Timekeeper, Thermometer Reader, Data Recorder)?</li>
+        </ul>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 10: DATA COLLECTION LAB
+    ====================================================================== -->
+    <div class="section-block">
+        <div class="section-title">Meeting 10: Data Collection Lab</div>
+        <p><strong>Focus:</strong> Accurate Measurement & Data Recording</p>
+
+        <h3>Task 2: Conduct the Cooling Experiment (Group Activity)</h3>
+        <p>Follow your group's plan from Meeting 9. Be careful with hot liquids!</p>
+        <ol>
+            <li>Fill your cup with hot water/tea. Record the initial temperature at $t=0$.</li>
+            <li>Record the room temperature ($T_{room}$).</li>
+            <li>At regular intervals (e.g., every 2 minutes), record the temperature of the liquid. Continue for at least 40 minutes.</li>
+        </ol>
+        
+        <div class="guide-box">
+            <span class="guide-title">Data Transformation Reminder</span>
+            <p>Your exponential model is for the *difference* in temperature. So $y = T - T_{room}$. You will calculate this after collecting raw data.</p>
+        </div>
+
+        <p><strong>Room Temperature ($T_{room}$):</strong> <span class="fill-line" style="width: 100px;"></span> $^\circ\text{C}$</p>
+        
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>Time (t) min</th>
+                    <th>Temperature ($T$) $^\circ\text{C}$ (Raw Data)</th>
+                    <th>Difference ($y = T - T_{room}$)</th>
+                    <th>$\ln(y)$ (to 3 s.f.)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr><td class="header">0</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">2</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">4</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">6</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">8</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">10</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">12</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">14</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">16</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">18</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">20</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">22</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">24</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">26</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">28</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">30</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">32</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">34</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">36</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">38</td><td></td><td></td><td></td></tr>
+                <tr><td class="header">40</td><td></td><td></td><td></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 11: DATA PROCESSING & ANALYSIS
+    ====================================================================== -->
+    <div class="section-block">
+        <div class="section-title">Meeting 11: Data Processing & Analysis</div>
+        <p><strong>Focus:</strong> Graphical Analysis, Gradient & Intercept Calculations</p>
+
+        <h3>Task 3: Process Raw Data & Calculate Logarithms (Group Activity)</h3>
+        <p>Using the $T_{room}$ value you recorded:</p>
+        <ol>
+            <li>Calculate $y = T - T_{room}$ for each time interval.</li>
+            <li>Calculate $\ln(y)$ for each value. Record these in the table from Meeting 10.</li>
+        </ol>
+
+        <h3>Task 4: Plotting the Linear Relationship (Individual/Group)</h3>
+        <p>On graph paper, plot your transformed data points.</p>
+        <p><strong>Vertical Axis (Y):</strong> Plot the $\ln(y)$ values.</p>
+        <p><strong>Horizontal Axis (X):</strong> Plot the time ($t$) values.</p>
+        <p>Draw a clear line of best fit through your points. This should now be a straight line!</p>
+        <div class="graph-area">
+            <span class="graph-label" style="top: 5px; left: 5px;">$\ln(y)$</span>
+            <span class="graph-label" style="bottom: 5px; right: 5px;">Time (t)</span>
+            <p><em>(Paste or draw your graph paper here)</em></p>
+        </div>
+
+        <h3>Task 5: Determine the Constants (Group Activity)</h3>
+        <p>Your straight line equation is $\ln y = kt + \ln A$.</p>
+        <p><strong>Step 1: Calculate the Gradient ($k$)</strong><br>
+        Pick two points on your line of best fit (NOT necessarily data points) that are far apart. <br>
+        $(t_1, \ln y_1)$ and $(t_2, \ln y_2)$<br>
+        $k = \text{gradient} = \frac{\ln y_2 - \ln y_1}{t_2 - t_1} = $ <span class="fill-line" style="width: 150px;"></span></p>
+        
+        <p><strong>Step 2: Calculate the y-intercept ($\ln A$)</strong><br>
+        Read the value where your line of best fit crosses the vertical axis ($t=0$). This value is $\ln A$.<br>
+        $\ln A =$ <span class="fill-line" style="width: 100px;"></span></p>
+        
+        <p><strong>Step 3: Solve for $A$</strong><br>
+        Since $\ln A = \text{your value}$, then $A = e^{\text{your value}} = $ <span class="fill-line" style="width: 100px;"></span></p>
+        
+        <p><strong>Step 4: Write your final mathematical model!</strong><br>
+        $y = $ <span class="fill-line" style="width: 80px;"></span> $e^{($ <span class="fill-line" style="width: 50px;"></span> $)t}$</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 12: PROJECT SHOWCASE & EVALUATION
+    ====================================================================== -->
+    <div class="section-block">
+        <div class="section-title">Meeting 12: Project Showcase & Evaluation</div>
+        <p><strong>Focus:</strong> Presentation of Findings & Summative Assessment</p>
+
+        <h3>Task 6: Project Showcase (Group Presentation)</h3>
+        <p>Your group will present your "Cooling Curve" project. Prepare a short presentation (5-7 minutes) to:</p>
+        <ul>
+            <li>Display your raw data and the transformed $\ln y$ vs $t$ graph.</li>
+            <li>Explain how you calculated your gradient ($k$) and y-intercept ($\ln A$).</li>
+            <li>Present your final mathematical model for the cooling curve.</li>
+            <li>Discuss: How accurate was your model? What factors influenced the cooling rate ($k$ value)?</li>
+        </ul>
+
+        <h3>Task 7: Chapter 2 Summative Evaluation (Individual Test)</h3>
+        <p>You will complete a 50-minute exam covering all aspects of Logarithmic and Exponential Functions.</p>
+        
+        <h3>Project Assessment Rubric</h3>
+        <table class="rubric-table">
+            <thead>
+                <tr>
+                    <th>Criteria</th>
+                    <th>Excellent (4)</th>
+                    <th>Good (3)</th>
+                    <th>Satisfactory (2)</th>
+                    <th>Needs Improvement (1)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="criteria">Data Collection & Accuracy (M10)</td>
+                    <td>Accurate, consistent readings. Room temp noted.</td>
+                    <td>Mostly accurate. Minor inconsistencies.</td>
+                    <td>Some errors/inconsistencies.</td>
+                    <td>Major errors in data collection.</td>
+                </tr>
+                <tr>
+                    <td class="criteria">Data Transformation ($\ln y$) (M11)</td>
+                    <td>All $\ln y$ values calculated correctly.</td>
+                    <td>Mostly correct, 1-2 minor errors.</td>
+                    <td>Several calculation errors.</td>
+                    <td>Many errors/incomplete transformation.</td>
+                </tr>
+                <tr>
+                    <td class="criteria">Graphing & Line of Best Fit (M11)</td>
+                    <td>Graph perfectly scaled, plotted accurately. Excellent LoBF.</td>
+                    <td>Graph mostly accurate, good LoBF.</td>
+                    <td>Some plotting errors or poor LoBF.</td>
+                    <td>Graph unreadable or very inaccurate.</td>
+                </tr>
+                <tr>
+                    <td class="criteria">Constant Determination ($A, k$) (M11)</td>
+                    <td>$A$ and $k$ calculated correctly from graph. Final model is precise.</td>
+                    <td>$A$ and $k$ mostly correct, minor calculation errors.</td>
+                    <td>Significant errors in determining $A$ or $k$.</td>
+                    <td>Unable to determine constants.</td>
+                </tr>
+                <tr>
+                    <td class="criteria">Presentation & Collaboration (M12)</td>
+                    <td>Clear, concise, insightful presentation. Strong teamwork.</td>
+                    <td>Clear presentation, some good insights. Team participation evident.</td>
+                    <td>Basic presentation. Limited insights. Uneven participation.</td>
+                    <td>Unclear/incomplete presentation. No teamwork.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>

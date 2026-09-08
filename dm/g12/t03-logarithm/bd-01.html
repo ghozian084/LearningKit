@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Slides - Logarithmic & Exponential Functions</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 20px; box-sizing: border-box; z-index: 100; color: white; gap: 15px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 15px; border-radius: 5px; cursor: pointer; font-weight: bold;
+            transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+
+        .slide {
+            position: absolute; width: 92%; height: 88%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 30px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column;
+        }
+
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        
+        .header-title { color: var(--primary); font-size: 2em; border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-top: 0; pointer-events: auto;}
+        
+        .two-column { display: flex; gap: 30px; height: 100%; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 15px; }
+        .col-write { 
+            flex: 1.2; 
+            background-color: #fafafa; 
+            border: 2px dashed #a0aec0; 
+            border-radius: 8px; 
+            position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+            pointer-events: auto;
+        }
+        
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.2em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.4em; margin: 5px 0; display: flex; align-items: center; gap: 10px;}
+        p, li { font-size: 1.25em; line-height: 1.5; margin-top: 5px;}
+        ul { margin-top: 5px; padding-left: 25px;}
+        
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.7em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; pointer-events: auto;}
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 15px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 10px 20px;
+            font-size: 1.2em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.2em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.5em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 2em; color: var(--text-main); border: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Drawing Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 20px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)">
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+        
+        <!-- Slide 0: Title -->
+        <div class="slide active" id="slide-0">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Logarithmic & Exponential Functions</h1>
+                <h2>Grade 12 Mathematics (Pure Math 2 & 3)</h2>
+                <p>Interactive Teaching Slides | <em>Use the pen tool to write anywhere!</em></p>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 1 ================= -->
+        <div class="slide" id="slide-1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Logarithms to Base 10 (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> The Inverse Function</h3>
+                        <ul>
+                            <li>Addition undoes subtraction. Roots undo powers. But what undoes the <em>exponent itself</em>?</li>
+                            <li><strong>Definition:</strong> $y = \log_{10} x \iff 10^y = x$</li>
+                            <li>The logarithm finds the power needed to reach a number!</li>
+                            <li>Notation: $\log_{10}$ is often just written as $\lg$ or $\log$.</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> The Richter Scale</h3>
+                        <p><strong>Hook:</strong> <em>"An earthquake in Indonesia measures 5.0. Another measures 6.0. Is a 6.0 just slightly stronger?"</em></p>
+                        <p><strong>Task:</strong> Let's look at the math. It's actually $10^5$ vs $10^6$. That means a 6.0 is exactly 10 TIMES stronger! This is a Logarithmic Scale.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Logarithms to Base 10 (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Conversions</h3>
+                            <p>Convert the following into Logarithmic form:</p>
+                            <p>1) $10^3 = 1000$</p>
+                            <p>2) $10^{-2} = 0.01$</p>
+                            <p><em>(Hint: Log isolates the exponent!)</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Evaluate: $\log_{10} 10000$ and $\log_{10} 1$.<br>
+                            Can you evaluate $\log_{10}(-10)$? Explain.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 2 ================= -->
+        <div class="slide" id="slide-3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: Logarithms to Base $a$ (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> General Base Logarithms</h3>
+                        <ul>
+                            <li>We are not restricted to base 10!</li>
+                            <li><strong>Rule:</strong> $y = \log_a x \iff a^y = x$</li>
+                            <li><strong>Special Values:</strong> $\log_a a = 1$ and $\log_a 1 = 0$.</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> Computer Binary</h3>
+                        <p><strong>Hook:</strong> <em>"Computers operate on base 2. If computer memory doubles every generation, we use $2^x$. How do we find x?"</em></p>
+                        <p><strong>Task:</strong> By trial and error, find the value of $x$ for $2^x = 32$. Write it in logarithmic notation!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: Logarithms to Base $a$ (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Mental Evaluations</h3>
+                            <p>Evaluate the following without a calculator:</p>
+                            <ol>
+                                <li>$\log_3 81$</li>
+                                <li>$\log_5 125$</li>
+                                <li>Solve for $x$: $\log_x 64 = 2$</li>
+                            </ol>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Evaluate $\log_7 49$ and $\log_4 64$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 3 ================= -->
+        <div class="slide" id="slide-5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3: The Laws of Logarithms (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> The 3 Laws</h3>
+                        <ul>
+                            <li><strong>Product Law:</strong> $\log_a (xy) = \log_a x + \log_a y$</li>
+                            <li><strong>Quotient Law:</strong> $\log_a (x/y) = \log_a x - \log_a y$</li>
+                            <li><strong>Power Law:</strong> $\log_a (x^n) = n \log_a x$</li>
+                            <li><em>Trap:</em> $\log(A+B)$ is NOT $\log A + \log B$!</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> Napier's Bones</h3>
+                        <p><strong>Hook:</strong> <em>"Before calculators, astronomers multiplied 8-digit numbers by ADDING their logarithms on a slide rule. How?"</em></p>
+                        <p><strong>Task:</strong> Calculate $\log_{10}(100) + \log_{10}(1000)$. Now calculate $\log_{10}(100 \times 1000)$. What do you notice?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3: The Laws of Logarithms (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Expanding & Compressing</h3>
+                            <p>Write as a single logarithm:</p>
+                            <p>$\log_2 5 + \log_2 4 - \log_2 10$</p>
+                            <br>
+                            <p>Expand using the laws:</p>
+                            <p>$\log_a \left(\frac{x^3}{y}\right)$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Simplify into a single log: $2\log x + \log y$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 4 & 5 ================= -->
+        <div class="slide" id="slide-7">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4/5: Solving Log Equations & Change of Base (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> Equation Strategy</h3>
+                        <ul>
+                            <li>Step 1: Use the Log Laws to compress everything into ONE single logarithm.</li>
+                            <li>Step 2: Convert from Logarithmic Form into Exponential Form.</li>
+                            <li>Step 3: Solve the resulting algebraic equation.</li>
+                            <li>Step 4: <strong>Check for extraneous roots!</strong> You cannot log a negative number.</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> Hidden Quadratics</h3>
+                        <p><strong>Hook:</strong> <em>"Solve $\log_3 x + \log_3(x-2) = 1$."</em></p>
+                        <p><strong>Task:</strong> In your groups, combine the logs. Convert to exponent form. You will get a quadratic! Solve it, and test your roots.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-8">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4/5: Solving Log Equations & Change of Base (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Change of Base</h3>
+                            <p><strong>Formula:</strong> $\log_a b = \frac{\log_c b}{\log_c a}$</p>
+                            <p>Solve: $\log_2 x + \log_4 x = 3$</p>
+                            <p><em>(Hint: Change $\log_4 x$ to base 2!)</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Use the change of base formula to write $\log_9 x$ in base 3.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 6 & 7 ================= -->
+        <div class="slide" id="slide-9">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6/7: Exponential Equations & Inequalities (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> Bringing the Power Down</h3>
+                        <ul>
+                            <li>To solve $a^x = b$, take the $\log$ (or $\ln$) of BOTH sides.</li>
+                            <li>Use the Power Law to bring $x$ down: $x \log a = \log b$.</li>
+                            <li>For Inequalities: If you divide by a $\log$ of a number less than 1 (like $\log 0.5$), the value is negative. You <strong>MUST FLIP</strong> the inequality sign!</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> The Flipping Sign</h3>
+                        <p><strong>Hook:</strong> <em>"Solve $0.5^x < 10$."</em></p>
+                        <p><strong>Task:</strong> Take the log of both sides. What is the value of $\log(0.5)$ in your calculator? It's negative! Solve the inequality carefully.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-10">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6/7: Exponential Equations & Inequalities (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Complex Exponents</h3>
+                            <p>Solve for $x$ (give answer to 3 sig figs):</p>
+                            <p>$2^{x+1} = 3^{2x-1}$</p>
+                            <p><em>(Take logs, bring down powers in brackets, expand, and factorise out $x$).</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Solve the inequality: $0.8^x > 5$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 8 ================= -->
+        <div class="slide" id="slide-11">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 8: Natural Logarithms (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> Euler's Number ($e$)</h3>
+                        <ul>
+                            <li>$e \approx 2.718$ is the base of natural, continuous growth.</li>
+                            <li>The "Natural Logarithm" is $\log_e x$, written simply as $\mathbf{\ln x}$.</li>
+                            <li>$\ln(e) = 1$, and $\ln(e^x) = x$.</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> Continuous Compounding</h3>
+                        <p><strong>Hook:</strong> <em>"An Indonesian bank offers 100% interest yearly. If compounded monthly? Daily? Every second?"</em></p>
+                        <p><strong>Task:</strong> It doesn't approach infinity! It approaches the magical limit $e$. This is why radioactive decay and cooling use $e$.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-12">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 8: Natural Logarithms (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Using $\ln$</h3>
+                            <p>Solve the equation for $x$:</p>
+                            <p>$5e^{2x} = 20$</p>
+                            <br>
+                            <p>Solve: $\ln(x+2) = 3$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>What is the exact value of $e^{\ln 5}$?</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 9-12 (PjBL) ================= -->
+        <div class="slide" id="slide-13">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meetings 9-12: PjBL - Linear Forms (Part 1)</h2>
+                <div class="two-column">
+                    <div class="col content-box">
+                        <h3><span class="badge bg-concept">Main Concept</span> Transforming Curves to Lines</h3>
+                        <ul>
+                            <li>Non-linear models like $y = A b^x$ are hard to graph and analyze.</li>
+                            <li>Take the log of both sides: $\log y = \log A + x \log b$.</li>
+                            <li>Compare to a straight line: $Y = mX + c$.</li>
+                            <li>Here, $Y = \log y$, the gradient $m = \log b$, and the y-intercept $c = \log A$!</li>
+                        </ul>
+                    </div>
+                    <div class="col content-box">
+                        <h3><span class="badge bg-activity">Activity</span> The Cooling Curve Project</h3>
+                        <p><strong>Hook:</strong> <em>"How fast does your Teh Panas cool down? Can we predict the exact temperature in 2 hours?"</em></p>
+                        <p><strong>Task:</strong> You will collect real temperature data over 40 mins, plot $\ln y$ vs $t$, find the gradient, and determine the exact cooling constants $A$ and $k$ for your specific cup!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide-14">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meetings 9-12: PjBL - Linear Forms (Part 2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> Finding Constants</h3>
+                            <p>The variables $x$ and $y$ satisfy the relation $y = A e^{kx}$.</p>
+                            <p>A graph of $\ln y$ against $x$ is a straight line passing through $(0, 2.5)$ and $(4, 8.5)$.</p>
+                            <p>Find the values of $A$ and $k$.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>If $y = kx^n$, what do we plot on the Y-axis and X-axis to get a straight line? What is the gradient?</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div class="progress-indicator" id="progress">Slide 1 of 15</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <!-- JavaScript -->
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateNav() {
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateNav();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen'; 
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+        
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen'); 
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault(); 
+                
+                const pos = getPos(e);
+                
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20; 
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+                
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+
+    </script>
+</body>
+</html>

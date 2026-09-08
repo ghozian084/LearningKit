@@ -138,7 +138,7 @@ const LEARNING_KIT_DATA = {
         },
 		  {
           id: 3,
-          slug: "t02-logarithm",
+          slug: "t03-logarithm",
           title: "Logarithm",
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },

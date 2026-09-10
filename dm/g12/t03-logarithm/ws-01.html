@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guided Worksheets - Logarithms & Exponentials</title>
+    <title>High-Density Worksheets - Logarithms</title>
     <!-- MathJax Configuration MUST come first -->
     <script>
         MathJax = { 
@@ -116,7 +116,7 @@
     <button class="print-btn" onclick="window.print()">🖨️ Print Worksheets</button>
 
     <!-- =====================================================================
-         MEETING 1: LOG BASE 10
+         MEETING 1: LOG BASE 10 (PAGE 1)
     ====================================================================== -->
     <div class="worksheet">
         <div class="ws-header">
@@ -136,37 +136,49 @@
 
         <div class="section-block b-example">
             <div class="section-title">2. Example Question and Solution</div>
-            <p><strong>Question:</strong> Write $10^4 = 10000$ in logarithmic form.</p>
-            <p><strong>Solution:</strong> The base is 10. The exponent (the answer to the log) is 4. <br>
-            $\log_{10} 10000 = 4$.</p>
+            <p><strong>Question:</strong> Write $10^4 = 10000$ in logarithmic form, and evaluate $\log_{10}(0.1)$.</p>
+            <p><strong>Solution:</strong> The base is 10. The exponent (the answer to the log) is 4. $\rightarrow \log_{10} 10000 = 4$.<br>
+            For $\log_{10}(0.1)$, ask "10 to what power is 0.1?". Since $0.1 = \frac{1}{10} = 10^{-1}$, the answer is $-1$.</p>
         </div>
 
         <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: The Richter Scale</div>
-            <p><strong>Context:</strong> Earthquakes are measured on a logarithmic scale. The formula connecting energy ($E$) to the Richter magnitude ($M$) is roughly modeled by $\log_{10} E = M$.</p>
-            
+            <div class="section-title">3A. Guided Practice: The Richter Scale</div>
+            <p><strong>Context:</strong> Earthquakes are measured on a logarithmic scale. The formula connecting Energy released ($E$) to the Richter magnitude ($M$) is roughly modeled by $\log_{10} E = M$.</p>
             <div class="scaffold-step">
                 <strong>Step 1: Earthquake A (Magnitude 5.0)</strong><br>
                 Write in exponential form: $\log_{10} E_A = 5 \implies E_A = 10^{\dots} = $ <span class="fill-line" style="width: 100px;"></span>
             </div>
-            
             <div class="scaffold-step">
                 <strong>Step 2: Earthquake B (Magnitude 6.0)</strong><br>
                 Write in exponential form: $\log_{10} E_B = 6 \implies E_B = 10^{\dots} = $ <span class="fill-line" style="width: 100px;"></span>
             </div>
-            
             <div class="scaffold-step">
                 <strong>Step 3: Compare the Energy</strong><br>
-                Divide $E_B$ by $E_A$. An earthquake of magnitude 6.0 is exactly <span class="fill-line"></span> times stronger than a 5.0!
+                Divide $E_B$ by $E_A$. An earthquake of magnitude 6.0 is exactly <span class="fill-line"></span> times stronger!
             </div>
         </div>
 
-        <div class="page-break"></div> <!-- PAGE 2 of M1 -->
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: The pH Scale in Chemistry</div>
+            <p><strong>Context:</strong> In chemistry, acidity is measured using pH. The formula is $\text{pH} = -\log_{10}[H^+]$, where $[H^+]$ is the concentration of hydrogen ions.</p>
+            <div class="scaffold-step">
+                <strong>Step 1: Neutral Water</strong><br>
+                Water has an $[H^+]$ of $10^{-7}$. Substitute this in: $\text{pH} = -\log_{10}(10^{-7})$. <br>
+                Since $\log_{10}(10^{-7}) = -7$, then $\text{pH} = -(-7) =$ <span class="fill-line" style="width: 50px;"></span>.
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 2: Lemon Juice</strong><br>
+                Lemon juice has a pH of 2. Set up the equation: $2 = -\log_{10}[H^+] \implies -2 = \log_{10}[H^+]$.<br>
+                Convert to exponential form: $[H^+] = 10^{\dots} = $ <span class="fill-line" style="width: 80px;"></span>.
+            </div>
+        </div>
 
         <div class="section-block b-case">
             <div class="section-title">4. Case: The Domain of Logarithms</div>
-            <p>Can you find a power of 10 that results in a negative number or zero? Try to solve $10^y = -100$. It is impossible! Any positive number raised to any power will always be strictly greater than zero. Therefore, <strong>you cannot take the logarithm of a negative number or zero</strong>. The domain is $x > 0$.</p>
+            <p>Can you find a power of 10 that results in a negative number or zero? Try to solve $10^y = -100$. It is impossible! Any positive number raised to any power will always be strictly greater than zero. Therefore, <strong>you cannot take the logarithm of a negative number or zero</strong>. The domain is strictly $x > 0$.</p>
         </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M1 -->
 
         <div class="section-block b-exercise" style="height: 100%;">
             <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
@@ -174,32 +186,35 @@
             <div class="exercise-grid">
                 <div class="ex-item">
                     <p><strong>Q1.</strong> Convert to logarithmic form: $10^5 = 100,000$</p>
+                    <div class="work-box" style="height: 80px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> Convert to logarithmic form: $10^{-3} = 0.001$</p>
+                    <div class="work-box" style="height: 80px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> Convert to exponential form: $\log_{10} 10 = 1$</p>
+                    <div class="work-box" style="height: 80px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> Convert to exponential form: $\log_{10} 1 = 0$</p>
+                    <div class="work-box" style="height: 80px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> Evaluate without a calculator: $\log_{10} 1,000,000$</p>
                     <div class="work-box" style="height: 100px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q2.</strong> Convert to exponential form: $\log_{10} 0.01 = -2$</p>
+                    <p><strong>Q6.</strong> Evaluate without a calculator: $\log_{10} \left(\frac{1}{100}\right)$</p>
                     <div class="work-box" style="height: 100px;"></div>
                 </div>
-
                 <div class="ex-item">
-                    <p><strong>Q3.</strong> Evaluate without a calculator: $\log_{10} 1,000,000$</p>
-                    <div class="work-box" style="height: 100px;"></div>
+                    <p><strong>Q7.</strong> Solve for $x$: $\log_{10} x = 2.5$ <em>(Use a calculator for the final value)</em></p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q4.</strong> Evaluate without a calculator: $\log_{10} 0.001$</p>
-                    <div class="work-box" style="height: 100px;"></div>
-                </div>
-
-                <div class="ex-item">
-                    <p><strong>Q5.</strong> Solve for $x$: $\log_{10} x = 3.5$ <em>(Use a calculator for the final value)</em></p>
-                    <div class="work-box" style="height: 100px;"></div>
-                </div>
-                
-                <div class="ex-item">
-                    <p><strong>Q6.</strong> Solve for $y$: $10^{2y} = 500$</p>
-                    <div class="work-box" style="height: 100px;"></div>
+                    <p><strong>Q8.</strong> Solve for $y$: $10^{2y} = 500$ <em>(Use logs to solve)</em></p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
             </div>
         </div>
@@ -208,7 +223,7 @@
     <div class="page-break"></div>
 
     <!-- =====================================================================
-         MEETING 2: LOGS TO BASE a
+         MEETING 2: LOG BASE a
     ====================================================================== -->
     <div class="worksheet">
         <div class="ws-header">
@@ -228,20 +243,18 @@
 
         <div class="section-block b-example">
             <div class="section-title">2. Example Question and Solution</div>
-            <p><strong>Question:</strong> Evaluate $\log_2 16$.</p>
-            <p><strong>Solution:</strong> Let $\log_2 16 = x$. Convert to exponent form: $2^x = 16$. Since $2^4 = 16$, the answer is $4$.</p>
+            <p><strong>Question:</strong> Evaluate $\log_2 16$ and solve $\log_x 25 = 2$.</p>
+            <p><strong>Solution:</strong> Let $\log_2 16 = p$. Convert to exponent: $2^p = 16 \implies 2^4 = 16 \implies p = 4$.<br>
+            For $\log_x 25 = 2$, convert to exponent: $x^2 = 25 \implies x = 5$ (base must be positive!).</p>
         </div>
 
         <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: Computer Binary (Base 2)</div>
-            <p><strong>Context:</strong> Computers operate on binary (Base 2). Memory chips follow powers of 2 (8GB, 16GB, 32GB). An engineer wants to find out how many generations ($x$) it takes for memory to reach 256 GB, modeled by $2^x = 256$.</p>
-            
+            <div class="section-title">3A. Guided Practice: Computer Binary (Base 2)</div>
+            <p><strong>Context:</strong> Computers operate on binary (Base 2). An engineer wants to find out how many generations ($x$) it takes for memory to reach 256 GB, modeled by $2^x = 256$.</p>
             <div class="scaffold-step">
                 <strong>Step 1: Write in logarithmic form</strong><br>
-                The base is 2. The result is 256. <br>
-                $x = \log_{\dots} ($ <span class="fill-line" style="width: 60px;"></span> $)$
+                The base is 2. The result is 256. $\implies x = \log_{\dots} ($ <span class="fill-line" style="width: 60px;"></span> $)$
             </div>
-            
             <div class="scaffold-step">
                 <strong>Step 2: Solve by identifying the power</strong><br>
                 $2 \times 2 \times 2 \dots = 256$. Count the 2s!<br>
@@ -249,12 +262,26 @@
             </div>
         </div>
 
-        <div class="page-break"></div> <!-- PAGE 2 of M2 -->
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Solving for the Inside Value</div>
+            <p><strong>Context:</strong> Solve the equation $\log_3(2x - 5) = 2$.</p>
+            <div class="scaffold-step">
+                <strong>Step 1: Convert to Exponential Form</strong><br>
+                The base is 3. The power is 2. <br>
+                $3^{\dots} = 2x - 5 \implies$ <span class="fill-line" style="width: 40px;"></span> $= 2x - 5$
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 2: Solve the Linear Equation</strong><br>
+                Add 5 to both sides: <span class="fill-line"></span> $= 2x \implies x = $ <span class="fill-line" style="width: 40px;"></span>
+            </div>
+        </div>
 
         <div class="section-block b-case">
             <div class="section-title">4. Case: Finding the Unknown Base</div>
-            <p>If the unknown is the base itself (e.g., $\log_x 81 = 4$), convert it to exponential form immediately: $x^4 = 81$. Then use roots to solve: $x = \sqrt[4]{81} = 3$.</p>
+            <p>If the unknown is the base itself (e.g., $\log_x 81 = 4$), convert it to exponential form immediately: $x^4 = 81$. Then use roots to solve: $x = \sqrt[4]{81} = 3$. Remember, a logarithm base must always be positive ($x > 0$).</p>
         </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M2 -->
 
         <div class="section-block b-exercise" style="height: 100%;">
             <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
@@ -262,32 +289,35 @@
             <div class="exercise-grid">
                 <div class="ex-item">
                     <p><strong>Q1.</strong> Evaluate $\log_3 27$ without a calculator.</p>
-                    <div class="work-box" style="height: 120px;"><div class="work-label">Eq & Solve</div></div>
+                    <div class="work-box" style="height: 100px;"></div>
                 </div>
-                
                 <div class="ex-item">
                     <p><strong>Q2.</strong> Evaluate $\log_5 125$ without a calculator.</p>
-                    <div class="work-box" style="height: 120px;"><div class="work-label">Eq & Solve</div></div>
+                    <div class="work-box" style="height: 100px;"></div>
                 </div>
-
                 <div class="ex-item">
-                    <p><strong>Q3.</strong> Evaluate $\log_7 1$. <em>(Hint: Look at the Special Values rule)</em></p>
-                    <div class="work-box" style="height: 120px;"></div>
+                    <p><strong>Q3.</strong> Evaluate $\log_7 1$. <em>(Use Special Values rule)</em></p>
+                    <div class="work-box" style="height: 100px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q4.</strong> Evaluate $\log_2 (0.5)$. <em>(Hint: Negative exponents create fractions)</em></p>
-                    <div class="work-box" style="height: 120px;"></div>
+                    <p><strong>Q4.</strong> Evaluate $\log_2 (0.5)$. <em>(Hint: Negative exponents)</em></p>
+                    <div class="work-box" style="height: 100px;"></div>
                 </div>
-
                 <div class="ex-item">
                     <p><strong>Q5.</strong> Solve for $x$: $\log_x 64 = 2$</p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
-                
                 <div class="ex-item">
                     <p><strong>Q6.</strong> Solve for $x$: $\log_2 (3x - 1) = 4$</p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q7.</strong> Solve for $x$: $\log_x 1000 = 3$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q8.</strong> Evaluate $\log_4 2$. <em>(Hint: Fractional exponents represent roots!)</em></p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
             </div>
         </div>
@@ -295,7 +325,7 @@
     <div class="page-break"></div>
 
     <!-- =====================================================================
-         MEETING 3: LAWS OF LOGARITHMS
+         MEETING 3: LAWS OF LOGS (THE REQUESTED FIX)
     ====================================================================== -->
     <div class="worksheet">
         <div class="ws-header">
@@ -322,28 +352,39 @@
         </div>
 
         <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: Napier's Bones</div>
+            <div class="section-title">3A. Guided Practice: Napier's Bones</div>
             <p><strong>Context:</strong> Before calculators, astronomers multiplied massive numbers using a Slide Rule. They ADDED logarithms to MULTIPLY the numbers. Let's prove it works.</p>
-            
             <div class="scaffold-step">
                 <strong>Step 1: Calculate individually</strong><br>
-                $\log_{10} 100 =$ <span class="fill-line"></span><br>
-                $\log_{10} 1000 =$ <span class="fill-line"></span><br>
+                $\log_{10} 100 =$ <span class="fill-line"></span> and $\log_{10} 1000 =$ <span class="fill-line"></span><br>
                 Add them: $\log_{10} 100 + \log_{10} 1000 = $ <span class="fill-line"></span>
             </div>
-            
             <div class="scaffold-step">
                 <strong>Step 2: Combine using Product Law</strong><br>
                 $\log_{10}(100 \times 1000) = \log_{10}($ <span class="fill-line" style="width: 80px;"></span> $)$
             </div>
-
             <div class="scaffold-step">
                 <strong>Step 3: Evaluate</strong><br>
-                $\log_{10}(100,000) = $ <span class="fill-line"></span>. The answers match! Adding logs is multiplying numbers.
+                $\log_{10}(100,000) = $ <span class="fill-line"></span>. The answers match!
             </div>
         </div>
 
-        <div class="page-break"></div> <!-- PAGE 2 of M3 -->
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Expanding Complex Expressions</div>
+            <p><strong>Context:</strong> Break apart the expression $\log_a \left(\frac{x^2 y^3}{z}\right)$ into single logs.</p>
+            <div class="scaffold-step">
+                <strong>Step 1: Apply Quotient Law (Division becomes Subtraction)</strong><br>
+                $\log_a (x^2 y^3) - \log_a ($ <span class="fill-line" style="width: 40px;"></span> $)$
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 2: Apply Product Law (Multiplication becomes Addition)</strong><br>
+                $[\log_a (x^2) + \log_a ($ <span class="fill-line" style="width: 40px;"></span> $)] - \log_a z$
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 3: Apply Power Law (Bring powers to the front)</strong><br>
+                <span class="fill-line" style="width: 30px;"></span> $\log_a x + $ <span class="fill-line" style="width: 30px;"></span> $\log_a y - \log_a z$
+            </div>
+        </div>
 
         <div class="section-block b-case">
             <div class="section-title">4. Case: The Deadly Trap</div>
@@ -351,38 +392,43 @@
             There is no law for the log of a sum. If you see $\log_2(x + 5)$, you cannot expand it. Leave it exactly as it is!</p>
         </div>
 
+        <div class="page-break"></div> <!-- PAGE 2 of M3 -->
+
         <div class="section-block b-exercise" style="height: 100%;">
             <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
             
             <div class="exercise-grid">
                 <div class="ex-item">
                     <p><strong>Q1. Compress:</strong> Write $\log_a x + \log_a y - \log_a z$ as a single logarithm.</p>
-                    <div class="work-box" style="height: 120px;"></div>
+                    <div class="work-box" style="height: 100px;"></div>
                 </div>
-                
                 <div class="ex-item">
                     <p><strong>Q2. Compress:</strong> Write $2\log_3 5 + \log_3 2$ as a single logarithm.</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q3. Compress:</strong> Write $3\log x - 2\log y$ as a single logarithm.</p>
                     <div class="work-box" style="height: 120px;"></div>
                 </div>
-
                 <div class="ex-item">
-                    <p><strong>Q3. Compress:</strong> Write $1 + \log_2 3$ as a single logarithm. <em>(Hint: Convert 1 to $\log_2 2$ first)</em></p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <p><strong>Q4. Compress:</strong> Write $1 + \log_2 3$ as a single log. <em>(Hint: Convert 1 to $\log_2 2$ first)</em></p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q4. Expand:</strong> Write $\log_a \left(\frac{x^3}{y}\right)$ in terms of $\log_a x$ and $\log_a y$.</p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <p><strong>Q5. Expand:</strong> Write $\log_a \left(\frac{x^3}{y}\right)$ in terms of $\log_a x$ and $\log_a y$.</p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
-
                 <div class="ex-item">
-                    <p><strong>Q5. Expand:</strong> Write $\log_{10} \left(100x^2\right)$ fully expanded.</p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <p><strong>Q6. Expand:</strong> Write $\log_{10} \left(100x^2\right)$ fully expanded. Evaluate numbers.</p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q6. Solve:</strong> Express $\log_a \sqrt{x}$ as a fraction multiplied by $\log_a x$.</p>
-                    <div class="work-box" style="height: 140px;"></div>
+                    <p><strong>Q7. Solve:</strong> Express $\log_a \sqrt{x}$ as a fraction multiplied by $\log_a x$.</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q8. Expand:</strong> Write $\log_2 \left(\frac{8a}{b^4}\right)$ fully expanded.</p>
+                    <div class="work-box" style="height: 120px;"></div>
                 </div>
             </div>
         </div>
@@ -390,11 +436,11 @@
     <div class="page-break"></div>
 
     <!-- =====================================================================
-         MEETING 4 & 5: SOLVING LOG EQUATIONS & CHANGE OF BASE
+         MEETING 4/5: SOLVING LOG EQUATIONS
     ====================================================================== -->
     <div class="worksheet">
         <div class="ws-header">
-            <div class="ws-title">Worksheet M4/M5: Solving Log Equations & Change of Base<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
+            <div class="ws-title">Worksheet M4/M5: Solving Log Equations<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
             <div class="student-info">
                 <div><span>Name:</span> <span></span></div>
                 <div><span>Class:</span> <span></span></div>
@@ -404,40 +450,54 @@
         <div class="section-block b-concept">
             <div class="section-title">1. Basic Concept: Equation Strategy & Change of Base</div>
             <p><strong>Strategy to solve Log Equations:</strong><br>
-            1. Use Log Laws to compress multiple logs into ONE single log.<br>
+            1. Use Log Laws to compress multiple logs into ONE single log on each side.<br>
             2. Convert to Exponential Form to eliminate the log.<br>
             3. Solve for $x$, then <strong>CHECK FOR EXTRANEOUS ROOTS</strong> (reject if $x$ causes a negative inside a log).<br>
-            <strong>Change of Base Formula:</strong> $\log_a b = \frac{\log_c b}{\log_c a}$ (Special case: $\log_a b = \frac{1}{\log_b a}$).</p>
+            <strong>Change of Base:</strong> $\log_a b = \frac{\log_c b}{\log_c a}$ (Special case: $\log_a b = \frac{1}{\log_b a}$).</p>
         </div>
 
         <div class="section-block b-example">
             <div class="section-title">2. Example Question and Solution</div>
             <p><strong>Question:</strong> Solve $\log_2 x + \log_2 (x-2) = 3$.</p>
             <p><strong>Solution:</strong> Compress: $\log_2(x(x-2)) = 3$.<br>
-            Convert: $x(x-2) = 2^3 \implies x^2 - 2x - 8 = 0$.<br>
-            Factorise: $(x-4)(x+2) = 0 \implies x=4$ or $x=-2$. Reject $x=-2$ because we cannot have $\log_2(-2)$. Final answer: $x=4$.</p>
+            Convert: $x(x-2) = 2^3 \implies x^2 - 2x - 8 = 0$. Factorise: $(x-4)(x+2) = 0 \implies x=4$ or $x=-2$. Reject $x=-2$. Answer: $x=4$.</p>
         </div>
 
         <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: Change of Base</div>
+            <div class="section-title">3A. Guided Practice: Compressing to Solve</div>
+            <p><strong>Problem:</strong> Solve $\log_5 x + \log_5 (x-4) = 1$.</p>
+            <div class="scaffold-step">
+                <strong>Step 1: Combine into a single log using Product Law</strong><br>
+                $\log_5 ($ <span class="fill-line" style="width: 80px;"></span> $) = 1$
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 2: Convert to Exponential Form</strong><br>
+                $x(x-4) = 5^{\dots} \implies x^2 - 4x = $ <span class="fill-line" style="width: 40px;"></span>
+            </div>
+            <div class="scaffold-step">
+                <strong>Step 3: Solve the Quadratic & Check Roots</strong><br>
+                $x^2 - 4x - 5 = 0 \implies (x - $ <span class="fill-line" style="width: 30px;"></span> $)(x + $ <span class="fill-line" style="width: 30px;"></span> $) = 0$.<br>
+                $x = 5$ or $x = -1$. Which one do we reject? <span class="fill-line" style="width: 50px;"></span>.
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Change of Base</div>
             <p><strong>Problem:</strong> Solve $\log_3 x + \log_9 x = 6$. The bases don't match!</p>
-            
             <div class="scaffold-step">
                 <strong>Step 1: Change $\log_9 x$ into base 3</strong><br>
-                $\log_9 x = \frac{\log_3 x}{\log_3 9} = \frac{\log_3 x}{\dots\dots} = \frac{1}{2} \log_3 x$.
+                $\log_9 x = \frac{\log_3 x}{\log_3 9} = \frac{\log_3 x}{\dots} = \frac{1}{2} \log_3 x$.
             </div>
-            
             <div class="scaffold-step">
                 <strong>Step 2: Rewrite equation and solve</strong><br>
-                $\log_3 x + \frac{1}{2} \log_3 x = 6$<br>
-                $\frac{3}{2} \log_3 x = 6 \implies \log_3 x = $ <span class="fill-line" style="width: 50px;"></span> $\implies x = 3^{\dots} = $ <span class="fill-line" style="width: 50px;"></span>.
+                $\log_3 x + \frac{1}{2} \log_3 x = 6 \implies \frac{3}{2} \log_3 x = 6 \implies \log_3 x = $ <span class="fill-line" style="width: 30px;"></span> $\implies x = 3^{\dots} = $ <span class="fill-line" style="width: 50px;"></span>.
             </div>
         </div>
 
         <div class="page-break"></div> <!-- PAGE 2 of M4/M5 -->
 
         <div class="section-block b-case">
-            <div class="section-title">4. Case: Hidden Quadratics</div>
+            <div class="section-title">4. Case: Hidden Quadratics via Substitution</div>
             <p>Sometimes changing the base creates an equation that looks like a quadratic. If you get $\log_2 x + \frac{1}{\log_2 x} = 2$, use substitution! Let $u = \log_2 x$, so the equation becomes $u + \frac{1}{u} = 2$. Multiply by $u$ to get $u^2 - 2u + 1 = 0$, solve for $u$, then convert back to find $x$.</p>
         </div>
 
@@ -446,263 +506,28 @@
             
             <div class="exercise-grid">
                 <div class="ex-item">
-                    <p><strong>Q1.</strong> Solve $\log_5 x + \log_5 (x-4) = 1$. (Check your roots!).</p>
-                    <div class="work-box" style="min-height: 250px;"></div>
+                    <p><strong>Q1.</strong> Solve $\log_2 (x+1) - \log_2 x = 3$.</p>
+                    <div class="work-box" style="height: 180px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q2.</strong> Solve $\log_2 (x+1) - \log_2 x = 3$.</p>
-                    <div class="work-box" style="min-height: 250px;"></div>
+                    <p><strong>Q2.</strong> Solve $\log_3 (2x-1) = 2 + \log_3 x$. <em>(Move logs to one side)</em></p>
+                    <div class="work-box" style="height: 180px;"></div>
                 </div>
-
                 <div class="ex-item">
-                    <p><strong>Q3.</strong> Change $\log_4 x$ into base 2.</p>
-                    <div class="work-box" style="min-height: 250px;"></div>
+                    <p><strong>Q3.</strong> Use change of base to evaluate $\frac{\log_5 8}{\log_5 2}$.</p>
+                    <div class="work-box" style="height: 150px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q4.</strong> Solve the hidden quadratic: $\log_3 x - 2\log_x 3 = 1$. <em>(Let $u = \log_3 x$)</em>.</p>
-                    <div class="work-box" style="min-height: 250px;"></div>
+                    <p><strong>Q4.</strong> Change $\log_4 x$ into base 2.</p>
+                    <div class="work-box" style="height: 150px;"></div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="page-break"></div>
-
-    <!-- =====================================================================
-         MEETING 6 & 7: EXPONENTIAL EQUATIONS
-    ====================================================================== -->
-    <div class="worksheet">
-        <div class="ws-header">
-            <div class="ws-title">Worksheet M6/M7: Exponential Equations & Inequalities<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
-            <div class="student-info">
-                <div><span>Name:</span> <span></span></div>
-                <div><span>Class:</span> <span></span></div>
-            </div>
-        </div>
-
-        <div class="section-block b-concept">
-            <div class="section-title">1. Basic Concept: Bringing the Power Down</div>
-            <p>To solve equations like $a^x = b$, take the log (or ln) of BOTH sides. Then use the Power Law to bring the $x$ down to the front: $x \log a = \log b$, so $x = \frac{\log b}{\log a}$.<br>
-            <strong>Inequality Rule:</strong> If you divide by a negative number, you MUST flip the inequality sign. Remember that $\log(a)$ is negative if $0 < a < 1$ (e.g., $\log 0.5$ is negative!).</p>
-        </div>
-
-        <div class="section-block b-example">
-            <div class="section-title">2. Example Question and Solution</div>
-            <p><strong>Question:</strong> Solve $3^x = 20$ (to 3 s.f.).</p>
-            <p><strong>Solution:</strong> $\log(3^x) = \log(20) \implies x \log 3 = \log 20 \implies x = \frac{\log 20}{\log 3} = 2.73$.</p>
-        </div>
-
-        <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: Complex Exponents</div>
-            <p><strong>Context:</strong> Solve $2^{x+1} = 3^{2x-1}$. The unknown is in powers on both sides!</p>
-            
-            <div class="scaffold-step">
-                <strong>Step 1: Take logs and bring powers down in brackets</strong><br>
-                $\log(2^{x+1}) = \log(3^{2x-1})$<br>
-                $(x+1)\log 2 =$ <span class="fill-line" style="width: 100px;"></span>
-            </div>
-            
-            <div class="scaffold-step">
-                <strong>Step 2: Expand the brackets</strong><br>
-                $x\log 2 + \log 2 = 2x\log 3 - \log 3$
-            </div>
-
-            <div class="scaffold-step">
-                <strong>Step 3: Collect $x$ terms on one side and factorise $x$</strong><br>
-                $x\log 2 - 2x\log 3 = - \log 3 - \log 2$<br>
-                $x(\log 2 - 2\log 3) = $ <span class="fill-line" style="width: 100px;"></span><br>
-                $x = \frac{- \log 3 - \log 2}{\log 2 - 2\log 3} \approx $ <span class="fill-line" style="width: 80px;"></span> (use calculator).
-            </div>
-        </div>
-
-        <div class="page-break"></div> <!-- PAGE 2 of M6/M7 -->
-
-        <div class="section-block b-case">
-            <div class="section-title">4. Case: The Flipping Sign in Inequalities</div>
-            <p>Solve $0.5^x < 10$. Take logs: $x \log(0.5) < \log(10)$. To isolate $x$, we must divide by $\log(0.5)$. Because $0.5$ is less than 1, its logarithm is a negative number! Dividing by a negative flips the sign: $x > \frac{\log(10)}{\log(0.5)}$.</p>
-        </div>
-
-        <div class="section-block b-exercise" style="height: 100%;">
-            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise</div>
-            
-            <div class="exercise-grid">
                 <div class="ex-item">
-                    <p><strong>Q1.</strong> Solve $5^x = 12$.</p>
-                    <div class="work-box" style="min-height: 180px;"></div>
+                    <p><strong>Q5.</strong> Solve $\log_2 x + \log_4 x = 12$.</p>
+                    <div class="work-box" style="height: 180px;"></div>
                 </div>
-                
                 <div class="ex-item">
-                    <p><strong>Q2.</strong> Solve $4^{x-1} = 7$.</p>
-                    <div class="work-box" style="min-height: 180px;"></div>
-                </div>
-
-                <div class="ex-item">
-                    <p><strong>Q3.</strong> Solve $3^{x} = 2^{x+2}$.</p>
-                    <div class="work-box" style="min-height: 220px;"></div>
-                </div>
-                
-                <div class="ex-item">
-                    <p><strong>Q4.</strong> Solve the inequality $0.8^x > 5$. <em>(Watch the sign flip!)</em></p>
-                    <div class="work-box" style="min-height: 220px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="page-break"></div>
-
-    <!-- =====================================================================
-         MEETING 8: NATURAL LOGARITHMS
-    ====================================================================== -->
-    <div class="worksheet">
-        <div class="ws-header">
-            <div class="ws-title">Worksheet M8: Natural Logarithms ($e$ and $\ln$)<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
-            <div class="student-info">
-                <div><span>Name:</span> <span></span></div>
-                <div><span>Class:</span> <span></span></div>
-            </div>
-        </div>
-
-        <div class="section-block b-concept">
-            <div class="section-title">1. Basic Concept: Euler's Number</div>
-            <p><strong>Euler's Number ($e \approx 2.718$):</strong> The base of continuous growth and decay in nature.<br>
-            <strong>Natural Logarithm ($\ln$):</strong> This is just a logarithm with base $e$. $\log_e x$ is written as $\ln x$.<br>
-            Because they are inverses: $\ln(e) = 1$, and $\ln(e^x) = x$, and $e^{\ln x} = x$.</p>
-        </div>
-
-        <div class="section-block b-example">
-            <div class="section-title">2. Example Question and Solution</div>
-            <p><strong>Question:</strong> Solve for $x$: $e^{2x} = 20$.</p>
-            <p><strong>Solution:</strong> Take the natural log ($\ln$) of both sides. $\ln(e^{2x}) = \ln(20)$.<br>
-            Since $\ln$ and $e$ cancel, $2x = \ln(20) \implies x = \frac{\ln(20)}{2} \approx 1.50$.</p>
-        </div>
-
-        <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: Continuous Compounding</div>
-            <p><strong>Context:</strong> An Indonesian bank offers a continuous compound interest rate. The amount of money $A$ is given by $A = 5000e^{0.04t}$, where $t$ is years. Find how many years it takes for the money to reach 10000.</p>
-            
-            <div class="scaffold-step">
-                <strong>Step 1: Set up the equation</strong><br>
-                $10000 = 5000e^{0.04t}$
-            </div>
-            
-            <div class="scaffold-step">
-                <strong>Step 2: Isolate the exponential part</strong><br>
-                Divide both sides by 5000: $e^{0.04t} =$ <span class="fill-line" style="width: 50px;"></span>
-            </div>
-
-            <div class="scaffold-step">
-                <strong>Step 3: Take $\ln$ of both sides and solve</strong><br>
-                $\ln(e^{0.04t}) = \ln($<span class="fill-line" style="width: 30px;"></span>$)$<br>
-                $0.04t = \ln($<span class="fill-line" style="width: 30px;"></span>$)$<br>
-                $t = \frac{\ln(\dots)}{0.04} \approx $ <span class="fill-line" style="width: 60px;"></span> years.
-            </div>
-        </div>
-
-        <div class="page-break"></div> <!-- PAGE 2 of M8 -->
-
-        <div class="section-block b-case">
-            <div class="section-title">4. Case: Solving $\ln$ Equations</div>
-            <p>To solve an equation that starts with $\ln$, you do the reverse: raise $e$ to the power of both sides! For example, if $\ln(x) = 5$, then $e^{\ln(x)} = e^5 \implies x = e^5$. Just like logs, combine multiple $\ln$ terms using log laws first before raising to $e$.</p>
-        </div>
-
-        <div class="section-block b-exercise" style="height: 100%;">
-            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise</div>
-            
-            <div class="exercise-grid">
-                <div class="ex-item">
-                    <p><strong>Q1.</strong> Evaluate exactly without a calculator: $e^{\ln 7}$.</p>
-                    <div class="work-box" style="min-height: 150px;"></div>
-                </div>
-                
-                <div class="ex-item">
-                    <p><strong>Q2.</strong> Solve for $x$: $3e^x = 15$.</p>
-                    <div class="work-box" style="min-height: 150px;"></div>
-                </div>
-
-                <div class="ex-item">
-                    <p><strong>Q3.</strong> Solve for $x$: $\ln(x+2) = 4$.</p>
-                    <div class="work-box" style="min-height: 220px;"></div>
-                </div>
-                
-                <div class="ex-item">
-                    <p><strong>Q4.</strong> Solve for $x$: $\ln(2x) + \ln 3 = 1$.</p>
-                    <div class="work-box" style="min-height: 220px;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="page-break"></div>
-
-    <!-- =====================================================================
-         MEETING 9-12: PjBL LINEAR FORMS
-    ====================================================================== -->
-    <div class="worksheet">
-        <div class="ws-header">
-            <div class="ws-title">Worksheet M9-M12: Transforming to Linear Form<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
-            <div class="student-info">
-                <div><span>Name:</span> <span></span></div>
-                <div><span>Class:</span> <span></span></div>
-            </div>
-        </div>
-
-        <div class="section-block b-concept">
-            <div class="section-title">1. Basic Concept: Straightening the Curve</div>
-            <p>We cannot easily analyze exponential curves ($y = Ab^x$). We map them to the straight line equation $Y = mX + C$ by taking logs of both sides.</p>
-            <ul>
-                <li>$y = A b^x \implies \log y = (\log b)x + \log A$. <br> Plot $\log y$ against $x$. Gradient = $\log b$. Y-int = $\log A$.</li>
-                <li>$y = A x^n \implies \log y = n \log x + \log A$. <br> Plot $\log y$ against $\log x$. Gradient = $n$. Y-int = $\log A$.</li>
-            </ul>
-        </div>
-
-        <div class="section-block b-example">
-            <div class="section-title">2. Example Question and Solution</div>
-            <p><strong>Question:</strong> Convert $y = kb^x$ to linear form. State what should be plotted on the Y and X axes.</p>
-            <p><strong>Solution:</strong> $\log y = \log(kb^x) \implies \log y = \log k + x \log b$.<br>
-            Plot $\log y$ on the vertical axis, and $x$ on the horizontal axis.</p>
-        </div>
-
-        <div class="section-block b-scaffold">
-            <div class="section-title">3. Guided Practice: The Teh Panas Project (PjBL)</div>
-            <p><strong>Context:</strong> You plotted the cooling of hot tea. The graph of $\ln y$ (vertical) against $t$ (horizontal) is a straight line passing through $(0, 4)$ and $(10, 2)$. The model is $y = A e^{kt}$. Let's find $A$ and $k$!</p>
-            
-            <div class="scaffold-step">
-                <strong>Step 1: Convert model to linear form</strong><br>
-                $\ln y = \ln(A e^{kt}) \implies \ln y = \ln A + kt$.
-            </div>
-            
-            <div class="scaffold-step">
-                <strong>Step 2: Find the Gradient ($k$)</strong><br>
-                Gradient $m = \frac{y_2 - y_1}{x_2 - x_1} = \frac{2 - 4}{10 - 0} = $ <span class="fill-line" style="width: 50px;"></span>.<br>
-                Since $m = k$, then $k =$ <span class="fill-line" style="width: 50px;"></span>.
-            </div>
-
-            <div class="scaffold-step">
-                <strong>Step 3: Find the Y-Intercept ($\ln A$)</strong><br>
-                The line crosses the vertical axis at $t=0$, which is $4$.<br>
-                So, $\ln A = 4 \implies A = e^{\dots} = $ <span class="fill-line" style="width: 60px;"></span>.
-            </div>
-        </div>
-
-        <div class="page-break"></div> <!-- PAGE 2 of M9-12 -->
-
-        <div class="section-block b-case">
-            <div class="section-title">4. Case: Power Law vs Exponential Law</div>
-            <p>You must look carefully at the axes provided in the exam. If the axes are $\log y$ against $x$, it's the exponential model $y=Ab^x$. If the axes are $\log y$ against $\log x$, it is the power model $y=Ax^n$.</p>
-        </div>
-
-        <div class="section-block b-exercise" style="height: 100%;">
-            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise</div>
-            
-            <div class="exercise-grid">
-                <div class="ex-item" style="grid-column: 1 / -1;">
-                    <p><strong>Q1.</strong> The variables $x$ and $y$ satisfy the relation $y = A x^n$. A graph of $\log y$ against $\log x$ is a straight line passing through $(2, 5)$ and $(4, 9)$.</p>
-                    <p>a) By taking logs, show how the relation is transformed into a linear equation.</p>
-                    <div class="work-box" style="min-height: 100px;"></div>
-                    <p>b) Calculate the gradient of the line and state the value of $n$.</p>
-                    <div class="work-box" style="min-height: 100px;"></div>
-                    <p>c) Calculate the y-intercept of the line and find the value of $A$.</p>
-                    <div class="work-box" style="min-height: 150px;"></div>
+                    <p><strong>Q6.</strong> Solve the hidden quadratic: $\log_3 x - 2\log_x 3 = 1$. <em>(Let $u = \log_3 x$)</em>.</p>
+                    <div class="work-box" style="height: 180px;"></div>
                 </div>
             </div>
         </div>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>High-Density Worksheets - Data Handling</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --concept: #ebf8ff;
+            --example: #f0fff4;
+            --scaffold: #fffff0;
+            --case: #fff5f5;
+            --exercise: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 0; 
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { font-size: 10pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ws-title { font-size: 1.2em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 4px; width: 250px; font-size: 0.9em;}
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        /* Section Blocks */
+        .section-block {
+            padding: 12px 15px;
+            margin-bottom: 12px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            page-break-inside: avoid; /* Prevents blocks from splitting across pages */
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 4px;
+        }
+
+        /* Specific Backgrounds */
+        .b-concept { background-color: var(--concept); border-left: 5px solid #3182ce; }
+        .b-example { background-color: var(--example); border-left: 5px solid #38a169; }
+        .b-scaffold { background-color: var(--scaffold); border-left: 5px solid #d69e2e; }
+        .b-case { background-color: var(--case); border-left: 5px solid #e53e3e; }
+        .b-exercise { background-color: var(--exercise); border-left: 5px solid #718096; border: none; padding: 0;}
+
+        /* Scaffolding elements */
+        .scaffold-step { margin-bottom: 8px; padding-left: 10px; border-left: 3px solid #ecc94b; }
+        .fill-line { display: inline-block; min-width: 60px; border-bottom: 1px solid #333; text-align: center; }
+
+        /* Working boxes */
+        .work-box {
+            border: 1.5px dashed #a0aec0; margin-top: 5px; padding: 8px;
+            border-radius: 5px; background-image: linear-gradient(#f7fafc 1px, transparent 1px), linear-gradient(90deg, #f7fafc 1px, transparent 1px);
+            background-size: 20px 20px; position: relative;
+        }
+        .work-label { position: absolute; top: 5px; right: 10px; font-size: 0.8em; color: #a0aec0; font-style: italic; font-weight: bold; }
+        
+        /* Grid for mass exercises */
+        .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .ex-item { background: white; border: 1px solid #e2e8f0; padding: 10px; border-radius: 6px; page-break-inside: avoid;}
+        
+        /* Tables */
+        table.data-table { width: 100%; border-collapse: collapse; margin-top: 5px; margin-bottom: 5px;}
+        table.data-table th, table.data-table td { border: 1px solid #cbd5e0; padding: 6px; text-align: center; }
+        table.data-table th { background-color: #edf2f7; }
+
+        .page-break { page-break-after: always; }
+        p { margin: 4px 0; }
+    </style>
+</head>
+<body style="padding: 20px;">
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheets</button>
+
+    <!-- =====================================================================
+         MEETING 1: CLASSIFYING DATA (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M1: Classifying Data<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Types of Data</div>
+            <p><strong>Categorical (Qualitative):</strong> Data in words (e.g., colors, brands, yes/no).<br>
+            <strong>Numerical (Quantitative):</strong> Data in numbers.<br>
+            &nbsp;&nbsp;&nbsp;$\rightarrow$ <strong>Discrete:</strong> Counted in exact values (e.g., number of siblings). No fractions!<br>
+            &nbsp;&nbsp;&nbsp;$\rightarrow$ <strong>Continuous:</strong> Measured with instruments (e.g., height, time, mass). Can be decimals.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Classify "The number of correct answers on a spelling test."</p>
+            <p><strong>Solution:</strong> Since you count the answers (1, 2, 3...) and cannot get 2.5 correct answers, it is a number. Therefore, it is <strong>Numerical Discrete</strong> data.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Designing Health Surveys</div>
+            <p><strong>Context:</strong> Your PjBL group is designing the "Healthy Lifestyles Dashboard". Help classify the survey questions below.</p>
+            
+            <div class="scaffold-step">
+                <strong>Question A:</strong> <em>"What is your favorite type of drink to stay hydrated?"</em><br>
+                The answer will be a word (e.g., Water). Therefore, this is <span class="fill-line" style="width: 120px;"></span> data.
+            </div>
+            <div class="scaffold-step">
+                <strong>Question B:</strong> <em>"How many complete glasses of water did you drink yesterday?"</em><br>
+                The answer is counted. Therefore, this is Numerical <span class="fill-line" style="width: 120px;"></span> data.
+            </div>
+            <div class="scaffold-step">
+                <strong>Question C:</strong> <em>"What is the exact volume of water in your bottle (in ml)?"</em><br>
+                The answer is measured. Therefore, this is Numerical <span class="fill-line" style="width: 120px;"></span> data.
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Primary vs Secondary Data</div>
+            <p><strong>Primary Data:</strong> Data you collected yourself directly (e.g., doing a survey or experiment).<br>
+            <strong>Secondary Data:</strong> Data someone else collected that you looked up (e.g., Internet, books, reports).</p>
+            <div class="scaffold-step">
+                <strong>Scenario 1:</strong> You ask 20 classmates about their favorite food.<br>
+                This is <span class="fill-line" style="width: 120px;"></span> data because you collected it yourself.
+            </div>
+            <div class="scaffold-step">
+                <strong>Scenario 2:</strong> You use a government website to find the population of Jakarta.<br>
+                This is <span class="fill-line" style="width: 120px;"></span> data because someone else collected it.
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Tricky Continuous Data</div>
+            <p>Some data seems discrete but is actually continuous! For example, <strong>Age</strong>. You might say "I am 14," but you are actually 14 years, 3 months, 2 days, and 5 seconds old. Because age is a measurement of <em>time</em> passing, it is mathematically <strong>Continuous</strong> data.</p>
+        </div>
+
+        
+
+        <div class="section-block b-exercise">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Fluency Drill)</div>
+            <p style="padding-left: 10px;">For each scenario, state whether the data collected is <strong>Categorical, Numerical Discrete, or Numerical Continuous</strong>. If it asks for Primary/Secondary, answer accordingly.</p>
+            <div class="page-break"></div> <!-- PAGE 2 of M1 -->
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> The time taken for students to travel to school.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> The number of cars crossing a bridge per hour.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> The brand of running shoes worn by athletes.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> The mass of each animal in a herd.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q5.</strong> Shoe sizes of students in your class (e.g., size $7$, $7\frac{1}{2}$, $8$). <em>(Hint: No size 7.234)</em></p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q6.</strong> The amount of pocket money a student brings to school.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q7.</strong> The volume of water evaporating from a dam each day.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q8.</strong> The length of fish caught in a lake.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q9.</strong> Secondary vs Primary: Using a thermometer to check your own temperature.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q10.</strong> Secondary vs Primary: Finding the population of Indonesia from Wikipedia.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q11.</strong> Secondary vs Primary: Looking at a weather app to find tomorrow's forecast.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><strong>Q12.</strong> Secondary vs Primary: Measuring the height of a plant in your garden every day.</p>
+                    <div class="work-box" style="height: 60px;"></div>
+                </div>
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q13.</strong> Your teacher asks you to find out which social media app is most popular among Grade 9 students. Explain exactly how you would collect <em>primary</em> data for this, and state what type of data (Categorical or Numerical) you will get.</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 2: ORGANISING DATA (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M2: Organising Data<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Frequency & Two-Way Tables</div>
+            <p><strong>Tally Marks:</strong> Grouped in fives (<s>||||</s>) to easily count raw data.<br>
+            <strong>Frequency:</strong> The total number of tally marks for a category.<br>
+            <strong>Class Intervals:</strong> Used to group continuous data (e.g., $40 \le x < 50$). Notice they do NOT overlap!<br>
+            <strong>Two-Way Table:</strong> Displays data that belongs to two different categories at the same time.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Complete the class interval for a grouped frequency table going up by tens: $0-9$, $10-19$, <span class="fill-line" style="width: 30px;"></span>, <span class="fill-line" style="width: 30px;"></span>.</p>
+            <p><strong>Solution:</strong> The intervals must not overlap. The next ones are $20-29$ and $30-39$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Making a Frequency Table</div>
+            <p><strong>Context:</strong> You surveyed 15 classmates on how many hours of sleep they got last night. The raw data is: <br>
+            $6, 8, 7, 6, 5, 8, 9, 7, 8, 6, 7, 8, 5, 6, 7$</p>
+            
+            <table class="data-table">
+                <tr><th>Hours of Sleep</th><th>Tally</th><th>Frequency</th></tr>
+                <tr><td>5</td><td>||</td><td>2</td></tr>
+                <tr><td>6</td><td><span class="fill-line" style="width: 50px;"></span></td><td><span class="fill-line" style="width: 50px;"></span></td></tr>
+                <tr><td>7</td><td><span class="fill-line" style="width: 50px;"></span></td><td><span class="fill-line" style="width: 50px;"></span></td></tr>
+                <tr><td>8</td><td><span class="fill-line" style="width: 50px;"></span></td><td><span class="fill-line" style="width: 50px;"></span></td></tr>
+                <tr><td>9</td><td><span class="fill-line" style="width: 50px;"></span></td><td><span class="fill-line" style="width: 50px;"></span></td></tr>
+                <tr><th colspan="2">Total</th><th><span class="fill-line" style="width: 50px;"></span></th></tr>
+            </table>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Two-Way Tables</div>
+            <p><strong>Context:</strong> A survey on "Favorite Sport" was given to Boys and Girls. Fill in the missing totals.</p>
+            <table class="data-table">
+                <tr><th></th><th>Futsal</th><th>Basketball</th><th>Total</th></tr>
+                <tr><th>Boys</th><td>12</td><td><span class="fill-line" style="width: 30px;"></span></td><td>20</td></tr>
+                <tr><th>Girls</th><td>5</td><td>15</td><td><span class="fill-line" style="width: 30px;"></span></td></tr>
+                <tr><th>Total</th><td><span class="fill-line" style="width: 30px;"></span></td><td>23</td><td><span class="fill-line" style="width: 30px;"></span></td></tr>
+            </table>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Overlapping Intervals Warning</div>
+            <p>When grouping continuous data, you must use inequality signs to prevent overlaps. If your classes are $10 \le h \le 20$ and $20 \le h \le 30$, where does the number $20$ go? It's confusing! <br>
+            Instead, write: <strong>$10 \le h < 20$</strong> and <strong>$20 \le h < 30$</strong>. Now, exactly 20 goes into the second group.</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M2 -->
+
+        <div class="section-block b-exercise">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Data Tables)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q1. Tally & Frequency Table:</strong> The scores of 20 students in a math quiz out of 10 are:<br>
+                    $4, 7, 5, 8, 9, 7, 6, 8, 5, 7, 9, 10, 6, 5, 7, 8, 6, 9, 7, 8$</p>
+                    <table class="data-table" style="margin-top: 10px;">
+                        <tr><th>Score</th><th>Tally</th><th>Frequency</th></tr>
+                        <tr><td>4</td><td></td><td></td></tr>
+                        <tr><td>5</td><td></td><td></td></tr>
+                        <tr><td>6</td><td></td><td></td></tr>
+                        <tr><td>7</td><td></td><td></td></tr>
+                        <tr><td>8</td><td></td><td></td></tr>
+                        <tr><td>9</td><td></td><td></td></tr>
+                        <tr><td>10</td><td></td><td></td></tr>
+                        <tr><th colspan="2">Total</th><th></th></tr>
+                    </table>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q2. Grouped Frequency:</strong> A clinic records patient ages: <br> $15, 22, 18, 35, 42, 29, 21, 14, 33, 27, 20, 19, 38, 45, 25, 30, 12$.</p>
+                    <table class="data-table" style="margin-top: 10px;">
+                        <tr><th>Age Interval</th><th>Tally</th><th>Frequency</th></tr>
+                        <tr><td>$10 \le a < 20$</td><td></td><td></td></tr>
+                        <tr><td>$20 \le a < 30$</td><td></td><td></td></tr>
+                        <tr><td>$30 \le a < 40$</td><td></td><td></td></tr>
+                        <tr><td>$40 \le a < 50$</td><td></td><td></td></tr>
+                    </table>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q3. Two-Way Table:</strong> Complete the following Two-Way Table about students who wear glasses in Class 9A and 9B.</p>
+                    <table class="data-table" style="width: 80%; margin: 10px auto;">
+                        <tr><th></th><th>Wears Glasses</th><th>No Glasses</th><th>Total</th></tr>
+                        <tr><th>Class 9A</th><td>8</td><td></td><td>25</td></tr>
+                        <tr><th>Class 9B</th><td></td><td>15</td><td></td></tr>
+                        <tr><th>Total</th><td>18</td><td></td><td>55</td></tr>
+                    </table>
+                    <p>a) How many students are in Class 9B? <span class="fill-line" style="width: 50px;"></span> &nbsp;&nbsp; b) How many students overall do NOT wear glasses? <span class="fill-line" style="width: 50px;"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 3: STEM AND LEAF (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M3: Stem-and-Leaf Diagrams<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Preserving Raw Data</div>
+            <p>A <strong>Stem-and-Leaf Diagram</strong> groups data like a frequency table, but you can still see every exact number!<br>
+            <strong>Stem:</strong> The first digit(s) (e.g., Tens).<br>
+            <strong>Leaf:</strong> The last digit (e.g., Units). Leaves MUST be ordered from smallest to largest.<br>
+            <strong>Key:</strong> You must always write a Key to explain the diagram (e.g., Key: $2 | 5$ means 25).</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Data: $12, 15, 23, 21, 30$. Draw a stem-and-leaf diagram.</p>
+            <div style="font-family: monospace; font-size: 1.2em; margin-left: 20px;">
+                1 | 2 5<br>
+                2 | 1 3 &nbsp;&nbsp;&nbsp;&nbsp; <em>(Notice 21 comes before 23!)</em><br>
+                3 | 0<br>
+                Key: 1 | 2 = 12
+            </div>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Guided Practice: Resting Heart Rates</div>
+            <p><strong>Context:</strong> You measured the resting heart rates (bpm) of 10 students:<br>
+            $65, 72, 81, 68, 75, 72, 80, 85, 61, 79$</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Identify Stems</strong><br>
+                The numbers are in the 60s, 70s, and 80s. Stems are 6, 7, and 8.
+            </div>
+            
+            <div class="scaffold-step">
+                <strong>Step 2: Place the Leaves (IN ORDER!)</strong><br>
+                Look at the 60s: $65, 68, 61$. Put them in order: $1, 5, 8$.<br>
+                Complete the diagram below:
+            </div>
+            
+            <div class="work-box" style="min-height: 120px; font-family: monospace; font-size: 1.2em;">
+                6 | 1 &nbsp; 5 &nbsp; 8<br>
+                7 | <span class="fill-line"></span> <span class="fill-line"></span> <span class="fill-line"></span> <span class="fill-line"></span><br>
+                8 | <span class="fill-line"></span> <span class="fill-line"></span> <span class="fill-line"></span><br>
+                <strong>Key:</strong> 6 | 1 means <span class="fill-line" style="width: 50px;"></span> bpm.
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Back-to-Back Diagrams</div>
+            <p>To compare two groups (like Boys vs Girls), we use a back-to-back diagram. The Stem goes in the middle. The leaves grow outwards to the left and right. <strong>Read carefully:</strong> If the stem is 2 and the leaf on the LEFT is 4, the number is 24!</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M3 -->
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q1. Constructing a Diagram:</strong> The masses of some Grade 9 students were measured in kg:<br>
+                    $45, 56, 55, 68, 53, 55, 48, 49, 53, 54, 56, 59, 60, 63, 67, 49$<br>
+                    Construct an <em>ordered</em> stem-and-leaf diagram to display the data. Include a Key!</p>
+                    <div class="work-box" style="min-height: 300px;"></div>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q2. Interpreting Back-to-Back Diagrams:</strong> Look at the back-to-back stem-and-leaf diagram comparing battery life (hours) of two phone brands.</p>
+                    <div style="display: flex; gap: 20px;">
+                        <div style="font-family: monospace; font-size: 1.3em; background: #edf2f7; padding: 15px; border-radius: 5px; min-width: 250px;">
+                            Brand X &nbsp;&nbsp;|&nbsp;&nbsp; Brand Y<br>
+                            &nbsp;&nbsp;9 4 2 &nbsp;| 0 | 5 8<br>
+                            &nbsp;&nbsp;8 7 3 &nbsp;| 1 | 4 7 8<br>
+                            6 4 2 0 &nbsp;| 2 | 1 5 9<br>
+                            &nbsp;&nbsp;&nbsp;&nbsp;2 &nbsp;| 3 | 1 2
+                            <br><br>
+                            <span style="font-size:0.7em;">Key: 2 | 1 | 4 means 12 hours for Brand X, and 14 hours for Brand Y.</span>
+                        </div>
+                        <div style="flex: 1; display:flex; flex-direction: column; justify-content: space-around;">
+                            <p>a) What is the longest battery life for Brand X? <span class="fill-line"></span> hrs.</p>
+                            <p>b) What is the shortest battery life for Brand Y? <span class="fill-line"></span> hrs.</p>
+                            <p>c) How many Brand X phones lasted exactly 20 hours? <span class="fill-line"></span></p>
+                            <p>d) How many Brand Y phones were tested in total? <span class="fill-line"></span></p>
+                            <p>e) Which brand generally has a longer battery life? <span class="fill-line"></span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 4: BAR CHARTS & PICTOGRAMS (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M4: Bar Charts & Pictograms<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Visual Communication Rules</div>
+            <p><strong>Bar Charts:</strong> Must have EQUAL widths and EQUAL gaps between bars. The y-axis (Frequency) must start at 0 and have an even scale. Label both axes!<br>
+            <strong>Dual Bar Charts:</strong> Two bars side-by-side to compare data.<br>
+            <strong>Pictograms:</strong> Use symbols. You MUST have a Key (e.g., 1 icon = 4 people). You can draw half an icon to represent 2 people!</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> In a pictogram, the Key says 1 circle = 10 cars. How do you show 25 cars?</p>
+            <p><strong>Solution:</strong> Two full circles = 20 cars. Half a circle = 5 cars. Draw two and a half circles.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3. Guided Practice: Drawing a Pictogram</div>
+            <p><strong>Context:</strong> A survey shows how many books students read in a month: <br>Class A: 20 books | Class B: 15 books | Class C: 10 books</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Set the Key</strong><br>
+                Let's make 1 book icon (📚) represent <strong>5 books</strong>.
+            </div>
+            
+            <div class="scaffold-step">
+                <strong>Step 2: Calculate Icons</strong><br>
+                Class A (20): $20 \div 5 =$ <span class="fill-line" style="width: 40px;"></span> icons.<br>
+                Class B (15): $15 \div 5 =$ <span class="fill-line" style="width: 40px;"></span> icons.
+            </div>
+
+            <div class="scaffold-step">
+                <strong>Step 3: Draw the Pictogram</strong><br>
+                <div class="work-box" style="min-height: 80px; font-size: 1.5em; line-height: 2;">
+                    Class A: <span class="fill-line" style="width: 150px;"></span><br>
+                    Class B: <span class="fill-line" style="width: 150px;"></span><br>
+                    Class C: 📚 📚
+                </div>
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Misleading Graphs</div>
+            <p>If a bar chart's vertical axis starts at 50 instead of 0, a bar that is 60 will look twice as tall as a bar that is 55! This is a common trick used in advertising to exaggerate tiny differences. <strong>Always start your frequency axis at 0.</strong></p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M4 -->
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Chart Construction)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q1. Drawing a Bar Chart:</strong> A survey asked 40 students about their favorite fruit.</p>
+                    <table class="data-table" style="width: 60%; margin: 10px auto;">
+                        <tr><th>Fruit</th><th>Apple</th><th>Banana</th><th>Orange</th><th>Grapes</th></tr>
+                        <tr><td>Frequency</td><td>15</td><td>10</td><td>5</td><td>10</td></tr>
+                    </table>
+                    <p>Draw a Bar Chart for this data. Ensure your bars have equal gaps and your axes are labeled.</p>
+                    <!-- Grid background for drawing -->
+                    <div class="work-box" style="min-height: 350px; background-size: 20px 20px; background-image: linear-gradient(#cbd5e0 1px, transparent 1px), linear-gradient(90deg, #cbd5e0 1px, transparent 1px);">
+                    </div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q2. Interpreting Pictograms:</strong> Look at a pictogram where 1 Star = 100 points.</p>
+                    <p>Team A has 3.5 Stars.<br>Team B has 4.25 Stars (4 and a quarter).</p>
+                    <p>How many points did Team A get? <span class="fill-line"></span></p>
+                    <p>How many points did Team B get? <span class="fill-line"></span></p>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3. Dual Bar Charts:</strong> A dual bar chart compares Boys and Girls' favorite sports. In the "Futsal" category, the Boys' bar reaches 12, and the Girls' bar reaches 6. What can you conclude from this?</p>
+                    <div class="work-box" style="min-height: 80px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 5: PIE CHARTS (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M5: Pie Charts & Line Graphs<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Proportions of 360°</div>
+            <p><strong>Pie Charts</strong> show data as a proportion of a whole circle ($360^\circ$).<br>
+            <strong>Formula:</strong> $\text{Angle} = \left(\frac{\text{Frequency}}{\text{Total Frequency}}\right) \times 360^\circ$<br>
+            <strong>Line Graphs</strong> are used strictly for showing changes <em>over time</em> (e.g., temperature over 12 months).</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> If 10 out of 40 students like swimming, calculate the pie chart angle.</p>
+            <p><strong>Solution:</strong> $\left(\frac{10}{40}\right) \times 360^\circ = \frac{1}{4} \times 360^\circ = 90^\circ$.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Calculating Pie Chart Angles</div>
+            <p><strong>Context:</strong> Complete the table to find the angles for a pie chart showing favorite subjects.</p>
+            
+            <table class="data-table">
+                <tr><th>Subject</th><th>Frequency</th><th>Calculation</th><th>Angle</th></tr>
+                <tr><td>Math</td><td>15</td><td>$(15 \div 60) \times 360$</td><td><span class="fill-line" style="width: 40px;"></span>$^\circ$</td></tr>
+                <tr><td>Science</td><td>20</td><td>$(20 \div 60) \times 360$</td><td><span class="fill-line" style="width: 40px;"></span>$^\circ$</td></tr>
+                <tr><td>English</td><td>25</td><td><span class="fill-line" style="width: 100px;"></span></td><td><span class="fill-line" style="width: 40px;"></span>$^\circ$</td></tr>
+                <tr><th>Total</th><th>60</th><th>Sum of Angles:</th><th><span class="fill-line" style="width: 40px;"></span>$^\circ$</th></tr>
+            </table>
+            <p><em>Check: Do your angles add up to $360^\circ$? If yes, you are ready to draw!</em></p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3B. Guided Practice: Line Graphs</div>
+            <p><strong>Context:</strong> You are tracking your heart rate over 5 minutes after running.</p>
+            <p>Why is a Line Graph better for this data than a Bar Chart?<br>
+            <strong>Answer:</strong> Because the data is changing over <span class="fill-line"></span>. A line graph connects the dots to show the <span class="fill-line"></span> (trend / category) of your heart rate dropping.</p>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Working Backwards from Pie Charts</div>
+            <p>If you are given a pie chart and asked how many people it represents, work backwards! If the Math sector is $90^\circ$, it represents $\frac{90}{360} = \frac{1}{4}$ of the total people. If the total surveyed was 200, then Math = $\frac{1}{4} \times 200 = 50$ people.</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M5 -->
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> A survey of 90 people found that 30 prefer tea. Calculate the pie chart sector angle for Tea.</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> In a pie chart, the sector for "Car" is $120^\circ$. What fraction of the total pie chart is this? (Simplify your fraction).</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q3.</strong> A pie chart shows the home languages of 360 students passing through an airport. The sector for "Spanish" is $144^\circ$. The sector for "French" is $24^\circ$.</p>
+                    <p>a) How many students speak Spanish? <span class="fill-line" style="width: 100px;"></span></p>
+                    <p>b) How many students speak French? <span class="fill-line" style="width: 100px;"></span></p>
+                    <div class="work-box" style="height: 100px;"><div class="work-label">Calculations</div></div>
+                </div>
+                
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q4.</strong> A line graph shows the temperature of a classroom. At 08:00 it was $22^\circ\text{C}$. At 10:00 it was $26^\circ\text{C}$. At 12:00 it was $28^\circ\text{C}$.</p>
+                    <p>Between which two times did the temperature rise the fastest? How do you know just by looking at the line?</p>
+                    <div class="work-box" style="height: 80px;"></div>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q5. Drawing a Pie Chart:</strong> Using the data from Q3 (Spanish, French, and let's say the remaining students speak English), draw a rough sketch of the pie chart below. Label the sectors.</p>
+                    <div class="work-box" style="height: 200px; display: flex; justify-content: center; align-items: center;">
+                        <div style="width: 150px; height: 150px; border-radius: 50%; border: 2px solid #2d3748;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         MEETING 6: EVALUATION (PAGE 1)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet M6: Chapter Review<br><span style="font-size: 0.6em; color: #718096;">Grade 9 - Data Handling</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">1. Basic Concept: Data Interpretation</div>
+            <p>Data collection is only half the job. We must interpret it! Can you spot trends? Can you identify if a chart is misleading? Make sure every chart has a Title, Key, and clear Labels.</p>
+        </div>
+
+        <div class="section-block b-example">
+            <div class="section-title">2. Example Question and Solution</div>
+            <p><strong>Question:</strong> Why is it better to use a stem-and-leaf diagram than a grouped frequency table?</p>
+            <p><strong>Solution:</strong> A grouped table loses the exact values (you only know a number is between 10-19). A stem-and-leaf keeps every single raw data point visible.</p>
+        </div>
+
+        <div class="section-block b-scaffold">
+            <div class="section-title">3A. Guided Practice: Interpreting Data</div>
+            <p><strong>Context:</strong> Review your PjBL "Healthy Lifestyles Dashboard". You found that 60% of students sleep less than 6 hours.</p>
+            
+            <div class="scaffold-step">
+                <strong>Step 1: Draw a conclusion</strong><br>
+                Based on the data, the health of the students is generally <span class="fill-line" style="width: 80px;"></span> (Good / Poor) regarding sleep.
+            </div>
+            
+            <div class="scaffold-step">
+                <strong>Step 2: Propose an action</strong><br>
+                What is one rule the school principal could implement based on your data? <br>
+                <span class="fill-line" style="width: 250px;"></span>
+            </div>
+        </div>
+
+        <div class="section-block b-case">
+            <div class="section-title">4. Case: Review Checklist</div>
+            <p>Before the exam, make sure you can:<br>
+            ✅ Identify Discrete vs Continuous data.<br>
+            ✅ Create and read Stem-and-Leaf diagrams (with a Key!).<br>
+            ✅ Calculate Pie Chart angles ($\frac{\text{freq}}{\text{total}} \times 360^\circ$).</p>
+        </div>
+
+        <div class="page-break"></div> <!-- PAGE 2 of M6 -->
+
+        <div class="section-block b-exercise" style="height: 100%;">
+            <div class="section-title" style="padding: 10px; margin-bottom: 0;">5. Independent Exercise (Exam Prep)</div>
+            
+            <div class="exercise-grid">
+                <div class="ex-item">
+                    <p><strong>Q1.</strong> Classify: "The volume of water in a swimming pool."</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+                
+                <div class="ex-item">
+                    <p><strong>Q2.</strong> What graph would you use to show the change in a stock's price over a year?</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q3.</strong> A stem-and-leaf diagram has a stem of 4 and leaves of 2, 5, 8. What are the three numbers?</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+
+                <div class="ex-item">
+                    <p><strong>Q4.</strong> Give one reason why a Bar Chart's y-axis MUST start at zero.</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q5.</strong> Calculate the pie chart angles for the following data: Total students = 40. Red = 10, Blue = 20, Green = 10.</p>
+                    <div class="work-box" style="height: 150px;"></div>
+                </div>
+                
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p><strong>Q6.</strong> Draw a back-to-back stem-and-leaf diagram for the following test scores out of 50:<br>
+                    Class A: 34, 38, 42, 45, 45, 48<br>
+                    Class B: 29, 31, 35, 40, 42, 49</p>
+                    <div class="work-box" style="height: 250px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

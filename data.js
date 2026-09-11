@@ -88,6 +88,14 @@ const LEARNING_KIT_DATA = {
           title: "Collecting, Organising and Displaying Data",
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: {
+              label: "Board",
+              files: [
+                { index: 1, file: "bd-01.html", title: "Board 1" },
+                { index: 2, file: "bd-02.html", title: "Board 2" },
+              ],
+            },
+            ws: { label: "Worksheet", files: [{ index: 1, file: "ws-01.html", title: "Worksheet 1" }] },
           },
         },
         {

@@ -156,7 +156,8 @@ const LEARNING_KIT_DATA = {
 				label: "Worksheet", 
 				files: [
 					{ index: 1, file: "ws-01.html", title: "Worksheet 1" },
-					{ index: 2, file: "ws-02.html", title: "Worksheet 2" }
+					{ index: 2, file: "ws-02.html", title: "Worksheet 2" },
+					{ index: 3, file: "ws-03.html", title: "Worksheet 3 Solving Log Equation" }
 				] },
           },
         },

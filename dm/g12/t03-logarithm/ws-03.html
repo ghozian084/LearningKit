@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet - Solving Logarithmic Equations (Complete)</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = { 
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } 
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --concept: #ebf8ff;
+            --exercise: #f7fafc;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.3;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px; 
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 12mm; }
+        @media print {
+            body { padding: 0; font-size: 10pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-after: always; }
+        }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 5px;
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .ws-title { font-size: 1.3em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 4px; width: 250px; font-size: 0.9em;}
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        /* Section Blocks */
+        .section-block {
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
+            page-break-inside: avoid;
+        }
+        .section-title {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+            border-bottom: 1px solid #cbd5e0;
+            padding-bottom: 4px;
+        }
+
+        .b-concept { background-color: var(--concept); border-left: 5px solid #3182ce; }
+        .b-exercise { background-color: var(--exercise); border-left: 5px solid #718096; border: none; padding: 0;}
+
+        /* Working boxes */
+        .work-box {
+            border: 1.5px dashed #a0aec0; margin-top: 5px; padding: 8px;
+            border-radius: 5px; background-image: linear-gradient(#f7fafc 1px, transparent 1px), linear-gradient(90deg, #f7fafc 1px, transparent 1px);
+            background-size: 20px 20px; position: relative;
+        }
+        .work-label { position: absolute; top: 5px; right: 10px; font-size: 0.8em; color: #a0aec0; font-style: italic; font-weight: bold; }
+        
+        /* Grid for mass exercises */
+        .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .ex-item { background: white; border: 1px solid #e2e8f0; padding: 8px; border-radius: 6px; page-break-inside: avoid;}
+        
+        .page-break { page-break-after: always; }
+        p { margin: 2px 0; font-size: 1.05em;}
+        .q-letter { font-weight: bold; margin-right: 5px; color: var(--secondary);}
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- =====================================================================
+         PAGE 1: BASIC SOLVING (Q1 - Q2)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet: Solving Logarithmic Equations<br><span style="font-size: 0.6em; color: #718096;">Grade 12 - Pure Math 2 & 3</span></div>
+            <div class="student-info">
+                <div><span>Name:</span> <span></span></div>
+                <div><span>Class:</span> <span></span></div>
+            </div>
+        </div>
+
+        <div class="section-block b-concept">
+            <div class="section-title">💡 Pro Tips for Solving Log Equations</div>
+            <p><strong>1. Compress First:</strong> Use the Log Laws (+ means multiply, - means divide) to compress multiple logs into a single logarithm on each side.<br>
+            <strong>2. Convert to Exponent:</strong> If you have $\log_a x = y$, convert it to $a^y = x$.<br>
+            <strong>3. CAUTION (Extraneous Roots):</strong> You CANNOT take the logarithm of a negative number or zero. Always substitute your final $x$ values back into the original equation and reject any that cause a negative log!</p>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="exercise-grid">
+                
+                <!-- Q1 -->
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p style="font-size: 1.1em;"><strong>1</strong> &nbsp; Solve.</p>
+                </div>
+                
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $\log_5 x + \log_5 3 = \log_5 30$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">b</span> $\log_3 4x - \log_3 2 = \log_3 7$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $\log_2(2 - x) + \log_2 9 = 2 \log_2 8$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">d</span> $\log_{10}(x - 4) = 2 \log_{10} 5 + \log_{10} 2$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="ex-item" style="grid-column: 1 / -1; margin-top: 5px;">
+                    <p style="font-size: 1.1em;"><strong>2</strong> &nbsp; Solve.</p>
+                </div>
+
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $\log_{10}(2x + 9) - \log_{10} 5 = 1$</p>
+                    <div class="work-box" style="height: 140px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">b</span> $\log_3 2x - \log_3(x - 1) = 2$</p>
+                    <div class="work-box" style="height: 140px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $\log_2(5 - 2x) = 3 + \log_2(x + 1)$</p>
+                    <div class="work-box" style="height: 150px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">d</span> $\log_5(2x - 3) + 2 \log_5 2 = 1 + \log_5(3 - 2x)$</p>
+                    <div class="work-box" style="height: 150px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- =====================================================================
+         PAGE 2: COMPLEX SOLVING (Q3 - Q6)
+    ====================================================================== -->
+    <div class="worksheet">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet: Solving Logarithmic Equations<br><span style="font-size: 0.6em; color: #718096;">Page 2</span></div>
+            <div class="student-info">
+                <!-- Blank for Page 2 -->
+            </div>
+        </div>
+
+        <div class="section-block b-exercise">
+            <div class="exercise-grid">
+                
+                <!-- Q3 -->
+                <div class="ex-item" style="grid-column: 1 / -1;">
+                    <p style="font-size: 1.1em;"><strong>3</strong> &nbsp; Solve. <em>(Hint: These will form quadratics. Check your roots carefully!)</em></p>
+                </div>
+
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $\log_2 x + \log_2(x - 1) = \log_2 20$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">b</span> $\log_5(x - 2) + \log_5(x - 5) = \log_5 4x$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $2 \log_3 x - \log_3(x - 2) = 2$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">d</span> $3 + 2 \log_2 x = \log_2(3 - 10x)$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+
+                <!-- Q4 -->
+                <div class="ex-item" style="grid-column: 1 / -1; margin-top: 5px;">
+                    <p style="font-size: 1.1em;"><strong>4</strong> &nbsp; Solve.</p>
+                </div>
+                
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $\log_x 40 - \log_x 5 = 1$</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $\log_x 25 - 2 \log_x 3 = 2$</p>
+                    <div class="work-box" style="height: 100px;"></div>
+                </div>
+
+                <!-- Q5 -->
+                <div class="ex-item" style="grid-column: 1 / -1; margin-top: 5px;">
+                    <p style="font-size: 1.1em;"><strong>5</strong> &nbsp; Solve. <em>(Hint: Use substitution. Let $u = \log_a x$)</em></p>
+                </div>
+
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $(\log_2 x)^2 - 8 \log_2 x + 15 = 0$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $(\log_5 x)^2 + \log_5(x^3) = 10$</p>
+                    <div class="work-box" style="height: 120px;"></div>
+                </div>
+
+                <!-- Q6 -->
+                <div class="ex-item" style="grid-column: 1 / -1; margin-top: 5px;">
+                    <p style="font-size: 1.1em;"><strong>6</strong> &nbsp; Solve the simultaneous equations.</p>
+                </div>
+
+                <div class="ex-item">
+                    <p><span class="q-letter">a</span> $xy = 81$<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;$\log_x y = 3$</p>
+                    <div class="work-box" style="height: 150px;"></div>
+                </div>
+                <div class="ex-item">
+                    <p><span class="q-letter">c</span> $\log_4(x - y) = 2 \log_4 x$<br>
+                       &nbsp;&nbsp;&nbsp;&nbsp;$\log_4(x + y + 9) = 0$</p>
+                    <div class="work-box" style="height: 150px;"></div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

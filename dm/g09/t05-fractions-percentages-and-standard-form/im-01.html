@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Lab - Fractions, Percentages & Standard Form</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #ebf8ff;
+            --success: #38a169;
+            --warning: #dd6b20;
+            --danger: #e53e3e;
+            --bg-color: #f7fafc;
+            --box-bg: #ffffff;
+            --border-color: #e2e8f0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #2d3748;
+            margin: 0; padding: 0;
+            display: flex; flex-direction: column; height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: var(--primary); color: white; padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; gap: 10px; flex-wrap: wrap;
+        }
+        header h1 { margin: 0; font-size: 1.5em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+
+        /* Navigation Tabs */
+        .tabs { display: flex; background-color: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn {
+            background: none; border: none; color: #a0aec0; padding: 15px 15px;
+            font-size: 1.05em; cursor: pointer; font-weight: bold; transition: 0.3s;
+            border-bottom: 4px solid transparent; white-space: nowrap;
+        }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+
+        /* Main Content */
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Lab Modules */
+        .module {
+            background: var(--box-bg); border: 1px solid var(--border-color);
+            border-radius: 10px; padding: 25px; margin-bottom: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .module h2 {
+            margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent);
+            padding-bottom: 10px; display: flex; align-items: center; gap: 10px;
+        }
+
+        button.action-btn {
+            background-color: var(--secondary); color: white; border: none;
+            padding: 10px 20px; border-radius: 5px; font-size: 1em; font-weight: bold;
+            cursor: pointer; transition: 0.2s;
+        }
+        button.action-btn:hover { background-color: var(--primary); }
+        button.action-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        button.reset-btn { background-color: var(--danger); }
+
+        .sim-area {
+            background: #edf2f7; border-radius: 8px; padding: 20px; margin-top: 15px;
+        }
+        .controls-row { display: flex; gap: 20px; flex-wrap: wrap; align-items: center; margin-bottom: 15px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 220px; vertical-align: middle; }
+        .controls-row select, .controls-row input[type=number], .controls-row input[type=text] {
+            padding: 6px 8px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em;
+        }
+        .controls-row input[type=number] { width: 70px; }
+        .big-value { font-size: 1.3em; font-weight: bold; color: var(--secondary); }
+        .sim-text { font-size: 1.15em; font-weight: bold; color: var(--primary); text-align: center; margin-top: 15px; min-height: 30px; }
+
+        /* Recipe table */
+        .recipe-table { width: 100%; border-collapse: collapse; background: white; }
+        .recipe-table th, .recipe-table td { border: 1px solid #cbd5e0; padding: 8px 10px; text-align: center; }
+        .recipe-table th { background: var(--accent); color: var(--primary); }
+        .recipe-table td:first-child { text-align: left; }
+        .recipe-table td.result { font-weight: bold; color: var(--success); font-size: 1.1em; }
+        .recipe-table td.working { color: #4a5568; font-size: 0.95em; }
+
+        /* Fraction bars */
+        .bar-label { font-weight: bold; margin: 8px 0 3px 0; }
+        .frac-bar { display: flex; height: 34px; border: 2px solid #2d3748; background: white; border-radius: 4px; overflow: hidden; }
+        .frac-bar .cell { flex: 1; border-right: 1px solid #4a5568; transition: background 0.3s; }
+        .frac-bar .cell:last-child { border-right: none; }
+        .fill-a { background: #f6ad55; }
+        .fill-b { background: #68d391; }
+        .fill-r { background: #63b3ed; }
+        .fill-x { background: repeating-linear-gradient(45deg, #fed7d7, #fed7d7 5px, #fc8181 5px, #fc8181 10px); }
+
+        /* Percentage bars */
+        .pct-row { display: flex; align-items: center; gap: 10px; margin: 10px 0; }
+        .pct-row span.lbl { width: 90px; font-weight: bold; }
+        .pct-track { flex: 1; background: white; border: 1px solid #cbd5e0; border-radius: 4px; height: 32px; position: relative; overflow: hidden; }
+        .pct-fill { height: 100%; transition: width 0.4s ease; display: flex; align-items: center; justify-content: flex-end; padding-right: 8px; color: white; font-weight: bold; box-sizing: border-box; white-space: nowrap; }
+
+        /* Frog jump */
+        .digits { display: flex; justify-content: center; flex-wrap: wrap; font-family: 'Courier New', monospace; font-size: 2em; margin: 20px 0 5px 0; }
+        .digit { width: 38px; height: 52px; display: flex; align-items: center; justify-content: center; position: relative; }
+        .digit.a-zone { background: #fefcbf; }
+        .point-slot { width: 14px; height: 52px; display: flex; align-items: flex-end; justify-content: center; color: var(--danger); font-weight: bold; }
+        .frog { font-size: 0.6em; height: 30px; text-align: center; }
+        .sf-result { text-align: center; font-size: 1.6em; color: var(--primary); min-height: 50px; }
+
+        /* Step-by-Step */
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.1em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+
+        /* Exercise */
+        .exercise-input { padding: 10px; font-size: 1.1em; border: 2px solid #cbd5e0; border-radius: 5px; width: 220px; margin-right: 10px; }
+        .feedback { margin-top: 10px; font-weight: bold; min-height: 24px; }
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong { color: var(--danger); }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+
+        /* Ranking drag & drop */
+        .rank-list { list-style: none; padding: 0; margin: 0; }
+        .rank-item {
+            background: white; border: 2px solid var(--secondary); border-radius: 6px; padding: 10px 15px;
+            margin-bottom: 8px; cursor: grab; display: flex; justify-content: space-between; align-items: center; user-select: none;
+        }
+        .rank-item.dragging { opacity: 0.4; }
+        .rank-item.right { border-color: var(--success); background: #f0fff4; }
+        .rank-item.wrong { border-color: var(--danger); background: #fff5f5; }
+        .rank-item .sf { color: #718096; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔬 Web Lab: Fractions, Percentages &amp; Standard Form</h1>
+        <span class="badge">Grade 9 · Topic 5 · Health Portfolio</span>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sec1', this)">1. Recipe Scaler</button>
+        <button class="tab-btn" onclick="openTab('sec2', this)">2. Fraction Operations</button>
+        <button class="tab-btn" onclick="openTab('sec3', this)">3. Percentage Lab</button>
+        <button class="tab-btn" onclick="openTab('sec4', this)">4. Frog-Jump Standard Form</button>
+        <button class="tab-btn" onclick="openTab('sec5', this)">5. Micro → Macro Ranking</button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ================= SECTION 1: RECIPE SCALER ================= -->
+        <div id="sec1" class="section-container active">
+            <div class="module">
+                <h2>🎮 Simulation: The Klepon Recipe Scaler</h2>
+                <p>The recipe serves <strong>4 people</strong>. Move the slider to choose how many people you need to feed. Watch every ingredient get multiplied by the <strong>scale factor</strong>.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label for="servings">People to feed:</label>
+                        <input type="range" id="servings" min="1" max="60" value="30" oninput="updateRecipe()">
+                        <span class="big-value" id="servingsVal">30</span>
+                        <span>Scale factor = <span class="big-value" id="scaleVal"></span></span>
+                    </div>
+                    <table class="recipe-table">
+                        <thead><tr><th>Ingredient</th><th>For 4 people</th><th>Working</th><th>Scaled amount</th></tr></thead>
+                        <tbody id="recipeBody"></tbody>
+                    </table>
+                </div>
+                <div class="sim-text">Try 50 people (school festival) and 3 people — these go on Portfolio Page 1!</div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example</h2>
+                <p><strong>Problem:</strong> The recipe needs $1\frac{1}{2}$ cups of flour for 4 people. How much for 30 people?</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex1" onclick="nextStep('ex1', 4)">Show Next Step</button>
+                    <div class="step ex1-1"><strong>Step 1:</strong> Scale factor $= \frac{30}{4} = \frac{15}{2}$</div>
+                    <div class="step ex1-2"><strong>Step 2:</strong> Change the mixed number to improper: $1\frac{1}{2} = \frac{3}{2}$</div>
+                    <div class="step ex1-3"><strong>Step 3:</strong> Multiply: $\frac{3}{2} \times \frac{15}{2} = \frac{45}{4}$</div>
+                    <div class="step ex1-4"><strong>Step 4:</strong> Convert back: $\frac{45}{4} = 11\frac{1}{4}$ cups of flour</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>Scale $\frac{3}{4}$ cup of pandan water from 4 people to <strong>30 people</strong>. <span class="hint">(Type a mixed number like 2 1/3, a fraction like 7/3, or a decimal.)</span></p>
+                <input type="text" id="ans1" class="exercise-input" placeholder="Type answer...">
+                <button class="action-btn" onclick="checkNumber('ans1', 45/8, 'fb1', '45/8 = 5 5/8 cups')">Check Answer</button>
+                <div class="feedback" id="fb1"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 2: FRACTION OPERATIONS ================= -->
+        <div id="sec2" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Why We Need a Common Denominator</h2>
+                <p>Choose two fractions and an operation. The bars are cut into <strong>equal-sized pieces</strong> (the common denominator) so the pieces can be counted together.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <span>$\frac{a}{b}$:</span>
+                        <input type="number" id="fa-n" value="1" min="0" max="12"> /
+                        <input type="number" id="fa-d" value="2" min="1" max="12">
+                        <select id="fop">
+                            <option value="+">+</option>
+                            <option value="-">−</option>
+                            <option value="*">×</option>
+                            <option value="/">÷</option>
+                        </select>
+                        <input type="number" id="fb-n" value="1" min="0" max="12"> /
+                        <input type="number" id="fb-d" value="3" min="1" max="12">
+                        <button class="action-btn" onclick="runFractionOp()">Calculate ▶</button>
+                    </div>
+                    <div id="fracBars"></div>
+                    <div class="sim-text" id="fracText"></div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example: Keep, Change, Flip</h2>
+                <p><strong>Problem:</strong> 💧 A dispenser holds $15\frac{1}{2}$ L. Each bottle holds $\frac{3}{4}$ L. How many full bottles?</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex2" onclick="nextStep('ex2', 4)">Show Next Step</button>
+                    <div class="step ex2-1"><strong>Step 1:</strong> Improper fraction first: $15\frac{1}{2} = \frac{31}{2}$</div>
+                    <div class="step ex2-2"><strong>Step 2:</strong> Keep, Change, Flip: $\frac{31}{2} \div \frac{3}{4} = \frac{31}{2} \times \frac{4}{3}$</div>
+                    <div class="step ex2-3"><strong>Step 3:</strong> Multiply: $\frac{124}{6} = \frac{62}{3} = 20\frac{2}{3}$</div>
+                    <div class="step ex2-4"><strong>Step 4:</strong> Only <strong>full</strong> bottles count → <strong>20 bottles</strong> (with $\frac{2}{3}$ of a bottle left over).</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>🏃 A runner completes $3\frac{1}{2}$ laps. Each lap is $\frac{2}{5}$ km. How many km did they run?</p>
+                <input type="text" id="ans2" class="exercise-input" placeholder="Type answer...">
+                <button class="action-btn" onclick="checkNumber('ans2', 7/5, 'fb2', '7/2 × 2/5 = 14/10 = 1 2/5 km')">Check Answer</button>
+                <div class="feedback" id="fb2"></div>
+                <p style="margin-top:20px;">Calculate $2\frac{1}{4} + 1\frac{2}{3}$.</p>
+                <input type="text" id="ans3" class="exercise-input" placeholder="Type answer...">
+                <button class="action-btn" onclick="checkNumber('ans3', 47/12, 'fb3', '27/12 + 20/12 = 47/12 = 3 11/12')">Check Answer</button>
+                <div class="feedback" id="fb3"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 3: PERCENTAGE LAB ================= -->
+        <div id="sec3" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: The Multiplier Machine</h2>
+                <p>Set the original amount and the percentage change. The machine finds the <strong>multiplier</strong> and the new amount in one step.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Scenario:</label>
+                        <select id="pctPreset" onchange="loadPreset()">
+                            <option value="30|20|dec|g sugar">🥤 Sports drink: 30 g sugar, 20% less</option>
+                            <option value="1800|15|inc|kcal">🍚 Daily intake: 1800 kcal, 15% more</option>
+                            <option value="85|20|dec|bpm">❤️ Heart rate: 85 bpm, 20% lower</option>
+                            <option value="2000|35|dec|ml soda">🥤 Soda: 2000 ml a week, 35% less</option>
+                        </select>
+                    </div>
+                    <div class="controls-row">
+                        <label>Original:</label> <input type="number" id="pctOrig" value="30" oninput="updatePct()">
+                        <label>Change:</label>
+                        <input type="range" id="pctRate" min="0" max="100" value="20" oninput="updatePct()">
+                        <span class="big-value" id="pctRateVal">20%</span>
+                        <select id="pctDir" onchange="updatePct()">
+                            <option value="dec">decrease</option>
+                            <option value="inc">increase</option>
+                        </select>
+                    </div>
+                    <div class="pct-row"><span class="lbl">Original</span><div class="pct-track"><div class="pct-fill" id="barOrig" style="background:#4a5568;"></div></div></div>
+                    <div class="pct-row"><span class="lbl">New</span><div class="pct-track"><div class="pct-fill" id="barNew" style="background:#38a169;"></div></div></div>
+                    <div class="sim-text" id="pctText"></div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>🎮 Simulation: Before &amp; After — Percentage Change</h2>
+                <p>Enter a health measurement before and after. The lab computes $\dfrac{\text{New} - \text{Original}}{\text{Original}} \times 100\%$.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Original:</label> <input type="number" id="pcOld" value="85" style="width:90px;">
+                        <label>New:</label> <input type="number" id="pcNew" value="68" style="width:90px;">
+                        <button class="action-btn" onclick="calcChange()">Calculate ▶</button>
+                    </div>
+                    <div class="sim-text" id="pcText"></div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>🥤 <em>(Group 1)</em> Sugar intake drops from 65 g to 25 g. What is the percentage <strong>decrease</strong>? <span class="hint">(1 decimal place, no % sign)</span></p>
+                <input type="text" id="ans4" class="exercise-input" placeholder="e.g. 12.5">
+                <button class="action-btn" onclick="checkNumber('ans4', 61.5, 'fb4', '40 ÷ 65 × 100 = 61.5%', 0.06)">Check Answer</button>
+                <div class="feedback" id="fb4"></div>
+                <p style="margin-top:20px;">🦠 <em>(Group 2)</em> Flu cases drop from 4 500 to 1 200. Percentage decrease? <span class="hint">(1 d.p.)</span></p>
+                <input type="text" id="ans5" class="exercise-input" placeholder="e.g. 12.5">
+                <button class="action-btn" onclick="checkNumber('ans5', 73.3, 'fb5', '3300 ÷ 4500 × 100 = 73.3%', 0.06)">Check Answer</button>
+                <div class="feedback" id="fb5"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 4: FROG JUMP STANDARD FORM ================= -->
+        <div id="sec4" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Frog-Jump Converter 🐸</h2>
+                <p>Type any positive number (or pick a health fact). Press <strong>Jump!</strong> to watch the decimal point hop until exactly one non-zero digit is in front of it. Each hop changes $n$ by 1.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <select id="sfPreset" onchange="document.getElementById('sfInput').value=this.value; resetFrog();">
+                            <option value="275000000">🇮🇩 Indonesia's population</option>
+                            <option value="0.00000012">🦠 Covid-19 virus width (m)</option>
+                            <option value="8100000000">🌍 Global population</option>
+                            <option value="0.0000001">🤧 Influenza virus (m)</option>
+                            <option value="35000000">❤️ Heartbeats per year</option>
+                            <option value="0.000008">🩸 Red blood cell (m)</option>
+                        </select>
+                        <input type="text" id="sfInput" value="275000000" style="width:180px;" oninput="resetFrog()">
+                        <button class="action-btn" id="jumpBtn" onclick="frogJump()">Jump! 🐸</button>
+                        <button class="action-btn" onclick="autoJump()">Auto ▶▶</button>
+                        <button class="action-btn reset-btn" onclick="resetFrog()">Reset</button>
+                    </div>
+                    <div class="digits" id="digits"></div>
+                    <div class="sf-result" id="sfResult"></div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Example: Multiplying in Standard Form</h2>
+                <p><strong>Problem:</strong> ❤️ A heart beats $3.5 \times 10^7$ times a year. How many times in 80 years?</p>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex3" onclick="nextStep('ex3', 4)">Show Next Step</button>
+                    <div class="step ex3-1"><strong>Step 1:</strong> Write 80 in standard form: $8 \times 10^1$</div>
+                    <div class="step ex3-2"><strong>Step 2:</strong> Multiply the numbers, add the powers: $(3.5 \times 8) \times 10^{7+1} = 28 \times 10^8$</div>
+                    <div class="step ex3-3"><strong>Step 3:</strong> $28$ is not between 1 and 10! $28 = 2.8 \times 10^1$</div>
+                    <div class="step ex3-4"><strong>Step 4:</strong> $2.8 \times 10^1 \times 10^8 = 2.8 \times 10^9$ heartbeats</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p class="hint">Type standard form like <strong>1.2x10^-7</strong> (or 1.2e-7).</p>
+                <p>a) Write 0.00000012 in standard form.</p>
+                <input type="text" id="ans6" class="exercise-input" placeholder="A x 10^n">
+                <button class="action-btn" onclick="checkSF('ans6', 1.2, -7, 'fb6')">Check Answer</button>
+                <div class="feedback" id="fb6"></div>
+                <p style="margin-top:20px;">b) 💧 $(3.7 \times 10^{13}) \times 30$ cells in the class. Answer in standard form.</p>
+                <input type="text" id="ans7" class="exercise-input" placeholder="A x 10^n">
+                <button class="action-btn" onclick="checkSF('ans7', 1.11, 15, 'fb7')">Check Answer</button>
+                <div class="feedback" id="fb7"></div>
+            </div>
+        </div>
+
+        <!-- ================= SECTION 5: RANKING ================= -->
+        <div id="sec5" class="section-container">
+            <div class="module">
+                <h2>🎮 Drag &amp; Drop: Micro → Macro Ranking Chart</h2>
+                <p>Practice for your <strong>Micro-Health Factsheet</strong>! Drag the cards into order from <strong>smallest (top)</strong> to <strong>largest (bottom)</strong>. Compare the powers of 10 first!</p>
+                <div class="sim-area">
+                    <ul class="rank-list" id="rankList"></ul>
+                    <div style="text-align:center; margin-top: 10px;">
+                        <button class="action-btn" onclick="checkRanking()">Check Order</button>
+                        <button class="action-btn" onclick="toggleSF()">Show / Hide Ordinary Numbers</button>
+                        <button class="action-btn reset-btn" onclick="buildRanking()">Shuffle</button>
+                    </div>
+                    <div class="sim-text" id="rankText"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>🤔 Reflection</h2>
+                <p><em>"How does writing numbers in standard form prevent dangerous medical/scientific errors?"</em></p>
+                <textarea style="width:100%; min-height:100px; box-sizing:border-box; padding:10px; font-size:1em; border:1px solid #cbd5e0; border-radius:5px;" placeholder="Write your thoughts here..."></textarea>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ---------- Tabs ----------
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            typeset(document.getElementById(id));
+        }
+
+        function typeset(el) {
+            if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {});
+        }
+
+        // ---------- Step-by-step ----------
+        const stepCounters = {};
+        function nextStep(id, total) {
+            stepCounters[id] = (stepCounters[id] || 0) + 1;
+            const step = document.querySelector('.' + id + '-' + stepCounters[id]);
+            if (step) step.classList.add('show');
+            if (stepCounters[id] >= total) document.getElementById('btn-' + id).disabled = true;
+        }
+
+        // ---------- Fraction helpers ----------
+        function gcd(a, b) { a = Math.abs(a); b = Math.abs(b); while (b) { [a, b] = [b, a % b]; } return a || 1; }
+        function simp(n, d) { if (d < 0) { n = -n; d = -d; } const g = gcd(n, d); return [n / g, d / g]; }
+        function texFrac(n, d) {
+            [n, d] = simp(n, d);
+            if (d === 1) return `${n}`;
+            const sign = n < 0 ? '-' : '';
+            n = Math.abs(n);
+            const whole = Math.floor(n / d), rem = n % d;
+            if (whole === 0) return `${sign}\\frac{${rem}}{${d}}`;
+            return `${sign}${whole}\\frac{${rem}}{${d}}`;
+        }
+
+        // " = simplified" only when simplifying actually changes the fraction
+        function simpTail(n, d) {
+            const t = texFrac(n, d);
+            return t === `\\frac{${n}}{${d}}` ? '' : ` = ${t}`;
+        }
+
+        // Parse "5 5/8", "45/8", "5.625", "-1 1/2"
+        function parseNumber(str) {
+            str = str.trim().replace(/,/g, '.').replace(/\s+/g, ' ');
+            let m = str.match(/^(-?\d+)\s+(\d+)\/(\d+)$/);
+            if (m) { const w = parseInt(m[1]); const f = parseInt(m[2]) / parseInt(m[3]); return w < 0 ? w - f : w + f; }
+            m = str.match(/^(-?\d+)\/(\d+)$/);
+            if (m) return parseInt(m[1]) / parseInt(m[2]);
+            const v = parseFloat(str.replace('%', ''));
+            return isNaN(v) ? null : v;
+        }
+
+        function checkNumber(inputId, expected, fbId, explanation, tol) {
+            tol = tol || 1e-6;
+            const fb = document.getElementById(fbId);
+            const val = parseNumber(document.getElementById(inputId).value);
+            if (val === null) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number or fraction.'; return; }
+            if (Math.abs(val - expected) <= tol) {
+                fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation;
+            } else {
+                fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.';
+            }
+        }
+
+        // ---------- Section 1: Recipe ----------
+        const ingredients = [
+            { name: 'Glutinous rice flour', n: 3, d: 2, unit: 'cups' },
+            { name: 'Pandan water', n: 3, d: 4, unit: 'cups' },
+            { name: 'Palm sugar (gula merah)', n: 1, d: 3, unit: 'cups' },
+            { name: 'Grated coconut', n: 1, d: 2, unit: 'cups' },
+            { name: 'Salt', n: 1, d: 4, unit: 'tsp' }
+        ];
+        function updateRecipe() {
+            const people = parseInt(document.getElementById('servings').value);
+            document.getElementById('servingsVal').innerText = people;
+            const [sn, sd] = simp(people, 4);
+            const scaleEl = document.getElementById('scaleVal');
+            scaleEl.innerHTML = `$\\frac{${people}}{4} = ${texFrac(sn, sd)}$`;
+            const body = document.getElementById('recipeBody');
+            body.innerHTML = '';
+            ingredients.forEach(ing => {
+                const rn = ing.n * sn, rd = ing.d * sd;
+                const sfTex = sd === 1 ? `${sn}` : `\\frac{${sn}}{${sd}}`;
+                const [an, ad] = simp(rn, rd);
+                const improper = ad === 1 ? `${an}` : `\\frac{${an}}{${ad}}`;
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${ing.name}</td><td>$${texFrac(ing.n, ing.d)}$ ${ing.unit}</td>` +
+                    `<td class="working">$\\frac{${ing.n}}{${ing.d}} \\times ${sfTex} = ${improper}$</td>` +
+                    `<td class="result">$${texFrac(rn, rd)}$ ${ing.unit}</td>`;
+                body.appendChild(tr);
+            });
+            typeset(scaleEl); typeset(body);
+        }
+
+        // ---------- Section 2: Fraction operations ----------
+        function makeBar(label, parts, fills) {
+            let cells = '';
+            for (let i = 0; i < parts; i++) cells += `<div class="cell ${fills[i] || ''}"></div>`;
+            return `<div class="bar-label">${label}</div><div class="frac-bar">${cells}</div>`;
+        }
+        function runFractionOp() {
+            const an = parseInt(document.getElementById('fa-n').value), ad = parseInt(document.getElementById('fa-d').value);
+            const bn = parseInt(document.getElementById('fb-n').value), bd = parseInt(document.getElementById('fb-d').value);
+            const op = document.getElementById('fop').value;
+            const bars = document.getElementById('fracBars');
+            const text = document.getElementById('fracText');
+            if ([an, ad, bn, bd].some(isNaN) || ad < 1 || bd < 1 || an < 0 || bn < 0 || ad > 12 || bd > 12 || an > 12 || bn > 12) {
+                text.innerText = 'Use whole numbers from 0 to 12 (denominators at least 1).'; bars.innerHTML = ''; return;
+            }
+            let html = '', msg = '';
+            if (op === '+' || op === '-') {
+                const L = ad * bd / gcd(ad, bd);
+                const a2 = an * (L / ad), b2 = bn * (L / bd);
+                // Draw on as many whole bars as needed
+                const res = op === '+' ? a2 + b2 : a2 - b2;
+                const wholes = Math.max(1, Math.ceil(Math.max(a2, b2, Math.abs(res)) / L));
+                const fillArr = (count, cls) => Array.from({ length: L * wholes }, (_, i) => i < count ? cls : '');
+                html += makeBar(`$\\frac{${an}}{${ad}} = \\frac{${a2}}{${L}}$`, L * wholes, fillArr(a2, 'fill-a'));
+                html += makeBar(`$\\frac{${bn}}{${bd}} = \\frac{${b2}}{${L}}$`, L * wholes, fillArr(b2, 'fill-b'));
+                if (op === '+') {
+                    html += makeBar('Result', L * wholes, Array.from({ length: L * wholes }, (_, i) => i < a2 ? 'fill-a' : (i < a2 + b2 ? 'fill-b' : '')));
+                } else {
+                    // Remaining pieces in blue, the pieces taken away hatched in red
+                    html += makeBar('Result', L * wholes, Array.from({ length: L * wholes }, (_, i) => i < res ? 'fill-r' : (i < a2 ? 'fill-x' : '')));
+                }
+                msg = `Common denominator ${L}: $\\frac{${a2}}{${L}} ${op === '+' ? '+' : '-'} \\frac{${b2}}{${L}} = \\frac{${res}}{${L}}${simpTail(res, L)}$`;
+            } else if (op === '*') {
+                const rn = an * bn, rd = ad * bd;
+                msg = `Top × Top, Bottom × Bottom: $\\frac{${an}}{${ad}} \\times \\frac{${bn}}{${bd}} = \\frac{${rn}}{${rd}}${simpTail(rn, rd)}$`;
+                html += makeBar(`$\\frac{${bn}}{${bd}}$ of a bar, then take $\\frac{${an}}{${ad}}$ of that`, rd, Array.from({ length: rd }, (_, i) => i < rn ? 'fill-r' : ''));
+            } else {
+                if (bn === 0) { text.innerText = 'You cannot divide by zero!'; bars.innerHTML = ''; return; }
+                const rn = an * bd, rd = ad * bn;
+                msg = `Keep, Change, Flip: $\\frac{${an}}{${ad}} \\div \\frac{${bn}}{${bd}} = \\frac{${an}}{${ad}} \\times \\frac{${bd}}{${bn}} = \\frac{${rn}}{${rd}}${simpTail(rn, rd)}$`;
+                html = `<p style="text-align:center;">How many groups of $\\frac{${bn}}{${bd}}$ fit into $\\frac{${an}}{${ad}}$?</p>`;
+            }
+            bars.innerHTML = html;
+            text.innerHTML = msg;
+            typeset(document.getElementById('sec2'));
+        }
+
+        // ---------- Section 3: Percentages ----------
+        function loadPreset() {
+            const [orig, rate, dir] = document.getElementById('pctPreset').value.split('|');
+            document.getElementById('pctOrig').value = orig;
+            document.getElementById('pctRate').value = rate;
+            document.getElementById('pctDir').value = dir;
+            updatePct();
+        }
+        function round(x, dp) { const f = Math.pow(10, dp); return Math.round(x * f) / f; }
+        function updatePct() {
+            const orig = parseFloat(document.getElementById('pctOrig').value) || 0;
+            const rate = parseInt(document.getElementById('pctRate').value);
+            const dir = document.getElementById('pctDir').value;
+            const unit = document.getElementById('pctPreset').value.split('|')[3];
+            document.getElementById('pctRateVal').innerText = rate + '%';
+            const mult = dir === 'inc' ? 1 + rate / 100 : 1 - rate / 100;
+            const newVal = orig * mult;
+            const maxV = Math.max(orig, newVal) || 1;
+            const bo = document.getElementById('barOrig'), bn = document.getElementById('barNew');
+            bo.style.width = (orig / maxV * 100) + '%'; bo.innerText = round(orig, 2);
+            bn.style.width = (newVal / maxV * 100) + '%'; bn.innerText = round(newVal, 2);
+            document.getElementById('pctText').innerHTML =
+                `${dir === 'inc' ? 'Increase' : 'Decrease'} by ${rate}% → multiplier $= ${dir === 'inc' ? '1 +' : '1 -'} ${round(rate / 100, 2)} = ${round(mult, 2)}$ &nbsp;|&nbsp; $${round(mult, 2)} \\times ${orig} = ${round(newVal, 2)}$ ${unit}`;
+            typeset(document.getElementById('pctText'));
+        }
+        function calcChange() {
+            const o = parseFloat(document.getElementById('pcOld').value), n = parseFloat(document.getElementById('pcNew').value);
+            const out = document.getElementById('pcText');
+            if (isNaN(o) || isNaN(n) || o === 0) { out.innerText = 'Enter an original value that is not zero.'; return; }
+            const diff = n - o, pct = diff / o * 100;
+            out.innerHTML = `$\\dfrac{${n} - ${o}}{${o}} \\times 100\\% = \\dfrac{${round(diff, 2)}}{${o}} \\times 100\\% = ${round(pct, 1)}\\%$ &nbsp;→&nbsp; <strong>${Math.abs(round(pct, 1))}% ${pct < 0 ? 'decrease' : (pct > 0 ? 'increase' : 'no change')}</strong>`;
+            typeset(out);
+        }
+
+        // ---------- Section 4: Frog jump ----------
+        let frog = null;
+        function resetFrog() {
+            const raw = document.getElementById('sfInput').value.trim().replace(/[\s,]/g, '');
+            const digitsEl = document.getElementById('digits');
+            const res = document.getElementById('sfResult');
+            res.innerHTML = '';
+            if (!/^\d*\.?\d+$/.test(raw) && !/^\d+\.?$/.test(raw) || parseFloat(raw) === 0) {
+                digitsEl.innerHTML = '<span style="font-size:0.5em;">Type a positive number like 275000000 or 0.00000012</span>';
+                frog = null; return;
+            }
+            let [intPart, fracPart] = raw.split('.');
+            intPart = (intPart || '0').replace(/^0+(?=\d)/, '');
+            fracPart = fracPart || '';
+            const digits = (intPart + fracPart).split('');
+            const pointPos = intPart.length; // point sits after digits[pointPos-1]
+            const firstNZ = digits.findIndex(d => d !== '0');
+            const target = firstNZ + 1;     // point must sit right after first non-zero digit
+            frog = { digits, pos: pointPos, start: pointPos, target, jumps: 0 };
+            document.getElementById('jumpBtn').disabled = false;
+            drawFrog();
+        }
+        function drawFrog() {
+            const el = document.getElementById('digits');
+            let html = '';
+            const lastSig = frog.digits.length - 1 - [...frog.digits].reverse().findIndex(d => d !== '0');
+            for (let i = 0; i <= frog.digits.length; i++) {
+                html += `<div class="point-slot"><div>${i === frog.pos ? '.' : ''}</div></div>`;
+                if (i < frog.digits.length) {
+                    const inA = i >= frog.target - 1 && i <= Math.max(lastSig, frog.target - 1) && frog.pos === frog.target;
+                    html += `<div class="digit${inA ? ' a-zone' : ''}">${frog.digits[i]}</div>`;
+                }
+            }
+            el.innerHTML = html + `<div style="width:100%; text-align:center; font-size:0.45em; margin-top:6px;">🐸 Jumps so far: <strong>${frog.jumps}</strong></div>`;
+        }
+        function frogJump() {
+            if (!frog) return;
+            if (frog.pos === frog.target) { finishFrog(); return; }
+            frog.pos += frog.pos > frog.target ? -1 : 1;
+            frog.jumps++;
+            drawFrog();
+            if (frog.pos === frog.target) finishFrog();
+        }
+        function finishFrog() {
+            const n = frog.start - frog.target;
+            const sig = frog.digits.join('').replace(/^0+/, '').replace(/0+$/, '');
+            const A = sig.length > 1 ? sig[0] + '.' + sig.slice(1) : sig;
+            drawFrog();
+            document.getElementById('sfResult').innerHTML =
+                `$${A} \\times 10^{${n}}$ <div style="font-size:0.55em; color:#4a5568;">The point jumped ${Math.abs(n)} place${Math.abs(n) === 1 ? '' : 's'} ${n > 0 ? 'left, so n is positive (a big number)' : n < 0 ? 'right, so n is negative (a tiny number)' : '— already in standard form, n = 0'}.</div>`;
+            document.getElementById('jumpBtn').disabled = true;
+            typeset(document.getElementById('sfResult'));
+        }
+        function autoJump() {
+            if (!frog) return;
+            const t = setInterval(() => {
+                if (!frog || frog.pos === frog.target) { clearInterval(t); if (frog) finishFrog(); return; }
+                frogJump();
+            }, 450);
+        }
+
+        // Parse "1.2x10^-7", "1.2 × 10^(-7)", "1.2e-7", "1.2*10^-7"
+        function checkSF(inputId, A, n, fbId) {
+            const fb = document.getElementById(fbId);
+            let s = document.getElementById(inputId).value.replace(/\s/g, '').replace(/[×*X]/g, 'x').replace(/[−–]/g, '-').replace(/[()]/g, '');
+            let m = s.match(/^(-?\d+(?:\.\d+)?)x10\^?(-?\d+)$/) || s.match(/^(-?\d+(?:\.\d+)?)e(-?\d+)$/i);
+            if (!m) { fb.className = 'feedback wrong'; fb.innerText = 'Write it as A x 10^n, e.g. 3.5x10^7'; return; }
+            const a = parseFloat(m[1]), p = parseInt(m[2]);
+            if (Math.abs(a - A) < 1e-9 && p === n) {
+                fb.className = 'feedback correct'; fb.innerText = `✅ Correct! ${A} × 10^${n}`;
+            } else if (Math.abs(a * Math.pow(10, p) - A * Math.pow(10, n)) < 1e-9 * Math.abs(A * Math.pow(10, n))) {
+                fb.className = 'feedback wrong'; fb.innerText = '⚠️ Right value, but not standard form — A must be between 1 and 10.';
+            } else {
+                fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — count your frog jumps again.';
+            }
+        }
+
+        // ---------- Section 5: Ranking ----------
+        const facts = [
+            { label: '🩸 Red blood cell width (m)', A: 8, n: -6, plain: '0.000008' },
+            { label: '🦠 Covid-19 virus width (m)', A: 1.2, n: -7, plain: '0.00000012' },
+            { label: '🧫 E. coli bacterium length (m)', A: 2, n: -6, plain: '0.000002' },
+            { label: '🇮🇩 Indonesia population', A: 2.75, n: 8, plain: '275 000 000' },
+            { label: '🌍 Global population', A: 8.1, n: 9, plain: '8 100 000 000' },
+            { label: '❤️ Heartbeats in a year', A: 3.5, n: 7, plain: '35 000 000' },
+            { label: '🧬 Cells in one human body', A: 3.7, n: 13, plain: '37 000 000 000 000' }
+        ];
+        let showPlain = false;
+        function buildRanking() {
+            const list = document.getElementById('rankList');
+            const shuffled = facts.map(f => f).sort(() => Math.random() - 0.5);
+            list.innerHTML = '';
+            shuffled.forEach(f => {
+                const li = document.createElement('li');
+                li.className = 'rank-item';
+                li.draggable = true;
+                li.dataset.value = f.A * Math.pow(10, f.n);
+                li.innerHTML = `<span>${f.label}</span><span class="sf" data-sf="$${f.A} \\times 10^{${f.n}}$" data-plain="${f.plain}">${showPlain ? f.plain : `$${f.A} \\times 10^{${f.n}}$`}</span>`;
+                li.addEventListener('dragstart', () => li.classList.add('dragging'));
+                li.addEventListener('dragend', () => li.classList.remove('dragging'));
+                list.appendChild(li);
+            });
+            document.getElementById('rankText').innerText = '';
+            typeset(list);
+        }
+        function toggleSF() {
+            showPlain = !showPlain;
+            document.querySelectorAll('.rank-item .sf').forEach(s => { s.innerHTML = showPlain ? s.dataset.plain : s.dataset.sf; });
+            typeset(document.getElementById('rankList'));
+        }
+        document.getElementById('rankList').addEventListener('dragover', e => {
+            e.preventDefault();
+            const list = e.currentTarget;
+            const dragging = list.querySelector('.dragging');
+            if (!dragging) return;
+            const after = [...list.querySelectorAll('.rank-item:not(.dragging)')].find(item => {
+                const box = item.getBoundingClientRect();
+                return e.clientY < box.top + box.height / 2;
+            });
+            if (after) list.insertBefore(dragging, after); else list.appendChild(dragging);
+        });
+        function checkRanking() {
+            const items = [...document.querySelectorAll('.rank-item')];
+            let allRight = true;
+            const sorted = items.map(i => parseFloat(i.dataset.value)).sort((a, b) => a - b);
+            items.forEach((item, idx) => {
+                const ok = parseFloat(item.dataset.value) === sorted[idx];
+                item.classList.toggle('right', ok);
+                item.classList.toggle('wrong', !ok);
+                if (!ok) allRight = false;
+            });
+            document.getElementById('rankText').innerText = allRight
+                ? '🎉 Perfect ranking! Notice: compare the power n first, then compare A.'
+                : 'Some cards are out of place (red). Tip: a more negative power means a smaller number.';
+        }
+
+        // ---------- Init ----------
+        window.addEventListener('load', () => {
+            updateRecipe();
+            runFractionOp();
+            updatePct();
+            calcChange();
+            resetFrog();
+            buildRanking();
+        });
+    </script>
+</body>
+</html>

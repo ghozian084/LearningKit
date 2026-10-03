@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Printed Media - Fractions, Percentages & Standard Form</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 10mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            .instructions { display: none; }
+            .no-break { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; }
+
+        /* Header */
+        .header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 8px; margin-bottom: 15px; }
+        .header h1 { color: var(--primary); margin: 0; font-size: 1.5em; }
+        .header p { margin: 4px 0 0 0; color: #4a5568; font-size: 0.9em; }
+        h2 { font-size: 1.1em; color: var(--secondary); margin: 15px 0 8px 0; }
+
+        .instructions { background-color: #f7fafc; border-left: 4px solid var(--secondary); padding: 10px 12px; margin-bottom: 15px; font-size: 0.9em; }
+
+        /* Cards */
+        .card { border: 2px dashed var(--cut-line); position: relative; background: white; }
+        .scissors { position: absolute; top: -11px; left: -10px; font-size: 0.85em; background: white; padding: 0 2px; }
+
+        /* Media 1: Fraction circles */
+        .circle-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .circle-grid .card { display: flex; flex-direction: column; align-items: center; padding: 8px; }
+        .circle-grid svg { width: 165px; height: 165px; }
+        .circle-label { font-weight: bold; color: var(--primary); margin-top: 3px; }
+
+        /* Fraction wall */
+        .wall-row { display: flex; height: 34px; margin-bottom: 4px; }
+        .wall-row div {
+            flex: 1; border: 2px solid #2d3748; margin-right: -2px; display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 0.9em;
+        }
+
+        /* Tables */
+        .ref-table { width: 100%; border-collapse: collapse; font-size: 0.95em; }
+        .ref-table th, .ref-table td { border: 1px solid #a0aec0; padding: 7px 9px; text-align: center; }
+        .ref-table th { background: #ebf8ff; color: var(--primary); }
+        .ref-table td:first-child { text-align: left; }
+
+        /* Frog-jump strip */
+        .strip { display: flex; margin: 6px 0; }
+        .strip div { width: 42px; height: 50px; border: 2px solid #2d3748; margin-right: -2px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-size: 1.6em; font-weight: bold; }
+        .tokens { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; }
+        .token { width: 55px; height: 55px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8em; }
+
+        /* Data cards */
+        .data-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+        .data-card { padding: 10px 12px; min-height: 70px; }
+        .data-card .fact { font-weight: bold; color: var(--primary); }
+        .data-card .num { font-family: 'Courier New', monospace; font-size: 1.15em; margin-top: 4px; }
+        .data-card .sf-line { margin-top: 6px; border-bottom: 1px solid #333; height: 22px; font-size: 0.8em; color: #a0aec0; }
+
+        /* Mission cards */
+        .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .mission { padding: 12px 14px; border-left: 10px solid; font-size: 0.9em; }
+        .mission h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 1.05em; }
+        .mission ul { margin: 0; padding-left: 18px; }
+        .mission li { margin-bottom: 5px; }
+
+        /* Glossary */
+        .gloss-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .gloss { padding: 8px 10px; text-align: center; }
+        .gloss .en { font-weight: bold; color: var(--primary); }
+        .gloss .id { font-style: italic; color: #c05621; }
+        .gloss .ex { font-size: 0.85em; margin-top: 3px; }
+
+        /* Rubric / peer evaluation */
+        .rubric { width: 100%; border-collapse: collapse; font-size: 0.88em; }
+        .rubric th, .rubric td { border: 1px solid #a0aec0; padding: 6px 8px; vertical-align: top; }
+        .rubric th { background: #ebf8ff; color: var(--primary); }
+        .peer-slip { padding: 10px 12px; margin-bottom: 10px; font-size: 0.9em; }
+        .peer-slip .line { border-bottom: 1px solid #333; height: 22px; margin-top: 4px; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== MEDIA 1: FRACTION CIRCLES ===================== -->
+    <div class="header">
+        <h1>Meeting 1 Media: Fraction Circles</h1>
+        <p>Grade 9 · Topic 5 · Health Portfolio — print on coloured card, one set per group</p>
+    </div>
+    <div class="instructions">
+        <strong>Teacher:</strong> Cut along the dashed lines, then cut each circle into its sectors. Use the pieces to show why $\frac{1}{2} + \frac{1}{3}$ needs a common denominator (sixths). SEN students can keep a set on the desk during worksheets.
+    </div>
+    <div class="circle-grid" id="circleGrid"></div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 2: FRACTION WALL ===================== -->
+    <div class="header">
+        <h1>Meeting 1 Media: Fraction Bars (Fraction Wall)</h1>
+        <p>Scaffold for SEN &amp; middle learners — cut each row into separate pieces, or keep as a reference wall</p>
+    </div>
+    <div id="fractionWall"></div>
+
+    <h2>📄 Paper-Folding Multiplication Guide: $\frac{2}{3} \times \frac{3}{4}$</h2>
+    <div class="card no-break" style="padding: 12px;">
+        <span class="scissors">✂️</span>
+        <ol style="margin: 0; padding-left: 20px; font-size: 0.95em;">
+            <li>Fold a square paper into 4 equal vertical strips. Shade 3 strips — that is $\frac{3}{4}$.</li>
+            <li>Fold the paper into 3 equal horizontal strips. Shade 2 of them with a different colour — that is $\frac{2}{3}$ <em>of</em> the paper.</li>
+            <li>Count the boxes shaded twice (top × top = $2 \times 3 = 6$) out of all boxes (bottom × bottom = $3 \times 4 = 12$).</li>
+            <li>$\frac{6}{12} = \frac{1}{2}$ ✅</li>
+        </ol>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 3: MULTIPLIER SHEET + GLOSSARY ===================== -->
+    <div class="header">
+        <h1>Meeting 2 Media: Percentage Multiplier Translation Sheet</h1>
+        <p>Scaffold — keep on the desk while solving percentage questions</p>
+    </div>
+    <table class="ref-table no-break">
+        <tr><th>The question says…</th><th>Think</th><th>Multiply by</th><th>Health example</th></tr>
+        <tr><td>"20% less" / "decrease by 20%"</td><td>$100\% - 20\% = 80\%$</td><td><strong>0.80</strong></td><td>30 g sugar → $0.80 \times 30 = 24$ g</td></tr>
+        <tr><td>"35% discount" / "reduce by 35%"</td><td>$100\% - 35\% = 65\%$</td><td><strong>0.65</strong></td><td>2000 ml soda → 1300 ml</td></tr>
+        <tr><td>"5% decrease"</td><td>$100\% - 5\% = 95\%$</td><td><strong>0.95</strong></td><td>80 kg → 76 kg</td></tr>
+        <tr><td>"increase by 15%"</td><td>$100\% + 15\% = 115\%$</td><td><strong>1.15</strong></td><td>1800 kcal → 2070 kcal</td></tr>
+        <tr><td>"8% more"</td><td>$100\% + 8\% = 108\%$</td><td><strong>1.08</strong></td><td>50 min exercise → 54 min</td></tr>
+        <tr><td>"find 15% of"</td><td>$15\% = \frac{15}{100}$</td><td><strong>0.15</strong></td><td>15% of 2000 kcal = 300 kcal</td></tr>
+        <tr><td>"what percentage is A of B?"</td><td>$\frac{A}{B} \times 100\%$ (same units!)</td><td>—</td><td>800 ml of 2.5 L → $\frac{800}{2500} = 32\%$</td></tr>
+        <tr><td>"percentage change"</td><td>$\frac{\text{New} - \text{Original}}{\text{Original}} \times 100\%$</td><td>—</td><td>85 → 68 bpm: 20% decrease</td></tr>
+    </table>
+
+    <h2>🌏 EAL Bilingual Glossary Cards (cut out)</h2>
+    <div class="gloss-grid">
+        <div class="card gloss"><span class="scissors">✂️</span><div class="en">Numerator</div><div class="id">Pembilang</div><div class="ex">top number: <strong>3</strong>/4</div></div>
+        <div class="card gloss"><div class="en">Denominator</div><div class="id">Penyebut</div><div class="ex">bottom number: 3/<strong>4</strong></div></div>
+        <div class="card gloss"><div class="en">Proper Fraction</div><div class="id">Pecahan Biasa</div><div class="ex">$\frac{3}{4}$</div></div>
+        <div class="card gloss"><div class="en">Improper Fraction</div><div class="id">Pecahan Tidak Wajar</div><div class="ex">$\frac{7}{4}$</div></div>
+        <div class="card gloss"><div class="en">Mixed Number</div><div class="id">Pecahan Campuran</div><div class="ex">$1\frac{3}{4}$</div></div>
+        <div class="card gloss"><div class="en">Common Denominator</div><div class="id">Penyebut Persekutuan</div><div class="ex">$\frac{1}{2} = \frac{3}{6},\ \frac{1}{3} = \frac{2}{6}$</div></div>
+        <div class="card gloss"><div class="en">Percentage Increase / Decrease</div><div class="id">Persentase Kenaikan / Penurunan</div><div class="ex">+15% / −20%</div></div>
+        <div class="card gloss"><div class="en">Multiplier</div><div class="id">Faktor Pengali</div><div class="ex">20% less → × 0.8</div></div>
+        <div class="card gloss"><div class="en">Standard Form = Scientific Notation</div><div class="id">Bentuk Baku = Notasi Ilmiah</div><div class="ex">$2.75 \times 10^8$</div></div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 4: FROG-JUMP STRIPS ===================== -->
+    <div class="header">
+        <h1>Meeting 2 Media: Frog-Jump Standard Form Strips 🐸</h1>
+        <p>Students slide the decimal-point frog along the strip and draw a loop for every jump</p>
+    </div>
+    <div class="instructions">
+        <strong>How to use:</strong> Cut out the frog tokens. Place the frog where the decimal point is now. Hop it one box at a time until only <strong>one non-zero digit</strong> is in front of it. Count the hops = $n$. Big number → $n$ positive; tiny number → $n$ negative. Highlight the digits of $A$ in a bright colour (SEN).
+    </div>
+
+    <div class="card no-break" style="padding: 12px; margin-bottom: 14px;">
+        <span class="scissors">✂️</span>
+        <strong>Strip A — 🇮🇩 Indonesia's population</strong>
+        <div class="strip"><div>2</div><div>7</div><div>5</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div></div>
+        <span>Hops: ______ &nbsp;&nbsp; Standard form: ____________________</span>
+    </div>
+    <div class="card no-break" style="padding: 12px; margin-bottom: 14px;">
+        <span class="scissors">✂️</span>
+        <strong>Strip B — 🦠 Covid-19 virus width (m)</strong>
+        <div class="strip"><div>0</div><div>.</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>0</div><div>1</div><div>2</div></div>
+        <span>Hops: ______ &nbsp;&nbsp; Standard form: ____________________</span>
+    </div>
+    <div class="card no-break" style="padding: 12px; margin-bottom: 14px;">
+        <span class="scissors">✂️</span>
+        <strong>Strip C — blank (write your own group's number)</strong>
+        <div class="strip"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <span>Hops: ______ &nbsp;&nbsp; Standard form: ____________________</span>
+    </div>
+
+    <h2>Frog Tokens (cut out)</h2>
+    <div class="tokens">
+        <div class="card token"><span class="scissors">✂️</span>🐸</div>
+        <div class="card token">🐸</div><div class="card token">🐸</div><div class="card token">🐸</div>
+        <div class="card token">🐸</div><div class="card token">🐸</div><div class="card token">🐸</div><div class="card token">🐸</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 5: MICRO / MACRO DATA CARDS ===================== -->
+    <div class="header">
+        <h1>Meeting 3 Media: Micro-Health Factsheet Data Cards</h1>
+        <p>For groups that are "provided" data — convert each card to standard form, then rank all 10 on the portfolio chart</p>
+    </div>
+    <div class="data-grid">
+        <div class="card data-card"><span class="scissors">✂️</span><div class="fact">🦠 Covid-19 virus width</div><div class="num">0.000 000 12 m</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🤧 Influenza virus diameter</div><div class="num">0.000 000 1 m</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🩸 Red blood cell width</div><div class="num">0.000 008 m</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🧫 E. coli bacterium length</div><div class="num">0.000 002 m</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🍊 Vitamin C molecule (approx. size)</div><div class="num">0.000 000 000 7 m</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🇮🇩 Population of Indonesia</div><div class="num">275 000 000</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🌍 Global population</div><div class="num">8 100 000 000</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">❤️ Heartbeats in one year</div><div class="num">35 000 000</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🧬 Cells in one human body</div><div class="num">37 000 000 000 000</div><div class="sf-line">Standard form:</div></div>
+        <div class="card data-card"><div class="fact">🌐 Length of the equator</div><div class="num">40 075 000 m</div><div class="sf-line">Standard form:</div></div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 6: GROUP MISSION CARDS ===================== -->
+    <div class="header">
+        <h1>Project Launch Media: Group Mission Cards</h1>
+        <p>Hand one card to each group in Meeting 1 — glue it on the front of the A3 portfolio</p>
+    </div>
+    <div class="mission-grid">
+        <div class="card mission" style="border-left-color:#48bb78;"><span class="scissors">✂️</span>
+            <h3>🟢 Group 1: The Dietary Planners</h3>
+            <ul>
+                <li><strong>Fractions:</strong> Scale a salad using $1\frac{3}{4}$ cups of spinach from 4 people to 18 people.</li>
+                <li><strong>Percentages:</strong> Daily sugar drops from 65 g to 25 g. Find the percentage decrease.</li>
+                <li><strong>Standard Form:</strong> Write the size of a Vitamin C molecule in standard form and compare it with global annual Vitamin C production (kg).</li>
+            </ul>
+        </div>
+        <div class="card mission" style="border-left-color:#4299e1;">
+            <h3>🔵 Group 2: The Epidemiologists</h3>
+            <ul>
+                <li><strong>Fractions:</strong> $\frac{5}{8}$ of hospital beds are occupied. 120 new beds are added. What fraction is occupied now?</li>
+                <li><strong>Percentages:</strong> Flu cases fall from 4 500 to 1 200. Find the percentage decrease.</li>
+                <li><strong>Standard Form:</strong> Write the influenza virus (0.000 000 1 m) and global population (8 100 000 000) in standard form. How many viruses laid end-to-end span the equator?</li>
+            </ul>
+        </div>
+        <div class="card mission" style="border-left-color:#f56565;">
+            <h3>🔴 Group 3: The Fitness Coaches</h3>
+            <ul>
+                <li><strong>Fractions:</strong> A runner completes $3\frac{1}{2}$ laps of $\frac{2}{5}$ km. Find the total distance.</li>
+                <li><strong>Percentages:</strong> Resting heart rate improves from 78 bpm to 62 bpm. Find the percentage decrease.</li>
+                <li><strong>Standard Form:</strong> A heart beats 35 000 000 times a year. Write this in standard form and find the beats in an 80-year lifespan.</li>
+            </ul>
+        </div>
+        <div class="card mission" style="border-left-color:#ecc94b;">
+            <h3>🟡 Group 4: The Hydration Specialists</h3>
+            <ul>
+                <li><strong>Fractions:</strong> A $15\frac{1}{2}$ L dispenser fills $\frac{3}{4}$ L bottles. How many full bottles?</li>
+                <li><strong>Percentages:</strong> Goal 2.5 L of water a day; 800 ml drunk by noon. What percentage of the goal is that?</li>
+                <li><strong>Standard Form:</strong> One body has $3.7 \times 10^{13}$ cells. How many cells in a class of 30 students?</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>📋 Portfolio Checklist (glue under the mission card)</h2>
+    <div class="card no-break" style="padding: 10px 14px; font-size: 0.92em;">
+        <span class="scissors">✂️</span>
+        ☐ <strong>Page 1 — Scaled Healthy Recipe:</strong> original recipe, scale factors for 50 and 3 people, every ingredient worked out as a mixed number.<br>
+        ☐ <strong>Page 2 — Health Improvement Analysis:</strong> before &amp; after data, multiplier or formula shown, % change with "increase/decrease".<br>
+        ☐ <strong>Page 3 — Micro/Macro Data Chart:</strong> 5 huge + 5 tiny values, all in $A \times 10^n$ with $1 \le A &lt; 10$, ranked smallest → largest.
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ===================== MEDIA 7: GALLERY WALK & RUBRIC ===================== -->
+    <div class="header">
+        <h1>Meeting 4 Media: Gallery Walk Peer Evaluation &amp; Rubric</h1>
+        <p>Print one rubric per group and enough peer slips for every student (3 per page)</p>
+    </div>
+
+    <table class="rubric no-break">
+        <tr><th style="width:18%;">Criterion</th><th>4 — Excellent</th><th>3 — Good</th><th>2 — Developing</th><th>1 — Beginning</th></tr>
+        <tr><td><strong>Fractions</strong> (Page 1)</td><td>All ingredients scaled correctly for 50 and 3; mixed numbers simplified.</td><td>Mostly correct; 1–2 small errors.</td><td>Scale factor correct but several calculation errors.</td><td>Scale factor or method incorrect.</td></tr>
+        <tr><td><strong>Percentages</strong> (Page 2)</td><td>Correct multiplier/formula, divides by the original, states increase/decrease.</td><td>Correct method, minor rounding slip.</td><td>Divides by the new value or missing direction.</td><td>Method not shown or incorrect.</td></tr>
+        <tr><td><strong>Standard Form</strong> (Page 3)</td><td>All 10 values correct with $1 \le A &lt; 10$; ranking correct.</td><td>8–9 values correct; ranking mostly correct.</td><td>Sign of $n$ often wrong or $A$ outside 1–10.</td><td>Few values converted.</td></tr>
+        <tr><td><strong>Communication &amp; Collaboration</strong></td><td>Clear, neat, every member contributed and can explain.</td><td>Clear; most members can explain.</td><td>Hard to follow in places.</td><td>Unclear; work done by one member.</td></tr>
+    </table>
+
+    <h2>⭐💡 Peer Feedback Slips</h2>
+    <div class="card peer-slip no-break"><span class="scissors">✂️</span>
+        <strong>Portfolio of Group: ______ &nbsp;&nbsp; Reviewed by: ____________________</strong>
+        <div>☐ Fraction scaling is accurate &nbsp;&nbsp; ☐ Percentage change uses the original value &nbsp;&nbsp; ☐ Standard form has $1 \le A &lt; 10$</div>
+        <div>⭐ One thing they did well:</div><div class="line"></div>
+        <div>💡 One suggestion:</div><div class="line"></div>
+    </div>
+    <div class="card peer-slip no-break">
+        <strong>Portfolio of Group: ______ &nbsp;&nbsp; Reviewed by: ____________________</strong>
+        <div>☐ Fraction scaling is accurate &nbsp;&nbsp; ☐ Percentage change uses the original value &nbsp;&nbsp; ☐ Standard form has $1 \le A &lt; 10$</div>
+        <div>⭐ One thing they did well:</div><div class="line"></div>
+        <div>💡 One suggestion:</div><div class="line"></div>
+    </div>
+    <div class="card peer-slip no-break">
+        <strong>Portfolio of Group: ______ &nbsp;&nbsp; Reviewed by: ____________________</strong>
+        <div>☐ Fraction scaling is accurate &nbsp;&nbsp; ☐ Percentage change uses the original value &nbsp;&nbsp; ☐ Standard form has $1 \le A &lt; 10$</div>
+        <div>⭐ One thing they did well:</div><div class="line"></div>
+        <div>💡 One suggestion:</div><div class="line"></div>
+    </div>
+
+    <div class="card no-break" style="padding: 10px 14px; margin-top: 10px;">
+        <strong>🤔 Exit Reflection:</strong> How does writing numbers in standard form prevent dangerous medical/scientific errors?
+        <div class="peer-slip" style="padding:0;"><div class="line"></div><div class="line"></div></div>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+
+    <script>
+        // Fraction circles: one SVG per denominator, cut into equal labelled sectors
+        const circles = [
+            { d: 1, color: '#fc8181' }, { d: 2, color: '#f6ad55' }, { d: 3, color: '#68d391' },
+            { d: 4, color: '#63b3ed' }, { d: 6, color: '#b794f4' }, { d: 8, color: '#f687b3' }
+        ];
+        const grid = document.getElementById('circleGrid');
+        circles.forEach((c, idx) => {
+            const r = 78, cx = 82, cy = 82;
+            let svg = `<svg viewBox="0 0 164 164">`;
+            if (c.d === 1) {
+                svg += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="${c.color}" stroke="#2d3748" stroke-width="2"/>`;
+                svg += `<text x="${cx}" y="${cy + 8}" text-anchor="middle" font-size="24" font-weight="bold">1</text>`;
+            } else {
+                for (let i = 0; i < c.d; i++) {
+                    const a1 = (i / c.d) * 2 * Math.PI - Math.PI / 2, a2 = ((i + 1) / c.d) * 2 * Math.PI - Math.PI / 2;
+                    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+                    const x2 = cx + r * Math.cos(a2), y2 = cy + r * Math.sin(a2);
+                    const large = (a2 - a1) > Math.PI ? 1 : 0;
+                    svg += `<path d="M${cx},${cy} L${x1.toFixed(2)},${y1.toFixed(2)} A${r},${r} 0 ${large} 1 ${x2.toFixed(2)},${y2.toFixed(2)} Z" fill="${c.color}" stroke="#2d3748" stroke-width="2"/>`;
+                    const am = (a1 + a2) / 2, tx = cx + r * 0.6 * Math.cos(am), ty = cy + r * 0.6 * Math.sin(am);
+                    const fs = c.d >= 8 ? 12 : 15;
+                    svg += `<text x="${tx.toFixed(1)}" y="${(ty - 2).toFixed(1)}" text-anchor="middle" font-size="${fs}" font-weight="bold">1</text>`;
+                    svg += `<line x1="${(tx - 6).toFixed(1)}" y1="${(ty + 1).toFixed(1)}" x2="${(tx + 6).toFixed(1)}" y2="${(ty + 1).toFixed(1)}" stroke="#000" stroke-width="1.5"/>`;
+                    svg += `<text x="${tx.toFixed(1)}" y="${(ty + fs).toFixed(1)}" text-anchor="middle" font-size="${fs}" font-weight="bold">${c.d}</text>`;
+                }
+            }
+            svg += `</svg>`;
+            const name = c.d === 1 ? 'Whole' : c.d === 2 ? 'Halves' : c.d === 3 ? 'Thirds' : c.d === 4 ? 'Quarters' : c.d === 6 ? 'Sixths' : 'Eighths';
+            grid.insertAdjacentHTML('beforeend', `<div class="card">${idx === 0 ? '<span class="scissors">✂️</span>' : ''}${svg}<div class="circle-label">${name}</div></div>`);
+        });
+
+        // Fraction wall rows
+        const wall = document.getElementById('fractionWall');
+        const wallColors = { 1: '#fed7d7', 2: '#feebc8', 3: '#c6f6d5', 4: '#bee3f8', 6: '#e9d8fd', 8: '#fed7e2', 12: '#fefcbf' };
+        [1, 2, 3, 4, 6, 8, 12].forEach(d => {
+            let row = '<div class="wall-row">';
+            for (let i = 0; i < d; i++) row += `<div style="background:${wallColors[d]};">${d === 1 ? '1' : '1/' + d}</div>`;
+            wall.insertAdjacentHTML('beforeend', row + '</div>');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Worksheet 1 - Fractions (Recipe Scaling)</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --action: #38a169;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.35;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        mjx-container { font-size: 1.1em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 15mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 10.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; gap: 20px;
+        }
+        .ws-title { font-size: 1.4em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 8px; width: 280px; flex-shrink: 0; }
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; font-size: 1.15em; margin: 18px 0 8px 0; padding-bottom: 3px; }
+
+        /* Guide & Action Boxes */
+        .guide-box { background-color: #fffff0; border-left: 5px solid #ecc94b; padding: 8px 12px; margin: 8px 0; border-radius: 4px; }
+        .action-box { background-color: #f0fff4; border-left: 5px solid var(--action); padding: 8px 12px; margin: 8px 0; border-radius: 4px; }
+        .guide-title { font-weight: bold; color: #b7791f; display: block; margin-bottom: 3px; }
+        .action-title { font-weight: bold; color: #276749; display: block; margin-bottom: 3px; }
+        .guide-box p, .action-box p { margin: 3px 0; }
+
+        /* Questions */
+        .question-block { margin-bottom: 10px; }
+        .q-number { font-weight: bold; margin-right: 5px; }
+        .fill-blank { display: inline-block; min-width: 50px; border-bottom: 1px solid #333; text-align: center; }
+        .work-box {
+            border: 1px dashed #a0aec0; min-height: 60px; margin-top: 6px; padding: 6px 10px;
+            color: #a0aec0; font-style: italic; border-radius: 5px; font-size: 0.9em;
+        }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Tables */
+        .ws-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        .ws-table th, .ws-table td { border: 1px solid #a0aec0; padding: 8px; text-align: center; }
+        .ws-table th { background: #ebf8ff; color: var(--primary); }
+        .ws-table td:first-child { text-align: left; }
+
+        /* Fraction bar drawing */
+        .bar { display: flex; height: 26px; border: 2px solid #2d3748; margin: 4px 0; width: 100%; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+
+        .criteria { border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; margin-top: 15px; }
+        .criteria table { width: 100%; border-collapse: collapse; }
+        .criteria td { padding: 4px; border-bottom: 1px dotted #cbd5e0; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <div class="ws-header">
+        <div class="ws-title">Worksheet 1: The Healthy Recipe Scaler<br><span style="font-size: 0.6em; color: #718096;">Grade 9 · Topic 5 · Meeting 1 — Fractions (5.1 &amp; 5.2)</span></div>
+        <div class="student-info">
+            <div><span>Name:</span> <span></span></div>
+            <div><span>Group:</span> <span></span></div>
+            <div><span>Date:</span> <span></span></div>
+        </div>
+    </div>
+
+    <!-- PART 1 -->
+    <h2>Part 1: Fraction Language (Mixed ↔ Improper)</h2>
+    <div class="guide-box">
+        <span class="guide-title">🧠 Mindful Math Connection</span>
+        <p><strong>Mixed → Improper:</strong> (whole × bottom) + top, over the same bottom. &nbsp; $2\frac{3}{4} = \frac{2 \times 4 + 3}{4} = \frac{11}{4}$</p>
+        <p><strong>Improper → Mixed:</strong> divide; the remainder becomes the new top. &nbsp; $\frac{17}{5} = 3$ rem $2 = 3\frac{2}{5}$</p>
+    </div>
+    <div class="two-col">
+        <div class="question-block">
+            <span class="q-number">1.</span> Write as improper fractions:
+            <p>a) $1\frac{1}{2} = $ <span class="fill-blank">&nbsp;</span> &nbsp;&nbsp; b) $3\frac{2}{5} = $ <span class="fill-blank">&nbsp;</span> &nbsp;&nbsp; c) $1\frac{3}{4} = $ <span class="fill-blank">&nbsp;</span></p>
+        </div>
+        <div class="question-block">
+            <span class="q-number">2.</span> Write as mixed numbers:
+            <p>a) $\frac{9}{4} = $ <span class="fill-blank">&nbsp;</span> &nbsp;&nbsp; b) $\frac{23}{6} = $ <span class="fill-blank">&nbsp;</span> &nbsp;&nbsp; c) $\frac{45}{8} = $ <span class="fill-blank">&nbsp;</span></p>
+        </div>
+    </div>
+    <div class="question-block">
+        <span class="q-number">3.</span> Fill in the missing numbers to make equivalent fractions:
+        &nbsp; $\frac{3}{4} = \frac{\square}{8} = \frac{\square}{12} = \frac{15}{\square}$
+    </div>
+
+    <!-- PART 2 -->
+    <h2>Part 2: Adding &amp; Subtracting with Fraction Bars</h2>
+    <div class="action-box">
+        <span class="action-title">🏃 Hands-On: Fraction Circles / Bars</span>
+        <p>Use your fraction circles. Put a $\frac{1}{2}$ piece and a $\frac{1}{3}$ piece together. Which single-size piece (sixths? eighths?) can cover them exactly?</p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">4.</span> Shade the bars to show $\frac{1}{2} + \frac{1}{3}$ using <strong>sixths</strong>:
+        <div class="bar"><div></div><div></div><div></div><div></div><div></div><div></div></div>
+        <p>$\frac{1}{2} = \frac{\square}{6}$, &nbsp; $\frac{1}{3} = \frac{\square}{6}$, &nbsp; so $\frac{1}{2} + \frac{1}{3} = $ <span class="fill-blank">&nbsp;</span></p>
+    </div>
+    <div class="two-col no-break">
+        <div class="question-block">
+            <span class="q-number">5.</span> $2\frac{1}{4} + 1\frac{2}{3}$
+            <div class="work-box">Change to improper → find common denominator → add → simplify</div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">6.</span> $3\frac{1}{2} - 1\frac{3}{4}$
+            <div class="work-box">Change to improper → find common denominator → subtract → simplify</div>
+        </div>
+    </div>
+
+    <!-- PART 3 -->
+    <h2>Part 3: Multiplying &amp; Dividing</h2>
+    <div class="guide-box">
+        <span class="guide-title">🧠 Rules to Remember</span>
+        <p><strong>Multiply:</strong> Top × Top, Bottom × Bottom. &nbsp; <strong>Divide:</strong> Keep, Change, Flip ($\div \frac{a}{b} \rightarrow \times \frac{b}{a}$). &nbsp; ⚠️ Mixed numbers → improper first!</p>
+    </div>
+    <div class="two-col no-break">
+        <div class="question-block">
+            <span class="q-number">7.</span> 📄 Fold a paper to show $\frac{2}{3} \times \frac{3}{4}$. Then calculate it.
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">8.</span> 🏃 <em>(Group 3 mission)</em> A runner completes $3\frac{1}{2}$ laps. Each lap is $\frac{2}{5}$ km. How far did they run?
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">9.</span> $\frac{3}{4} \div \frac{3}{8}$
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">10.</span> 💧 <em>(Group 4 mission)</em> A dispenser holds $15\frac{1}{2}$ L. A bottle holds $\frac{3}{4}$ L. How many <strong>full</strong> bottles can be filled?
+            <div class="work-box"></div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- PART 4 -->
+    <h2>Part 4: The Recipe Dilemma — Scaling Klepon 🍡</h2>
+    <div class="action-box">
+        <span class="action-title">🏃 Project Task (Portfolio Page 1 practice)</span>
+        <p>The recipe below serves <strong>4 people</strong>. Scale it for the whole class (<strong>30 people</strong>) and for a small family (<strong>3 people</strong>).</p>
+        <p><strong>Scale factor</strong> $= \dfrac{\text{people needed}}{\text{people in recipe}}$</p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">11.</span> Scale factor for 30 people $= \frac{30}{4} = $ <span class="fill-blank">&nbsp;</span> &nbsp;&nbsp;&nbsp; Scale factor for 3 people $= $ <span class="fill-blank">&nbsp;</span>
+    </div>
+    <table class="ws-table">
+        <tr><th>Ingredient</th><th>For 4 people</th><th>For 30 people</th><th>For 3 people</th></tr>
+        <tr><td>Glutinous rice flour (cups)</td><td>$1\frac{1}{2}$</td><td>$11\frac{1}{4}$ <span style="font-size:0.8em; color:#718096;">(example)</span></td><td></td></tr>
+        <tr><td>Pandan water (cups)</td><td>$\frac{3}{4}$</td><td></td><td></td></tr>
+        <tr><td>Palm sugar (cups)</td><td>$\frac{1}{3}$</td><td></td><td></td></tr>
+        <tr><td>Grated coconut (cups)</td><td>$\frac{1}{2}$</td><td></td><td></td></tr>
+        <tr><td>Salt (tsp)</td><td>$\frac{1}{4}$</td><td></td><td></td></tr>
+    </table>
+    <div class="work-box" style="min-height: 120px;">Show your working for each ingredient here (write answers as mixed numbers):</div>
+
+    <div class="question-block no-break" style="margin-top: 12px;">
+        <span class="q-number">12.</span> 🥗 <em>(Group 1 mission)</em> A salad uses $1\frac{3}{4}$ cups of spinach for 4 people. How much spinach is needed for <strong>18 people</strong>?
+        <div class="work-box"></div>
+    </div>
+
+    <div class="question-block no-break">
+        <span class="q-number">13.</span> 🏥 <em>(Group 2 mission — challenge)</em> A hospital has 480 beds and $\frac{5}{8}$ of them are occupied. They add 120 new (empty) beds. What fraction of the beds is occupied now? Simplify your answer.
+        <div class="work-box"></div>
+    </div>
+
+    <div class="guide-box no-break">
+        <span class="guide-title">🌟 Extension</span>
+        <p>Simplify $\dfrac{2x}{3} \div \dfrac{4x}{9}$. &nbsp; Then explain why the $x$ "disappears".</p>
+        <div class="work-box" style="background:#fff;"></div>
+    </div>
+
+    <div class="criteria no-break">
+        <strong style="color: var(--primary);">✅ Self-Check (WILT)</strong>
+        <table>
+            <tr><td>I can convert between mixed numbers and improper fractions.</td><td>😀 😐 😟</td></tr>
+            <tr><td>I can add, subtract, multiply and divide fractions to scale recipes.</td><td>😀 😐 😟</td></tr>
+        </table>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+</body>
+</html>

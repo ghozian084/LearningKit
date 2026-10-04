@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guided Worksheet 2 - Percentages & Standard Form</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --action: #38a169;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.35;
+            color: #333;
+            background-color: #fff;
+            margin: 0;
+            padding: 20px;
+        }
+        mjx-container { font-size: 1.1em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* A4 Print Setup */
+        @page { size: A4; margin: 15mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 10.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            .no-break { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; }
+
+        /* Worksheet Header */
+        .ws-header {
+            border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; gap: 20px;
+        }
+        .ws-title { font-size: 1.4em; font-weight: bold; color: var(--primary); }
+        .student-info { display: flex; flex-direction: column; gap: 8px; width: 280px; flex-shrink: 0; }
+        .student-info div { display: flex; justify-content: space-between; border-bottom: 1px dotted #718096; }
+
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; font-size: 1.15em; margin: 18px 0 8px 0; padding-bottom: 3px; }
+
+        /* Guide & Action Boxes */
+        .guide-box { background-color: #fffff0; border-left: 5px solid #ecc94b; padding: 8px 12px; margin: 8px 0; border-radius: 4px; }
+        .action-box { background-color: #f0fff4; border-left: 5px solid var(--action); padding: 8px 12px; margin: 8px 0; border-radius: 4px; }
+        .guide-title { font-weight: bold; color: #b7791f; display: block; margin-bottom: 3px; }
+        .action-title { font-weight: bold; color: #276749; display: block; margin-bottom: 3px; }
+        .guide-box p, .action-box p { margin: 3px 0; }
+
+        /* Questions */
+        .question-block { margin-bottom: 10px; }
+        .q-number { font-weight: bold; margin-right: 5px; }
+        .fill-blank { display: inline-block; min-width: 60px; border-bottom: 1px solid #333; text-align: center; }
+        .work-box {
+            border: 1px dashed #a0aec0; min-height: 60px; margin-top: 6px; padding: 6px 10px;
+            color: #a0aec0; font-style: italic; border-radius: 5px; font-size: 0.9em;
+        }
+        .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+        /* Tables */
+        .ws-table { width: 100%; border-collapse: collapse; margin: 8px 0; }
+        .ws-table th, .ws-table td { border: 1px solid #a0aec0; padding: 7px; text-align: center; }
+        .ws-table th { background: #ebf8ff; color: var(--primary); }
+        .ws-table td:first-child { text-align: left; }
+
+        /* Frog jump digit boxes */
+        .digit-row { display: flex; gap: 0; margin: 6px 0 2px 0; font-family: 'Courier New', monospace; font-size: 1.3em; }
+        .digit-row span { width: 28px; height: 32px; border: 1px solid #a0aec0; display: flex; align-items: center; justify-content: center; }
+        .digit-row .dot { width: 12px; border: none; font-weight: bold; }
+
+        .criteria { border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; margin-top: 15px; }
+        .criteria table { width: 100%; border-collapse: collapse; }
+        .criteria td { padding: 4px; border-bottom: 1px dotted #cbd5e0; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <div class="ws-header">
+        <div class="ws-title">Worksheet 2: Health Data Analyst<br><span style="font-size: 0.6em; color: #718096;">Grade 9 · Topic 5 · Meeting 2 — Percentages (5.3) &amp; Standard Form (5.4)</span></div>
+        <div class="student-info">
+            <div><span>Name:</span> <span></span></div>
+            <div><span>Group:</span> <span></span></div>
+            <div><span>Date:</span> <span></span></div>
+        </div>
+    </div>
+
+    <!-- PART 1 -->
+    <h2>Part 1: The Multiplier Method</h2>
+    <div class="guide-box">
+        <span class="guide-title">🧠 Mindful Math Connection</span>
+        <p>🥤 "20% less sugar" means the new drink keeps $100\% - 20\% = 80\%$ of the sugar. &nbsp; $0.80 \times 30\text{ g} = 24\text{ g}$.</p>
+        <p><strong>Increase by $r\%$</strong> → multiply by $1 + \frac{r}{100}$ &nbsp;|&nbsp; <strong>Decrease by $r\%$</strong> → multiply by $1 - \frac{r}{100}$</p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">1.</span> Complete the Multiplier Translation table.
+        <table class="ws-table">
+            <tr><th>Change</th><th>Increase 15%</th><th>Decrease 20%</th><th>Decrease 35%</th><th>Increase 8%</th><th>Decrease 5%</th></tr>
+            <tr><td><strong>Multiplier</strong></td><td>1.15</td><td></td><td></td><td></td><td></td></tr>
+        </table>
+    </div>
+    <div class="two-col no-break">
+        <div class="question-block">
+            <span class="q-number">2.</span> A daily diet is 2000 kcal. 15% should come from protein. How many kcal is that?
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">3.</span> A teenager eats 1800 kcal a day. During football season they increase this by 15%. What is the new intake?
+            <div class="work-box"></div>
+        </div>
+    </div>
+    <div class="question-block no-break">
+        <span class="q-number">4.</span> 💧 <em>(Group 4 mission)</em> A student aims to drink 2.5 L of water a day. By noon they have drunk 800 ml. What percentage of their daily goal is that? <em>(Hint: use the same units!)</em>
+        <div class="work-box"></div>
+    </div>
+
+    <!-- PART 2 -->
+    <h2>Part 2: Before &amp; After — Percentage Change</h2>
+    <div class="guide-box">
+        <span class="guide-title">🧠 Formula</span>
+        <p>$\text{Percentage change} = \dfrac{\text{New} - \text{Original}}{\text{Original}} \times 100\%$ &nbsp; (negative answer = decrease)</p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">5.</span> Complete the Health Improvement table. Round to 1 decimal place where needed.
+        <table class="ws-table">
+            <tr><th>Scenario</th><th>Original</th><th>New</th><th>Difference</th><th>% Change</th></tr>
+            <tr><td>❤️ Heart rate after jogging</td><td>85 bpm</td><td>68 bpm</td><td>17</td><td>20% decrease</td></tr>
+            <tr><td>🥤 Sugar after swapping soda (G1)</td><td>65 g</td><td>25 g</td><td></td><td></td></tr>
+            <tr><td>🦠 Flu cases after vaccination (G2)</td><td>4 500</td><td>1 200</td><td></td><td></td></tr>
+            <tr><td>🏃 Heart rate after training camp (G3)</td><td>78 bpm</td><td>62 bpm</td><td></td><td></td></tr>
+            <tr><td>🍚 Daily kcal in football season</td><td>1 800</td><td>2 070</td><td></td><td></td></tr>
+        </table>
+        <div class="work-box" style="min-height: 90px;">Working:</div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- PART 3 -->
+    <h2>Part 3: The Micro &amp; the Macro — Standard Form</h2>
+    <div class="action-box">
+        <span class="action-title">🐸 Hands-On: Frog Jumps</span>
+        <p>Write the digits in the boxes. Move the decimal point so only <strong>one non-zero digit</strong> is in front of it. Draw a loop for each jump and count them — that is $n$.</p>
+        <p>Big number → $n$ is <strong>positive</strong>. &nbsp; Tiny number (0.000…) → $n$ is <strong>negative</strong>. &nbsp; Always $1 \le A &lt; 10$.</p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">6.</span> 🇮🇩 Indonesia's population: 275 000 000
+        <div class="digit-row"><span>2</span><span>7</span><span>5</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span class="dot">.</span></div>
+        <p>Number of jumps = <span class="fill-blank">&nbsp;</span> &nbsp; → &nbsp; $275\,000\,000 = $ <span class="fill-blank" style="min-width:120px;">&nbsp;</span></p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">7.</span> 🦠 Covid-19 virus width: 0.000 000 12 m
+        <div class="digit-row"><span>0</span><span class="dot">.</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span>0</span><span>1</span><span>2</span></div>
+        <p>Number of jumps = <span class="fill-blank">&nbsp;</span> &nbsp; → &nbsp; $0.000\,000\,12 = $ <span class="fill-blank" style="min-width:120px;">&nbsp;</span></p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">8.</span> Write in standard form:
+        <p>a) Global population 8 100 000 000 = <span class="fill-blank" style="min-width:110px;">&nbsp;</span> &nbsp;&nbsp;
+           b) Influenza virus 0.000 000 1 m = <span class="fill-blank" style="min-width:110px;">&nbsp;</span></p>
+        <p>c) Heartbeats per year 35 000 000 = <span class="fill-blank" style="min-width:110px;">&nbsp;</span> &nbsp;&nbsp;
+           d) Red blood cell 0.000 008 m = <span class="fill-blank" style="min-width:110px;">&nbsp;</span></p>
+    </div>
+    <div class="question-block">
+        <span class="q-number">9.</span> Write as an ordinary number:
+        &nbsp; a) $4.6 \times 10^{5} = $ <span class="fill-blank" style="min-width:100px;">&nbsp;</span>
+        &nbsp; b) $3.07 \times 10^{-4} = $ <span class="fill-blank" style="min-width:100px;">&nbsp;</span>
+    </div>
+
+    <!-- PART 4 -->
+    <h2>Part 4: Calculating in Standard Form</h2>
+    <div class="guide-box">
+        <span class="guide-title">🧠 Index Laws</span>
+        <p>$(a \times 10^m) \times (b \times 10^n) = (a \times b) \times 10^{m+n}$ &nbsp;|&nbsp; $(a \times 10^m) \div (b \times 10^n) = (a \div b) \times 10^{m-n}$ &nbsp;|&nbsp; If $A \ge 10$, adjust it!</p>
+    </div>
+    <div class="two-col no-break">
+        <div class="question-block">
+            <span class="q-number">10.</span> $(2 \times 10^3) \times (4 \times 10^5)$
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">11.</span> $(6 \times 10^8) \div (3 \times 10^2)$
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">12.</span> $(9 \times 10^4) \times (5 \times 10^3)$ &nbsp; <em>(careful with $A$!)</em>
+            <div class="work-box"></div>
+        </div>
+        <div class="question-block">
+            <span class="q-number">13.</span> ❤️ <em>(G3)</em> A heart beats $3.5 \times 10^7$ times a year. How many beats in 80 years?
+            <div class="work-box"></div>
+        </div>
+    </div>
+    <div class="question-block no-break">
+        <span class="q-number">14.</span> 💧 <em>(G4)</em> One human body has about $3.7 \times 10^{13}$ cells. How many cells are in a class of 30 students? Give your answer in standard form.
+        <div class="work-box"></div>
+    </div>
+
+    <div class="guide-box no-break">
+        <span class="guide-title">🌟 Extension</span>
+        <p>a) $(3.2 \times 10^5) + (4.5 \times 10^4)$ &nbsp; <em>(make the indices match first)</em></p>
+        <p>b) A town of 1 000 people grows by 5% every year. Use a multiplier to find the population after 5 years.</p>
+        <div class="work-box" style="background:#fff;"></div>
+    </div>
+
+    <div class="criteria no-break">
+        <strong style="color: var(--primary);">✅ Self-Check (WILT)</strong>
+        <table>
+            <tr><td>I can calculate percentage increases/decreases in health metrics.</td><td>😀 😐 😟</td></tr>
+            <tr><td>I can convert microscopic sizes and large populations into standard form.</td><td>😀 😐 😟</td></tr>
+        </table>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+</body>
+</html>

@@ -104,6 +104,16 @@ const LEARNING_KIT_DATA = {
           title: "Fractions, Percentages and Standard Form",
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1" }] },
+            im: { label: "Interactive Media", files: [{ index: 1, file: "im-01.html", title: "Interactive Media 1" }] },
+            ws: {
+              label: "Worksheet",
+              files: [
+                { index: 1, file: "ws-01.html", title: "Worksheet 1 Fractions" },
+                { index: 2, file: "ws-02.html", title: "Worksheet 2 Percentages & Standard Form" },
+              ],
+            },
+            ha: { label: "Hands-on Activity", files: [{ index: 1, file: "ha-01.html", title: "Hands-on Activity 1" }] },
           },
         },
         {

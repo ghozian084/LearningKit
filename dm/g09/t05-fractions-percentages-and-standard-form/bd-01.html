@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Slides - Fractions, Percentages & Standard Form</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Recipe Card */
+        .recipe-card { background: #fffaf0; border: 2px solid #dd6b20; border-radius: 10px; padding: 12px 18px; }
+        .recipe-card table { width: 100%; border-collapse: collapse; font-size: 1.1em; }
+        .recipe-card td { padding: 5px 8px; border-bottom: 1px dotted #f6ad55; }
+
+        /* Fraction circles (CSS conic) */
+        .circle-row { display: flex; gap: 25px; align-items: center; justify-content: center; margin: 8px 0; }
+        .frac-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #2d3748; }
+        .circle-caption { text-align: center; font-weight: bold; margin-top: 4px; }
+
+        /* Multiplier table */
+        .mult-table { border-collapse: collapse; width: 100%; font-size: 1.1em; }
+        .mult-table th, .mult-table td { border: 1px solid #cbd5e0; padding: 6px 10px; text-align: center; }
+        .mult-table th { background: #ebf8ff; color: var(--primary); }
+
+        /* Frog Jumps */
+        .jump-line { font-family: 'Courier New', monospace; font-size: 1.6em; letter-spacing: 6px; text-align: center; margin: 6px 0; }
+        .jump-line .a-digit { background: #fbd38d; border-radius: 4px; padding: 0 3px; }
+
+        /* Group mini cards */
+        .group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .group-card { border-left: 6px solid; background: #f7fafc; padding: 8px 12px; border-radius: 6px; font-size: 0.95em; }
+        .group-card strong { display: block; color: var(--primary); }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 20px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <!-- SLIDE 0: TITLE -->
+        <div class="slide title-slide active">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Fractions, Percentages &amp; Standard Form</h1>
+                <h2>Grade 9 Mathematics — Topic 5</h2>
+                <p style="font-size: 1.4em; color: #276749; font-weight: bold;">🏥 PjBL: "The Global Nutrition &amp; Micro-Health Portfolio"</p>
+                <p><em>Interactive Teaching Slides | Use the pen above to write directly on any slide.</em></p>
+            </div>
+        </div>
+
+        <!-- SLIDE 1: M1 HOOK -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: The Recipe Dilemma</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="recipe-card">
+                            <h3>🍡 Healthy Klepon <span style="font-size:0.7em; color:#718096;">(serves 4)</span></h3>
+                            <table>
+                                <tr><td>Glutinous rice flour</td><td><strong>$1\frac{1}{2}$ cups</strong></td></tr>
+                                <tr><td>Pandan water</td><td><strong>$\frac{3}{4}$ cup</strong></td></tr>
+                                <tr><td>Palm sugar (gula merah)</td><td><strong>$\frac{1}{3}$ cup</strong></td></tr>
+                                <tr><td>Grated coconut</td><td><strong>$\frac{1}{2}$ cup</strong></td></tr>
+                                <tr><td>Salt</td><td><strong>$\frac{1}{4}$ tsp</strong></td></tr>
+                            </table>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Essential Question</span></h3>
+                            <p><em>"This serves 4 people and needs $1\frac{1}{2}$ cups of flour. How do we make it for the <strong>whole class of 30</strong>?"</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Class Brainstorm</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 2: M1 PROJECT LAUNCH -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Project Launch — Health Portfolio</h2>
+                <p>You are <strong>health &amp; nutrition analysts</strong>. Over 4 meetings your group builds a 3-page portfolio:</p>
+                <div class="content-box" style="margin-bottom: 10px;">
+                    <p>📄 <strong>Page 1:</strong> The Scaled Healthy Recipe <em>(Fractions)</em> &nbsp;|&nbsp; 📄 <strong>Page 2:</strong> Health Improvement Analysis <em>(Percentages)</em> &nbsp;|&nbsp; 📄 <strong>Page 3:</strong> Micro/Macro Data Chart <em>(Standard Form)</em></p>
+                </div>
+                <div class="group-grid">
+                    <div class="group-card" style="border-color:#48bb78;"><strong>🟢 Group 1: The Dietary Planners</strong>Nutrition focus — salad recipes, sugar intake, Vitamin C.</div>
+                    <div class="group-card" style="border-color:#4299e1;"><strong>🔵 Group 2: The Epidemiologists</strong>Disease focus — hospital beds, flu cases, virus sizes.</div>
+                    <div class="group-card" style="border-color:#f56565;"><strong>🔴 Group 3: The Fitness Coaches</strong>Exercise focus — running laps, heart rate, heartbeats.</div>
+                    <div class="group-card" style="border-color:#ecc94b;"><strong>🟡 Group 4: The Hydration Specialists</strong>Water focus — bottles, daily water goal, body cells.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 3: M1 MIXED / IMPROPER -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Fraction Language (5.1)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Main Concept</span> Types of Fractions</h3>
+                            <ul>
+                                <li><strong>Proper:</strong> top &lt; bottom, e.g. $\frac{3}{4}$</li>
+                                <li><strong>Improper:</strong> top ≥ bottom, e.g. $\frac{7}{4}$</li>
+                                <li><strong>Mixed number:</strong> whole + fraction, e.g. $1\frac{3}{4}$</li>
+                                <li><strong>Equivalent:</strong> $\frac{1}{2} = \frac{2}{4} = \frac{4}{8}$</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Convert</span></h3>
+                            <p>Mixed → Improper: $2\frac{3}{4} = \frac{2 \times 4 + 3}{4} = \frac{11}{4}$</p>
+                            <p>Improper → Mixed: $\frac{17}{5} = 17 \div 5 = 3$ remainder $2 = 3\frac{2}{5}$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Try It</span></h3>
+                            <p>a) $1\frac{1}{2}$ as improper &nbsp;&nbsp; b) $\frac{23}{6}$ as a mixed number</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 4: M1 ADD/SUB -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Adding &amp; Subtracting (5.2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Fraction Circles</span> Why a common denominator?</h3>
+                            <div class="circle-row">
+                                <div><div class="frac-circle" style="background: conic-gradient(#f6ad55 0 50%, #fff 50% 100%);"></div><div class="circle-caption">$\frac{1}{2}$</div></div>
+                                <div style="font-size:2em;">+</div>
+                                <div><div class="frac-circle" style="background: conic-gradient(#68d391 0 33.33%, #fff 33.33% 100%);"></div><div class="circle-caption">$\frac{1}{3}$</div></div>
+                                <div style="font-size:2em;">=</div>
+                                <div><div class="frac-circle" style="background: repeating-conic-gradient(from 0deg, transparent 0 59deg, #2d3748 59deg 60deg), conic-gradient(#f6ad55 0 50%, #68d391 50% 83.33%, #fff 83.33% 100%);"></div><div class="circle-caption">$\frac{3}{6} + \frac{2}{6} = \frac{5}{6}$</div></div>
+                            </div>
+                            <p>Pieces must be the <span class="highlight">same size</span> before we can count them together!</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span></h3>
+                            <p>a) $2\frac{1}{4} + 1\frac{2}{3}$ &nbsp;&nbsp; b) $3\frac{1}{2} - 1\frac{3}{4}$</p>
+                            <p style="font-size:1em; color:#718096;"><em>Tip: change mixed numbers to improper fractions first.</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 5: M1 MULT / DIV -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Multiplying &amp; Dividing (5.2)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Multiply</span> Top × Top, Bottom × Bottom</h3>
+                            <p>📄 <em>Paper folding:</em> fold $\frac{3}{4}$, then shade $\frac{2}{3}$ of it.</p>
+                            <p>$\frac{2}{3} \times \frac{3}{4} = \frac{6}{12} = \frac{1}{2}$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Divide</span> Keep, Change, Flip</h3>
+                            <p>$\frac{3}{4} \div \frac{3}{8} = \frac{3}{4} \times \frac{8}{3} = \frac{24}{12} = 2$</p>
+                            <p>⚠️ Convert mixed numbers to improper fractions <strong>first</strong>!</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Group 3 &amp; 4 Preview</span></h3>
+                            <p>a) $3\frac{1}{2}$ laps × $\frac{2}{5}$ km &nbsp;&nbsp; b) $15\frac{1}{2}$ L ÷ $\frac{3}{4}$ L bottles</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 6: M1 SOLVE THE HOOK -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1: Solving the Recipe Dilemma</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Scale Factor</span></h3>
+                            <p>$\text{Scale factor} = \dfrac{\text{people needed}}{\text{people in recipe}} = \dfrac{30}{4} = \dfrac{15}{2}$</p>
+                            <p>Flour: $1\frac{1}{2} \times \frac{15}{2} = \frac{3}{2} \times \frac{15}{2} = \frac{45}{4} = 11\frac{1}{4}$ cups</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Portfolio Page 1</span> Scaling Recipes</h3>
+                            <ul>
+                                <li>Choose a traditional healthy Indonesian recipe.</li>
+                                <li>Scale it <strong>UP</strong> for the school festival: <strong>50 people</strong>.</li>
+                                <li>Scale it <strong>DOWN</strong> for exactly <strong>3 people</strong>.</li>
+                                <li>Show every fraction calculation!</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Scale $\frac{3}{4}$ cup of pandan water for 30 people.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 7: M2 MULTIPLIER -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: The Multiplier Method (5.3)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🥤 "20% LESS SUGAR!"</h3>
+                            <p>The original sports drink had <strong>30 g</strong> of sugar. How much is in the new one?</p>
+                            <p>$100\% - 20\% = 80\% \Rightarrow 0.80 \times 30 = 24$ g</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Multiplier Table</span></h3>
+                            <table class="mult-table">
+                                <tr><th>Change</th><th>Multiplier</th></tr>
+                                <tr><td>Increase by 15%</td><td>1.15</td></tr>
+                                <tr><td>Decrease by 20%</td><td>0.80</td></tr>
+                                <tr><td>Decrease by 35%</td><td>0.65</td></tr>
+                                <tr><td>Find 15% of …</td><td>0.15</td></tr>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 8: M2 PERCENTAGE CHANGE -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: Percentage Change in Health Data</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Main Concept</span></h3>
+                            <p style="font-size:1.3em; text-align:center;">$\text{Percentage change} = \dfrac{\text{Difference}}{\text{Original}} \times 100\%$</p>
+                            <p>One quantity as a % of another: $\dfrac{\text{part}}{\text{whole}} \times 100\%$ <em>(same units!)</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Before &amp; After</span> ❤️ Jogging for a month</h3>
+                            <p>Resting heart rate drops from <strong>85 bpm</strong> to <strong>68 bpm</strong>.</p>
+                            <p>Difference $= 85 - 68 = 17$ &nbsp;→&nbsp; $\frac{17}{85} \times 100\% = 20\%$ decrease</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Sugar intake drops from 65 g to 25 g. Find the percentage decrease (1 d.p.).</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 9: M2 STANDARD FORM -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: The Micro &amp; the Macro (5.4)</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Critical Thinking</span> 🦠 vs 🇮🇩</h3>
+                            <p>Covid-19 virus width: <strong>0.000 000 12 m</strong></p>
+                            <p>Indonesia's population: <strong>275 000 000</strong></p>
+                            <p><em>How do scientists write these without miscounting zeros?</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Standard Form</span> $A \times 10^n$, &nbsp;$1 \le A &lt; 10$</h3>
+                            <div class="jump-line"><span class="a-digit">2.75</span>000000 → $2.75 \times 10^{8}$ <span style="font-size:0.55em; letter-spacing:0;">(point jumps 8 places → n = +8)</span></div>
+                            <div class="jump-line">0.000000<span class="a-digit">1.2</span> → $1.2 \times 10^{-7}$ <span style="font-size:0.55em; letter-spacing:0;">(point jumps 7 places → n = −7)</span></div>
+                            <p>🐸 Count the <strong>frog jumps</strong> of the decimal point: big numbers → $n$ positive, tiny numbers → $n$ negative.</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Draw the Frog Jumps</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 10: M2 SF CALCULATIONS -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2: Calculating in Standard Form</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Index Laws</span></h3>
+                            <p>Multiply: $(2 \times 10^3) \times (4 \times 10^5) = 8 \times 10^{3+5} = 8 \times 10^8$</p>
+                            <p>Divide: $(6 \times 10^8) \div (3 \times 10^2) = 2 \times 10^{8-2} = 2 \times 10^6$</p>
+                            <p>Fix $A$: $(9 \times 10^4)(5 \times 10^3) = 45 \times 10^7 = 4.5 \times 10^8$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Sample Question</span> ❤️ Group 3</h3>
+                            <p>A heart beats $3.5 \times 10^7$ times a year. How many beats in 80 years? Give your answer in standard form.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Extension</span></h3>
+                            <p>$(3.2 \times 10^5) + (4.5 \times 10^4)$ — match the indices first!</p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Solve Here</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 11: M3 PROJECT ASSEMBLY -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3: Project Assembly &amp; Synthesis</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Task 1 · 40 min</span> Micro-Health Factsheet</h3>
+                            <ul>
+                                <li>Collect <strong>5 massive</strong> global health statistics.</li>
+                                <li>Collect <strong>5 microscopic</strong> biological measurements.</li>
+                                <li>Convert all 10 into standard form.</li>
+                                <li>Make a <strong>ranking chart</strong> from smallest to largest.</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Task 2 · 40 min</span> Assemble the Portfolio (A3)</h3>
+                            <ol>
+                                <li>The Scaled Healthy Recipe — Fractions</li>
+                                <li>The Health Improvement Analysis — Percentages</li>
+                                <li>The Micro/Macro Data Chart — Standard Form</li>
+                            </ol>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="content-box" style="background:#f0fff4; border-color:#9ae6b4;">
+                            <h3><span class="badge bg-exit">Self-Regulated Check</span></h3>
+                            <ul>
+                                <li>☐ Mixed numbers converted correctly?</li>
+                                <li>☐ Recipe scaled for 50 AND for 3?</li>
+                                <li>☐ Percentage change uses the <em>original</em> value?</li>
+                                <li>☐ Every $A$ value is $1 \le A &lt; 10$?</li>
+                                <li>☐ Units written on every answer?</li>
+                            </ul>
+                            <p style="font-size:1em;"><em>EAL tip: Standard Form = Scientific Notation (Notasi Ilmiah)</em></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SLIDE 12: M4 GALLERY WALK -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4: Showcase &amp; Reflection</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Gallery Walk · 20 min</span></h3>
+                            <ul>
+                                <li>Visit every other group's portfolio.</li>
+                                <li>Check: Is the fraction scaling accurate?</li>
+                                <li>Check: Is standard form written correctly?</li>
+                                <li>Leave one ⭐ (praise) and one 💡 (suggestion) sticky note.</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Chapter 5 Evaluation · 55 min</span></h3>
+                            <p>Visual aids away. Mixed number arithmetic, percentage change, standard form.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Reflection</span></h3>
+                            <p><em>"How does writing numbers in standard form prevent dangerous medical/scientific errors?"</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write">
+                        <div class="write-label">Class Reflections</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div class="progress-indicator" id="progress">Slide 1</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateNav() {
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateNav();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 6 - Chapter 3 Evaluation (Trigonometry)</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Test</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Chapter 3 Evaluation: Trigonometry<small>Grade 12 · Topic 3 · Meeting 6 — Summative Test · 55 minutes · Calculator allowed · Give angles to 1 d.p.</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Score: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 50</div>
+            </div>
+        </div>
+        <div class="teacher-note"><strong>Instructions:</strong> Answer all questions. Show full working — method marks are awarded. Exact answers must be given where the question asks for them.</div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(3, 1fr); "><div class="q"><div><span class="qn">1.</span> Given $\tan A = \frac{5}{12}$ and $180^\circ &lt; A &lt; 270^\circ$, find the exact values of $\sec A$ and $\operatorname{cosec} A$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">2.</span> Solve $\operatorname{cosec}^2\theta = 3 + \cot\theta$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">3.</span> Find the exact value of $\tan 15^\circ$ in the form $a + b\sqrt3$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">4.</span> $\sin A = \frac45$ ($A$ acute), $\cos B = -\frac{5}{13}$ ($B$ obtuse). Find the exact value of $\sin(A + B)$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">5.</span> Solve $2\cos(\theta + 60^\circ) = \sin\theta$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">6.</span> Prove that $\sin 3x \equiv 3\sin x - 4\sin^3 x$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 1 of 3</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="grid22 grow" style="grid-template-rows: repeat(3, 1fr); "><div class="q"><div><span class="qn">7.</span> Solve $\cos 2x + 3\cos x = 1$ for $0^\circ \le x \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">8.</span> Prove that $\dfrac{\sin 2\theta}{1 - \cos 2\theta} \equiv \cot\theta$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">9.</span> Prove that $\dfrac{1 + \cos\theta}{\sin\theta} + \dfrac{\sin\theta}{1 + \cos\theta} \equiv 2\operatorname{cosec}\theta$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10a.</span> Express $8\sin\theta - 6\cos\theta$ in the form $R\sin(\theta - \alpha)$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10b.</span> Hence solve $8\sin\theta - 6\cos\theta = 5$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10c.</span> Find the greatest value of $\dfrac{1}{12 + 8\sin\theta - 6\cos\theta}$ and the value of $\theta$ where it occurs. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div></div>
+        <div class="row" style="height: 44mm;">
+            <div class="q"><div><span class="qn">11.</span> 🎡 A Ferris wheel seat is at height $h = 20 + 5\sin(15t)^\circ - 12\cos(15t)^\circ$ m after $t$ minutes. Use the $R$-form to find the greatest height and the first time it occurs. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div>
+            <div class="q"><div><span class="qn">✍️ Reflection:</span> Which identity or method from this chapter was the most useful tool for you, and why?</div><div class="line"></div><div class="line"></div><div class="line"></div></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 2 of 3</div>
+    </div>
+
+    <!-- ===================== PAGE 3 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>🔑 Teacher Answer Key — Chapter 3 Evaluation (Trigonometry)</h1>
+            <p>Print separately · M = method mark, A = accuracy mark, B = independent mark</p>
+        </div>
+        <table class="tbl grow" style="font-size: 9pt;">
+            <tr><th style="width: 7%;">Q</th><th class="l">Working</th><th style="width: 27%;">Answer</th><th style="width: 10%;">Marks</th></tr>
+            <tr><td>1</td><td class="l">Hypotenuse 13; third quadrant so $\cos A = -\frac{12}{13}$, $\sin A = -\frac{5}{13}$</td><td>$\sec A = -\frac{13}{12}$, $\operatorname{cosec} A = -\frac{13}{5}$</td><td>M1 A1 A1</td></tr>
+            <tr><td>2</td><td class="l">$1 + \cot^2\theta = 3 + \cot\theta \Rightarrow (\cot\theta - 2)(\cot\theta + 1) = 0 \Rightarrow \tan\theta = \frac12$ or $-1$</td><td>$26.6^\circ, 206.6^\circ, 135^\circ, 315^\circ$</td><td>M1 M1 A1 A1 A1</td></tr>
+            <tr><td>3</td><td class="l">$\tan(45^\circ - 30^\circ) = \frac{1 - \frac{1}{\sqrt3}}{1 + \frac{1}{\sqrt3}} = \frac{\sqrt3 - 1}{\sqrt3 + 1}$, rationalise</td><td>$2 - \sqrt3$</td><td>M1 M1 A1</td></tr>
+            <tr><td>4</td><td class="l">$\cos A = \frac35$, $\sin B = \frac{12}{13}$; $\frac45 \cdot (-\frac{5}{13}) + \frac35 \cdot \frac{12}{13}$</td><td>$\frac{16}{65}$</td><td>B1 B1 M1 A1</td></tr>
+            <tr><td>5</td><td class="l">$\cos\theta - \sqrt3\sin\theta = \sin\theta \Rightarrow \tan\theta = \frac{1}{1 + \sqrt3} = 0.366$</td><td>$20.1^\circ, 200.1^\circ$</td><td>M1 M1 A1 A1 A1</td></tr>
+            <tr><td>6</td><td class="l">$\sin(2x + x) = 2\sin x\cos^2 x + (1 - 2\sin^2 x)\sin x = 2\sin x(1 - \sin^2 x) + \sin x - 2\sin^3 x$</td><td>$3\sin x - 4\sin^3 x$ shown</td><td>M1 M1 M1 A1</td></tr>
+            <tr><td>7</td><td class="l">$2\cos^2 x - 1 + 3\cos x - 1 = 0 \Rightarrow (2\cos x - 1)(\cos x + 2) = 0$; $\cos x = -2$ rejected</td><td>$60^\circ, 300^\circ$</td><td>M1 M1 B1 A1 A1</td></tr>
+            <tr><td>8</td><td class="l">$\frac{2\sin\theta\cos\theta}{1 - (1 - 2\sin^2\theta)} = \frac{2\sin\theta\cos\theta}{2\sin^2\theta}$</td><td>$\cot\theta$ shown</td><td>M1 M1 A1</td></tr>
+            <tr><td>9</td><td class="l">$\frac{(1 + \cos\theta)^2 + \sin^2\theta}{\sin\theta(1 + \cos\theta)} = \frac{2 + 2\cos\theta}{\sin\theta(1 + \cos\theta)}$</td><td>$\frac{2}{\sin\theta} = 2\operatorname{cosec}\theta$ shown</td><td>M1 M1 M1 A1</td></tr>
+            <tr><td>10a</td><td class="l">$R = \sqrt{64 + 36}$, $\tan\alpha = \frac68$</td><td>$10\sin(\theta - 36.87^\circ)$</td><td>B1 M1 A1</td></tr>
+            <tr><td>10b</td><td class="l">$\sin(\theta - 36.87^\circ) = 0.5 \Rightarrow \theta - 36.87^\circ = 30^\circ, 150^\circ$</td><td>$66.9^\circ, 186.9^\circ$</td><td>M1 M1 A1 A1</td></tr>
+            <tr><td>10c</td><td class="l">Least denominator $12 - 10 = 2$ when $\theta - 36.87^\circ = 270^\circ$</td><td>$\frac12$ at $\theta = 306.9^\circ$</td><td>M1 A1 A1</td></tr>
+            <tr><td>11</td><td class="l">$5\sin x - 12\cos x = 13\sin(x - 67.38^\circ)$; max when $x - 67.38^\circ = 90^\circ$, $x = 15t$</td><td>33 m at $t = 10.5$ min</td><td>M1 A1 A1 A1</td></tr>
+        </table>
+        <div class="teacher-note"><strong>Grade boundaries (suggested):</strong> 45–50 Excellent · 38–44 Good · 30–37 Satisfactory · below 30 Remedial (re-use Worksheets 1–5 and the Web Lab).</div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 3 of 3</div>
+    </div>
+
+</body>
+</html>

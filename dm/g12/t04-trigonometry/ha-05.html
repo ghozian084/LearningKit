@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 5 - Adding Waves and the Tide Report</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 5 · Meeting 5: Adding Two Waves</h1>
+            <p>Grade 12 · Topic 3 · EXPLORE phase — one sheet per student · add the two heights at every 30°, plot, and join smoothly</p>
+        </div>
+        <svg viewBox="0 0 186 120" style="width: 186mm; height: 120mm; align-self: center;"><line x1="12.0" y1="4" x2="12.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="19.0" y1="4" x2="19.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="26.0" y1="4" x2="26.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="33.0" y1="4" x2="33.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="40.0" y1="4" x2="40.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="47.0" y1="4" x2="47.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="54.0" y1="4" x2="54.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="61.0" y1="4" x2="61.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="68.0" y1="4" x2="68.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="75.0" y1="4" x2="75.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="82.0" y1="4" x2="82.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="89.0" y1="4" x2="89.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="96.0" y1="4" x2="96.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="103.0" y1="4" x2="103.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="110.0" y1="4" x2="110.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="117.0" y1="4" x2="117.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="124.0" y1="4" x2="124.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="131.0" y1="4" x2="131.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="138.0" y1="4" x2="138.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="145.0" y1="4" x2="145.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="152.0" y1="4" x2="152.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="159.0" y1="4" x2="159.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="166.0" y1="4" x2="166.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="173.0" y1="4" x2="173.0" y2="116" stroke="#edf2f7" stroke-width="0.3"/><line x1="180.0" y1="4" x2="180.0" y2="116" stroke="#cbd5e0" stroke-width="0.4"/><line x1="12" y1="110.9" x2="180" y2="110.9" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="112.2" font-size="4" text-anchor="end">-5</text><line x1="12" y1="105.8" x2="180" y2="105.8" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="100.7" x2="180" y2="100.7" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="102.0" font-size="4" text-anchor="end">-4</text><line x1="12" y1="95.6" x2="180" y2="95.6" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="90.5" x2="180" y2="90.5" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="91.8" font-size="4" text-anchor="end">-3</text><line x1="12" y1="85.5" x2="180" y2="85.5" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="80.4" x2="180" y2="80.4" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="81.7" font-size="4" text-anchor="end">-2</text><line x1="12" y1="75.3" x2="180" y2="75.3" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="70.2" x2="180" y2="70.2" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="71.5" font-size="4" text-anchor="end">-1</text><line x1="12" y1="65.1" x2="180" y2="65.1" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="60.0" x2="180" y2="60.0" stroke="#cbd5e0" stroke-width="0.3"/><line x1="12" y1="54.9" x2="180" y2="54.9" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="49.8" x2="180" y2="49.8" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="51.1" font-size="4" text-anchor="end">1</text><line x1="12" y1="44.7" x2="180" y2="44.7" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="39.6" x2="180" y2="39.6" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="40.9" font-size="4" text-anchor="end">2</text><line x1="12" y1="34.5" x2="180" y2="34.5" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="29.5" x2="180" y2="29.5" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="30.8" font-size="4" text-anchor="end">3</text><line x1="12" y1="24.4" x2="180" y2="24.4" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="19.3" x2="180" y2="19.3" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="20.6" font-size="4" text-anchor="end">4</text><line x1="12" y1="14.2" x2="180" y2="14.2" stroke="#edf2f7" stroke-width="0.3"/><line x1="12" y1="9.1" x2="180" y2="9.1" stroke="#cbd5e0" stroke-width="0.3"/><text x="9" y="10.4" font-size="4" text-anchor="end">5</text><line x1="12" y1="60.0" x2="180" y2="60.0" stroke="#2d3748" stroke-width="0.6"/><line x1="12" y1="4" x2="12" y2="116" stroke="#2d3748" stroke-width="0.6"/><text x="26.0" y="64.5" font-size="3.6" text-anchor="middle">30°</text><text x="40.0" y="64.5" font-size="3.6" text-anchor="middle">60°</text><text x="54.0" y="64.5" font-size="3.6" text-anchor="middle">90°</text><text x="68.0" y="64.5" font-size="3.6" text-anchor="middle">120°</text><text x="82.0" y="64.5" font-size="3.6" text-anchor="middle">150°</text><text x="96.0" y="64.5" font-size="3.6" text-anchor="middle">180°</text><text x="110.0" y="64.5" font-size="3.6" text-anchor="middle">210°</text><text x="124.0" y="64.5" font-size="3.6" text-anchor="middle">240°</text><text x="138.0" y="64.5" font-size="3.6" text-anchor="middle">270°</text><text x="152.0" y="64.5" font-size="3.6" text-anchor="middle">300°</text><text x="166.0" y="64.5" font-size="3.6" text-anchor="middle">330°</text><text x="180.0" y="64.5" font-size="3.6" text-anchor="middle">360°</text><polyline points="12.0,60.0 12.9,58.9 13.9,57.9 14.8,56.8 15.7,55.7 16.7,54.7 17.6,53.6 18.5,52.6 19.5,51.6 20.4,50.6 21.3,49.6 22.3,48.6 23.2,47.6 24.1,46.6 25.1,45.7 26.0,44.7 26.9,43.8 27.9,42.9 28.8,42.0 29.7,41.2 30.7,40.4 31.6,39.6 32.5,38.8 33.5,38.0 34.4,37.3 35.3,36.6 36.3,35.9 37.2,35.3 38.1,34.7 39.1,34.1 40.0,33.5 40.9,33.0 41.9,32.5 42.8,32.1 43.7,31.7 44.7,31.3 45.6,30.9 46.5,30.6 47.5,30.4 48.4,30.1 49.3,29.9 50.3,29.8 51.2,29.6 52.1,29.5 53.1,29.5 54.0,29.5 54.9,29.5 55.9,29.5 56.8,29.6 57.7,29.8 58.7,29.9 59.6,30.1 60.5,30.4 61.5,30.6 62.4,30.9 63.3,31.3 64.3,31.7 65.2,32.1 66.1,32.5 67.1,33.0 68.0,33.5 68.9,34.1 69.9,34.7 70.8,35.3 71.7,35.9 72.7,36.6 73.6,37.3 74.5,38.0 75.5,38.8 76.4,39.6 77.3,40.4 78.3,41.2 79.2,42.0 80.1,42.9 81.1,43.8 82.0,44.7 82.9,45.7 83.9,46.6 84.8,47.6 85.7,48.6 86.7,49.6 87.6,50.6 88.5,51.6 89.5,52.6 90.4,53.6 91.3,54.7 92.3,55.7 93.2,56.8 94.1,57.9 95.1,58.9 96.0,60.0 96.9,61.1 97.9,62.1 98.8,63.2 99.7,64.3 100.7,65.3 101.6,66.4 102.5,67.4 103.5,68.4 104.4,69.4 105.3,70.4 106.3,71.4 107.2,72.4 108.1,73.4 109.1,74.3 110.0,75.3 110.9,76.2 111.9,77.1 112.8,78.0 113.7,78.8 114.7,79.6 115.6,80.4 116.5,81.2 117.5,82.0 118.4,82.7 119.3,83.4 120.3,84.1 121.2,84.7 122.1,85.3 123.1,85.9 124.0,86.5 124.9,87.0 125.9,87.5 126.8,87.9 127.7,88.3 128.7,88.7 129.6,89.1 130.5,89.4 131.5,89.6 132.4,89.9 133.3,90.1 134.3,90.2 135.2,90.4 136.1,90.5 137.1,90.5 138.0,90.5 138.9,90.5 139.9,90.5 140.8,90.4 141.7,90.2 142.7,90.1 143.6,89.9 144.5,89.6 145.5,89.4 146.4,89.1 147.3,88.7 148.3,88.3 149.2,87.9 150.1,87.5 151.1,87.0 152.0,86.5 152.9,85.9 153.9,85.3 154.8,84.7 155.7,84.1 156.7,83.4 157.6,82.7 158.5,82.0 159.5,81.2 160.4,80.4 161.3,79.6 162.3,78.8 163.2,78.0 164.1,77.1 165.1,76.2 166.0,75.3 166.9,74.3 167.9,73.4 168.8,72.4 169.7,71.4 170.7,70.4 171.6,69.4 172.5,68.4 173.5,67.4 174.4,66.4 175.3,65.3 176.3,64.3 177.2,63.2 178.1,62.1 179.1,61.1 180.0,60.0" fill="none" stroke="#3182ce" stroke-width="0.8"/><polyline points="12.0,19.3 12.9,19.3 13.9,19.4 14.8,19.5 15.7,19.7 16.7,19.9 17.6,20.2 18.5,20.5 19.5,20.9 20.4,21.3 21.3,21.7 22.3,22.2 23.2,22.8 24.1,23.4 25.1,24.0 26.0,24.7 26.9,25.5 27.9,26.2 28.8,27.1 29.7,27.9 30.7,28.8 31.6,29.7 32.5,30.7 33.5,31.7 34.4,32.7 35.3,33.8 36.3,34.9 37.2,36.1 38.1,37.2 39.1,38.4 40.0,39.6 40.9,40.9 41.9,42.1 42.8,43.4 43.7,44.7 44.7,46.1 45.6,47.4 46.5,48.8 47.5,50.1 48.4,51.5 49.3,52.9 50.3,54.3 51.2,55.7 52.1,57.2 53.1,58.6 54.0,60.0 54.9,61.4 55.9,62.8 56.8,64.3 57.7,65.7 58.7,67.1 59.6,68.5 60.5,69.9 61.5,71.2 62.4,72.6 63.3,73.9 64.3,75.3 65.2,76.6 66.1,77.9 67.1,79.1 68.0,80.4 68.9,81.6 69.9,82.8 70.8,83.9 71.7,85.1 72.7,86.2 73.6,87.3 74.5,88.3 75.5,89.3 76.4,90.3 77.3,91.2 78.3,92.1 79.2,92.9 80.1,93.8 81.1,94.5 82.0,95.3 82.9,96.0 83.9,96.6 84.8,97.2 85.7,97.8 86.7,98.3 87.6,98.7 88.5,99.1 89.5,99.5 90.4,99.8 91.3,100.1 92.3,100.3 93.2,100.5 94.1,100.6 95.1,100.7 96.0,100.7 96.9,100.7 97.9,100.6 98.8,100.5 99.7,100.3 100.7,100.1 101.6,99.8 102.5,99.5 103.5,99.1 104.4,98.7 105.3,98.3 106.3,97.8 107.2,97.2 108.1,96.6 109.1,96.0 110.0,95.3 110.9,94.5 111.9,93.8 112.8,92.9 113.7,92.1 114.7,91.2 115.6,90.3 116.5,89.3 117.5,88.3 118.4,87.3 119.3,86.2 120.3,85.1 121.2,83.9 122.1,82.8 123.1,81.6 124.0,80.4 124.9,79.1 125.9,77.9 126.8,76.6 127.7,75.3 128.7,73.9 129.6,72.6 130.5,71.2 131.5,69.9 132.4,68.5 133.3,67.1 134.3,65.7 135.2,64.3 136.1,62.8 137.1,61.4 138.0,60.0 138.9,58.6 139.9,57.2 140.8,55.7 141.7,54.3 142.7,52.9 143.6,51.5 144.5,50.1 145.5,48.8 146.4,47.4 147.3,46.1 148.3,44.7 149.2,43.4 150.1,42.1 151.1,40.9 152.0,39.6 152.9,38.4 153.9,37.2 154.8,36.1 155.7,34.9 156.7,33.8 157.6,32.7 158.5,31.7 159.5,30.7 160.4,29.7 161.3,28.8 162.3,27.9 163.2,27.1 164.1,26.2 165.1,25.5 166.0,24.7 166.9,24.0 167.9,23.4 168.8,22.8 169.7,22.2 170.7,21.7 171.6,21.3 172.5,20.9 173.5,20.5 174.4,20.2 175.3,19.9 176.3,19.7 177.2,19.5 178.1,19.4 179.1,19.3 180.0,19.3" fill="none" stroke="#e53e3e" stroke-width="0.8"/><text x="178" y="9" font-size="4.5" fill="#3182ce" text-anchor="end">— y = 3 sin x</text><text x="178" y="15" font-size="4.5" fill="#e53e3e" text-anchor="end">— y = 4 cos x</text><text x="178" y="21" font-size="4.5" fill="#2d3748" text-anchor="end">plot: y = 3 sin x + 4 cos x</text></svg>
+        <table class="tbl" style="font-size: 8.5pt;">
+            <tr><th class="l">$x$</th><th>0°</th><th>30°</th><th>60°</th><th>90°</th><th>120°</th><th>150°</th><th>180°</th><th>210°</th><th>240°</th><th>270°</th><th>300°</th><th>330°</th><th>360°</th></tr>
+            <tr><td class="l">$3\sin x$</td><td>0</td><td>1.50</td><td>2.60</td><td>3.00</td><td>2.60</td><td>1.50</td><td>0</td><td>-1.50</td><td>-2.60</td><td>-3.00</td><td>-2.60</td><td>-1.50</td><td>0</td></tr>
+            <tr><td class="l">$4\cos x$</td><td>4.00</td><td>3.46</td><td>2.00</td><td>0</td><td>-2.00</td><td>-3.46</td><td>-4.00</td><td>-3.46</td><td>-2.00</td><td>0</td><td>2.00</td><td>3.46</td><td>4.00</td></tr>
+            <tr style="height: 10mm;"><td class="l"><strong>Sum</strong></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td></tr>
+        </table>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around; font-size: 11pt;">
+            <span class="box-title">🔍 What does the sum look like?</span>
+            <p>Maximum of the sum ≈ ________ at $x$ ≈ ________ &nbsp;&nbsp;&nbsp; Minimum ≈ ________ at $x$ ≈ ________</p>
+            <p>Compare with $\sqrt{3^2 + 4^2} =$ ________ &nbsp; and &nbsp; $\tan^{-1}\left(\frac43\right) =$ ________°</p>
+            <p>My conjecture: &nbsp; $3\sin x + 4\cos x = $ ______ $\sin(x + $ ______ $)$</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 5 · Meeting 5 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>🌊 Tide Report — Tanjung Priok Port</h1>
+            <p>PBL product (individual) — complete in Meeting 5, present in Meeting 6 · Name: ______________________ Class: ________</p>
+        </div>
+        <div class="box action" style="font-size: 9.5pt;">Model: $h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$ metres, $0 \le t \le 12$ (hours after midnight). A cargo ship needs $h \ge 1.8$ m.</div>
+        <div style="border: 1.5px solid #2b6cb0; border-radius: 4px; display: flex; flex-direction: column; height: 20mm;"><div style="background: #ebf8ff; color: var(--primary); font-weight: bold; padding: 1mm 3mm;">1 · The R-form</div><div style="flex: 1; padding: 1.5mm 3mm; display: flex; flex-direction: column; gap: 1.5mm; min-height: 0;"><p>$0.6\sin x + 0.8\cos x = R\sin(x + \alpha)$ with $R =$ ________ and $\alpha =$ ________°, &nbsp; so $h(t) =$ ______________________________</p></div></div>
+        <div style="border: 1.5px solid #2b6cb0; border-radius: 4px; display: flex; flex-direction: column; flex: 1; min-height: 0;"><div style="background: #ebf8ff; color: var(--primary); font-weight: bold; padding: 1mm 3mm;">2 · Sketch of h(t) — mark the maximum, the minimum and the safe windows</div><div style="flex: 1; padding: 1.5mm 3mm; display: flex; flex-direction: column; gap: 1.5mm; min-height: 0;"><svg viewBox="0 0 186 85" style="width: 100%; flex: 1; min-height: 0;" preserveAspectRatio="none"><line x1="14.0" y1="6" x2="14.0" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="14.0" y="82.0" font-size="4" text-anchor="middle">00:00</text><line x1="27.7" y1="6" x2="27.7" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="27.7" y="82.0" font-size="4" text-anchor="middle">01:00</text><line x1="41.3" y1="6" x2="41.3" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="41.3" y="82.0" font-size="4" text-anchor="middle">02:00</text><line x1="55.0" y1="6" x2="55.0" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="55.0" y="82.0" font-size="4" text-anchor="middle">03:00</text><line x1="68.7" y1="6" x2="68.7" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="68.7" y="82.0" font-size="4" text-anchor="middle">04:00</text><line x1="82.3" y1="6" x2="82.3" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="82.3" y="82.0" font-size="4" text-anchor="middle">05:00</text><line x1="96.0" y1="6" x2="96.0" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="96.0" y="82.0" font-size="4" text-anchor="middle">06:00</text><line x1="109.7" y1="6" x2="109.7" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="109.7" y="82.0" font-size="4" text-anchor="middle">07:00</text><line x1="123.3" y1="6" x2="123.3" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="123.3" y="82.0" font-size="4" text-anchor="middle">08:00</text><line x1="137.0" y1="6" x2="137.0" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="137.0" y="82.0" font-size="4" text-anchor="middle">09:00</text><line x1="150.7" y1="6" x2="150.7" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="150.7" y="82.0" font-size="4" text-anchor="middle">10:00</text><line x1="164.3" y1="6" x2="164.3" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="164.3" y="82.0" font-size="4" text-anchor="middle">11:00</text><line x1="178.0" y1="6" x2="178.0" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="178.0" y="82.0" font-size="4" text-anchor="middle">12:00</text><line x1="14" y1="77.0" x2="178" y2="77.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="78.3" font-size="4" text-anchor="end">0.0</text><line x1="14" y1="62.8" x2="178" y2="62.8" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="64.1" font-size="4" text-anchor="end">0.5</text><line x1="14" y1="48.6" x2="178" y2="48.6" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="49.9" font-size="4" text-anchor="end">1.0</text><line x1="14" y1="34.4" x2="178" y2="34.4" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="35.7" font-size="4" text-anchor="end">1.5</text><line x1="14" y1="20.2" x2="178" y2="20.2" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="21.5" font-size="4" text-anchor="end">2.0</text><line x1="14" y1="6.0" x2="178" y2="6.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="11" y="7.3" font-size="4" text-anchor="end">2.5</text><line x1="14" y1="25.9" x2="178" y2="25.9" stroke="#c53030" stroke-width="0.6" stroke-dasharray="2,1"/><text x="177" y="24.4" font-size="4" fill="#c53030" text-anchor="end">safe docking level 1.8 m</text><line x1="14" y1="77.0" x2="178" y2="77.0" stroke="#2d3748" stroke-width="0.6"/><line x1="14" y1="6" x2="14" y2="77.0" stroke="#2d3748" stroke-width="0.6"/><text x="16" y="10" font-size="4.5" fill="#4a5568">h (m)</text></svg></div></div>
+        <div class="row" style="height: 42mm;">
+            <div style="border: 1.5px solid #2b6cb0; border-radius: 4px; display: flex; flex-direction: column; flex: 1; min-height: 0;"><div style="background: #ebf8ff; color: var(--primary); font-weight: bold; padding: 1mm 3mm;">3 · Highest &amp; lowest tide</div><div style="flex: 1; padding: 1.5mm 3mm; display: flex; flex-direction: column; gap: 1.5mm; min-height: 0;"><p>Highest: ______ m at ______ (hh:mm)</p><p>Lowest: ______ m at ______ (hh:mm)</p><p>Working:</p></div></div>
+            <div style="border: 1.5px solid #2b6cb0; border-radius: 4px; display: flex; flex-direction: column; flex: 1; min-height: 0;"><div style="background: #ebf8ff; color: var(--primary); font-weight: bold; padding: 1mm 3mm;">4 · Safe docking windows</div><div style="flex: 1; padding: 1.5mm 3mm; display: flex; flex-direction: column; gap: 1.5mm; min-height: 0;"><p>$h \ge 1.8 \Rightarrow \sin(30t + \alpha) \ge$ ______</p><p>Window 1: ______ to ______</p><p>Window 2: ______ to ______</p></div></div>
+        </div>
+        <div style="border: 1.5px solid #2b6cb0; border-radius: 4px; display: flex; flex-direction: column; height: 34mm;"><div style="background: #ebf8ff; color: var(--primary); font-weight: bold; padding: 1mm 3mm;">5 · My recommendation to the harbour master</div><div style="flex: 1; padding: 1.5mm 3mm; display: flex; flex-direction: column; gap: 1.5mm; min-height: 0;"><div class="line"></div><div class="line"></div><div class="line"></div></div></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 5 · Meeting 5 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,802 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Slides - Trigonometry</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Recipe Card */
+        .recipe-card { background: #fffaf0; border: 2px solid #dd6b20; border-radius: 10px; padding: 12px 18px; }
+        .recipe-card table { width: 100%; border-collapse: collapse; font-size: 1.1em; }
+        .recipe-card td { padding: 5px 8px; border-bottom: 1px dotted #f6ad55; }
+
+        /* Fraction circles (CSS conic) */
+        .circle-row { display: flex; gap: 25px; align-items: center; justify-content: center; margin: 8px 0; }
+        .frac-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #2d3748; }
+        .circle-caption { text-align: center; font-weight: bold; margin-top: 4px; }
+
+        /* Multiplier table */
+        .mult-table { border-collapse: collapse; width: 100%; font-size: 1.1em; }
+        .mult-table th, .mult-table td { border: 1px solid #cbd5e0; padding: 6px 10px; text-align: center; }
+        .mult-table th { background: #ebf8ff; color: var(--primary); }
+
+        /* Frog Jumps */
+        .jump-line { font-family: 'Courier New', monospace; font-size: 1.6em; letter-spacing: 6px; text-align: center; margin: 6px 0; }
+        .jump-line .a-digit { background: #fbd38d; border-radius: 4px; padding: 0 3px; }
+
+        /* Group mini cards */
+        .group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .group-card { border-left: 6px solid; background: #f7fafc; padding: 8px 12px; border-radius: 6px; font-size: 0.95em; }
+        .group-card strong { display: block; color: var(--primary); }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 20px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <div class="slide title-slide active">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Trigonometry</h1>
+                <h2>Grade 12 Mathematics — Topic 3 · Pure Mathematics 2 &amp; 3</h2>
+                <div class="five-e"><span class="b-engage">Engage</span><span class="b-explore">Explore</span><span class="b-explain">Explain</span><span class="b-elaborate">Elaborate</span><span class="b-evaluate">Evaluate</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">🌊 PBL: The Tanjung Priok Tide Challenge</p>
+                <p><em>Interactive Teaching Slides | Use the pen above to write directly on any slide.</em></p>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">🌊 Our Driving Problem</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">The Problem</span></h3>
+                            <p>The tide height at Tanjung Priok port is</p>
+                            <p style="font-size: 1.3em; text-align: center;">$h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$ m</p>
+                            <p>($t$ = hours after midnight). A cargo ship needs $h \ge 1.8$ m to dock.</p>
+                            <p><strong>When is it safe to dock? What is the highest tide?</strong></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Our Journey</span></h3>
+                            <p>M1 sec/cosec/cot · M2 compound angles · M3 double angles · M4 identities · <strong>M5 $R$-formula → solve it!</strong> · M6 present &amp; test</p>
+                            <p>Everyone works <strong>individually</strong> and writes their own Tide Report.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">What do we need to know?</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 1 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-engage tag">Engage</span> The School Ramp</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">PBL 1 · Orientation</span> ♿</h3>
+                            <p>A wheelchair ramp rises <strong>0.5 m</strong>. The rule: angle $\theta \le 4.8^\circ$.</p>
+                            <p>Ramp length: $L = \dfrac{0.5}{\sin\theta}$</p>
+                            <ul>
+                                <li>Find $L$ for $4.8^\circ$ and $10^\circ$.</li>
+                                <li>Is a 7 m ramp legal?</li>
+                            </ul>
+                            <p>🤔 $\dfrac{1}{\sin\theta}$ keeps appearing… does it deserve its own name?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explore tag">Explore</span> Measuring the Unit Circle</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 1</span> $\theta = 35^\circ$, radius 7 cm</h3>
+                            <ul>
+                                <li>Draw the tangents at $A(1, 0)$ and $B(0, 1)$.</li>
+                                <li>Extend $OP$ to meet them at $T$ and $S$.</li>
+                                <li>Measure $AT$, $OT$, $BS$, $OS$ and divide by 7.</li>
+                                <li>Compare with $\tan 35^\circ$, $\frac{1}{\cos 35^\circ}$, $\frac{1}{\tan 35^\circ}$, $\frac{1}{\sin 35^\circ}$.</li>
+                            </ul>
+                            <p>🔍 Triangle $OAT$ is right-angled… what does Pythagoras tell you?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Share Measurements</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explain tag">Explain</span> sec, cosec, cot</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Definitions</span></h3>
+                            <p>$\sec\theta = \dfrac{1}{\cos\theta}$ &nbsp; $\operatorname{cosec}\theta = \dfrac{1}{\sin\theta}$ &nbsp; $\cot\theta = \dfrac{1}{\tan\theta} = \dfrac{\cos\theta}{\sin\theta}$</p>
+                            <p><em>3rd letter → parent: se<strong>c</strong> ↔ <strong>c</strong>os, co<strong>s</strong>ec ↔ <strong>s</strong>in</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Identities</span> divide $\sin^2\theta + \cos^2\theta \equiv 1$</h3>
+                            <p>÷ $\cos^2\theta$: &nbsp; $\tan^2\theta + 1 \equiv \sec^2\theta$</p>
+                            <p>÷ $\sin^2\theta$: &nbsp; $1 + \cot^2\theta \equiv \operatorname{cosec}^2\theta$</p>
+                        </div>
+                        <div class="content-box"><p>📈 Graphs: asymptotes where the parent graph is 0 (Web Lab, Tab 1).</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Sketch y = sec x</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-elaborate tag">Elaborate</span> &amp; <span class="b-evaluate tag">Evaluate</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Worked Example</span></h3>
+                            <p>Solve $2\tan^2\theta + \sec\theta = 1$, $0^\circ \le \theta \le 360^\circ$.</p>
+                            <p>$2(\sec^2\theta - 1) + \sec\theta - 1 = 0 \Rightarrow 2\sec^2\theta + \sec\theta - 3 = 0$</p>
+                            <p>$(2\sec\theta + 3)(\sec\theta - 1) = 0 \Rightarrow \cos\theta = -\frac23$ or $\cos\theta = 1$</p>
+                            <p>$\theta = 0^\circ, 131.8^\circ, 228.2^\circ, 360^\circ$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Solve $\operatorname{cosec} x = 3$ for $0^\circ \le x \le 360^\circ$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 2 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-engage tag">Engage</span> Is sin(A + B) = sin A + sin B?</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">PBL 1 · Test it!</span></h3>
+                            <p>$\sin(30^\circ + 60^\circ) = \sin 90^\circ = $ ?</p>
+                            <p>$\sin 30^\circ + \sin 60^\circ = $ ?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">The Joglo Roof</span> 🏠</h3>
+                            <p>A designer needs the <strong>exact</strong> value of $\sin 75^\circ = \sin(45^\circ + 30^\circ)$ — no calculator allowed. How?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Predictions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explore tag">Explore</span> The Three-Triangle Proof Kit</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 2</span> $A = 30^\circ$, $B = 40^\circ$</h3>
+                            <ul>
+                                <li>① hypotenuse 1, angle $B$ → sides $\cos B$, $\sin B$</li>
+                                <li>② hypotenuse $\cos B$, angle $A$</li>
+                                <li>③ hypotenuse $\sin B$, angle $A$</li>
+                                <li>Assemble on the mat. Height of $P$ = $\sin(A + B)$.</li>
+                            </ul>
+                            <p>🔍 Which two vertical pieces make up the height of $P$?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Height of P = …</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explain tag">Explain</span> Compound Angle Formulae</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Formulae</span></h3>
+                            <p>$\sin(A \pm B) \equiv \sin A\cos B \pm \cos A\sin B$</p>
+                            <p>$\cos(A \pm B) \equiv \cos A\cos B \mp \sin A\sin B$ &nbsp; ⚠️ sign swaps!</p>
+                            <p>$\tan(A \pm B) \equiv \dfrac{\tan A \pm \tan B}{1 \mp \tan A\tan B}$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Exact Value</span></h3>
+                            <p>$\sin 75^\circ = \frac{\sqrt2}{2}\cdot\frac{\sqrt3}{2} + \frac{\sqrt2}{2}\cdot\frac12 = \dfrac{\sqrt6 + \sqrt2}{4}$</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Guided Practice: tan 75°</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-elaborate tag">Elaborate</span> &amp; <span class="b-evaluate tag">Evaluate</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Worked Example</span></h3>
+                            <p>Solve $\sin(\theta + 30^\circ) = 2\cos\theta$, $0^\circ \le \theta \le 360^\circ$.</p>
+                            <p>$\frac{\sqrt3}{2}\sin\theta + \frac12\cos\theta = 2\cos\theta \Rightarrow \frac{\sqrt3}{2}\sin\theta = \frac32\cos\theta$</p>
+                            <p>$\tan\theta = \sqrt3 \Rightarrow \theta = 60^\circ, 240^\circ$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Find the exact value of $\cos 75^\circ$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 3 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-engage tag">Engage</span> The Perfect Sepak Takraw Kick</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">PBL 1</span> ⚽</h3>
+                            <p>Range of a kick: $R = \dfrac{v^2\sin 2\theta}{g}$. With $v = 10$, $g = 10$: $R = 10\sin 2\theta$.</p>
+                            <table class="mult-table">
+                                <tr><th>$\theta$</th><th>15°</th><th>30°</th><th>45°</th><th>60°</th><th>75°</th></tr>
+                                <tr><td>$R$</td><td>?</td><td>?</td><td>?</td><td>?</td><td>?</td></tr>
+                            </table>
+                            <p>Why do $30^\circ$ and $60^\circ$ give the same range? Why is $45^\circ$ best?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Ideas</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explore tag">Explore</span> Cut-and-Rearrange Proof</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 3</span></h3>
+                            <ul>
+                                <li>Isosceles triangle: equal sides 1, apex $2\theta$. Area $= \frac12\sin 2\theta$.</li>
+                                <li>Cut along the altitude → two halves with sides $\sin\theta$, $\cos\theta$.</li>
+                                <li>Rearrange into a rectangle: area $= \sin\theta\cos\theta$.</li>
+                            </ul>
+                            <p style="font-size: 1.3em;">$\Rightarrow \sin 2\theta = 2\sin\theta\cos\theta$</p>
+                        </div>
+                        <div class="content-box"><p>🔍 Now put $B = A$ in $\cos(A + B)$ and $\tan(A + B)$. What do you get?</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Derive cos 2A</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explain tag">Explain</span> Three Faces of cos 2A</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Formulae</span></h3>
+                            <p>$\sin 2A \equiv 2\sin A\cos A$ &nbsp;&nbsp; $\tan 2A \equiv \dfrac{2\tan A}{1 - \tan^2 A}$</p>
+                            <p>$\cos 2A \equiv \cos^2 A - \sin^2 A \equiv 2\cos^2 A - 1 \equiv 1 - 2\sin^2 A$</p>
+                            <p>$\cos^2 A \equiv \frac{1 + \cos 2A}{2}$ &nbsp;&nbsp; $\sin^2 A \equiv \frac{1 - \cos 2A}{2}$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Card Sort</span> Which form?</h3>
+                            <p>Other terms in $\sin x$ → $1 - 2\sin^2 x$ · in $\cos x$ → $2\cos^2 x - 1$ · with $\sin 2x$ → factorise, never divide!</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Guided Practice</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-elaborate tag">Elaborate</span> &amp; <span class="b-evaluate tag">Evaluate</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Worked Example</span></h3>
+                            <p>Solve $\cos 2x = \sin x$, $0^\circ \le x \le 360^\circ$.</p>
+                            <p>$1 - 2\sin^2 x = \sin x \Rightarrow 2\sin^2 x + \sin x - 1 = 0$</p>
+                            <p>$(2\sin x - 1)(\sin x + 1) = 0 \Rightarrow x = 30^\circ, 150^\circ, 270^\circ$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Given $\cos A = \frac13$, find the exact value of $\cos 2A$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 4 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-engage tag">Engage</span> Two Engineers, Two Formulas</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">PBL 1 · Critical Thinking</span></h3>
+                            <p>Engineer 1: $\dfrac{1 - \cos 2\theta}{\sin 2\theta}$ &nbsp;&nbsp; Engineer 2: $\tan\theta$</p>
+                            <p>At $\theta = 20^\circ$ both give $0.3640$. At $50^\circ$ both give $1.1918$.</p>
+                            <p><strong>Is that a proof?</strong> What would convince a sceptical engineer for <em>every</em> angle?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Testing vs Proving</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explore tag">Explore</span> Proof Puzzles 🧩</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 4</span></h3>
+                            <ul>
+                                <li>Cut out the lettered strips of each puzzle.</li>
+                                <li>Arrange them into a proof: LHS ≡ … ≡ RHS.</li>
+                                <li>One strip in every puzzle is a <strong>trap</strong> — find it and explain the mistake.</li>
+                            </ul>
+                            <p>📈 Check: graph both sides in the Web Lab, Tab 4.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">What makes a good proof?</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explain tag">Explain</span> Proof Strategies</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Toolbox</span></h3>
+                            <ol>
+                                <li>Start from the more complicated side.</li>
+                                <li>Rewrite in $\sin$ and $\cos$.</li>
+                                <li>Use $\sin^2 + \cos^2 \equiv 1$, $1 + \tan^2 \equiv \sec^2$, $1 + \cot^2 \equiv \operatorname{cosec}^2$, double angles.</li>
+                                <li>Combine fractions; factorise ($a^2 - b^2$).</li>
+                                <li>Never move terms across ≡.</li>
+                            </ol>
+                        </div>
+                        <div class="content-box"><p>Equations: turn into a quadratic in <strong>one</strong> ratio, e.g. $\cot^2\theta = \operatorname{cosec}^2\theta - 1$.</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Prove: (1 + cot²θ) sin²θ ≡ 1</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-elaborate tag">Elaborate</span> &amp; <span class="b-evaluate tag">Evaluate</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Worked Example</span></h3>
+                            <p>Solve $3\cot^2\theta - 5\operatorname{cosec}\theta + 1 = 0$, $0^\circ \le \theta \le 360^\circ$.</p>
+                            <p>$3(\operatorname{cosec}^2\theta - 1) - 5\operatorname{cosec}\theta + 1 = 0 \Rightarrow 3\operatorname{cosec}^2\theta - 5\operatorname{cosec}\theta - 2 = 0$</p>
+                            <p>$(3\operatorname{cosec}\theta + 1)(\operatorname{cosec}\theta - 2) = 0$; $\operatorname{cosec}\theta = -\frac13$ impossible</p>
+                            <p>$\sin\theta = \frac12 \Rightarrow \theta = 30^\circ, 150^\circ$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Prove $\tan\theta + \cot\theta \equiv \sec\theta\operatorname{cosec}\theta$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 5 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-engage tag">Engage</span> Back to Tanjung Priok</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">PBL 1 · Re-launch</span> 🌊</h3>
+                            <p>$h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$</p>
+                            <table class="mult-table">
+                                <tr><th>$t$</th><th>0</th><th>1</th><th>2</th><th>3</th><th>6</th><th>9</th></tr>
+                                <tr><td>$h$</td><td>2.00</td><td>2.19</td><td>2.12</td><td>1.80</td><td>0.40</td><td>0.60</td></tr>
+                            </table>
+                            <p>The highest tide is near $t = 1$… but <strong>exactly</strong> when, and how high?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Estimates</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explore tag">Explore</span> Adding Two Waves</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 5</span></h3>
+                            <ul>
+                                <li>Add $3\sin x$ and $4\cos x$ at every $30^\circ$.</li>
+                                <li>Plot the sums and join them smoothly.</li>
+                                <li>Measure the maximum and where it happens.</li>
+                            </ul>
+                            <p>🔍 The sum is a single sine wave! Amplitude ≈ ? Shift ≈ ?</p>
+                            <p>Compare with $\sqrt{3^2 + 4^2}$ and $\tan^{-1}\frac43$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Conjecture</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explain tag">Explain</span> The R-Formula</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Method</span> $a\sin\theta + b\cos\theta \equiv R\sin(\theta + \alpha)$</h3>
+                            <p>$R\sin\theta\cos\alpha + R\cos\theta\sin\alpha$ → $R\cos\alpha = a$, $R\sin\alpha = b$</p>
+                            <p>$R = \sqrt{a^2 + b^2}$, &nbsp; $\tan\alpha = \dfrac{b}{a}$</p>
+                            <p>Max $= R$ when $\theta + \alpha = 90^\circ$; min $= -R$ when $\theta + \alpha = 270^\circ$.</p>
+                        </div>
+                        <div class="content-box">
+                            <p>$3\sin\theta + 4\cos\theta \equiv 5\sin(\theta + 53.13^\circ)$</p>
+                            <p>Minus sign? Use $R\sin(\theta - \alpha)$ or $R\cos(\theta \pm \alpha)$ so that $R &gt; 0$, $\alpha$ acute.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve 3 sin θ + 4 cos θ = 2</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-elaborate tag">Elaborate</span> Solve the Tide Challenge</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">PBL 4 · Your Tide Report</span></h3>
+                            <ol>
+                                <li>Write $0.6\sin x + 0.8\cos x$ as $R\sin(x + \alpha)$, with $x = 30t$.</li>
+                                <li>Highest tide and its time (hh:mm).</li>
+                                <li>Lowest tide and its time.</li>
+                                <li>All times in 00:00–12:00 with $h \ge 1.8$ m.</li>
+                                <li>Your recommendation for the harbour master.</li>
+                            </ol>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Express $\sqrt3\sin\theta + \cos\theta$ as $R\sin(\theta + \alpha)$.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 6 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · Present, Review &amp; <span class="b-evaluate tag">Evaluate</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">PBL 4 · 10 min</span> Tide Report presentations</h3>
+                            <p>Three students present their docking plan; the class checks $R$, $\alpha$ and the safe windows.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Review · 10 min</span> "I Have… Who Has…?"</h3>
+                            <p>20 loop cards (Hands-on 6). Back to ⭐ START — beat the class record!</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">PBL 5 · Chapter 3 Test · 55 min</span></h3>
+                            <p>Reflection: which identity was your most useful tool for the tide problem, and why?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Record Time ⏱️</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div class="progress-indicator" id="progress">Slide 1</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateNav() {
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateNav();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

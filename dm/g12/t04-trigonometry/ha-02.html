@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 2 - Compound Angle Proof Kit</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 2 · Meeting 2: Three-Triangle Proof Kit</h1>
+            <p>Grade 12 · Topic 3 · EXPLORE phase — one kit per student · $A = 30^\circ$, $B = 40^\circ$, drawn to scale</p>
+        </div>
+        <svg viewBox="0 0 186 205" style="width: 186mm; height: 205mm; align-self: center;"><polygon points="3.00,100.00 94.93,100.00 94.93,22.87" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6" stroke-dasharray="2,1"/><text x="4.5" y="98.5" font-size="5" font-weight="bold">O</text><text x="96.4" y="98.5" font-size="5" font-weight="bold">Q</text><text x="96.4" y="21.4" font-size="5" font-weight="bold">P</text><text x="49.0" y="105.0" font-size="4.2" fill="#2b6cb0" text-anchor="middle">cos B</text><text x="86.9" y="61.4" font-size="4.2" fill="#2b6cb0" text-anchor="middle">sin B</text><text x="45.0" y="58.4" font-size="4.2" fill="#2b6cb0" text-anchor="middle">1</text><text x="19.0" y="97.0" font-size="5" fill="#c53030">B = 40°</text><text x="10" y="8" font-size="4.8" font-weight="bold">① hypotenuse 1, angle B</text><polygon points="99.00,75.00 178.61,75.00 178.61,29.04" fill="#c6f6d5" stroke="#2d3748" stroke-width="0.6" stroke-dasharray="2,1"/><text x="100.5" y="73.5" font-size="5" font-weight="bold">O</text><text x="180.1" y="73.5" font-size="5" font-weight="bold">R</text><text x="180.1" y="27.5" font-size="5" font-weight="bold">Q</text><text x="138.8" y="80.0" font-size="4.2" fill="#2b6cb0" text-anchor="middle">cos B cos A</text><text x="167.6" y="56.0" font-size="4.2" fill="#2b6cb0" text-anchor="middle">cos B sin A</text><text x="134.8" y="49.0" font-size="4.2" fill="#2b6cb0" text-anchor="middle">cos B</text><text x="113.0" y="73.0" font-size="5" fill="#c53030">A = 30°</text><text x="104" y="13" font-size="4.8" font-weight="bold">② hypotenuse cos B, angle A</text><polygon points="105.00,123.20 105.00,190.00 143.57,190.00" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6" stroke-dasharray="2,1"/><text x="106.5" y="121.7" font-size="5" font-weight="bold">P</text><text x="106.5" y="188.5" font-size="5" font-weight="bold">T</text><text x="145.1" y="188.5" font-size="5" font-weight="bold">Q</text><text x="93.0" y="156.6" font-size="4.2" fill="#2b6cb0" text-anchor="middle">sin B cos A</text><text x="124.3" y="195.0" font-size="4.2" fill="#2b6cb0" text-anchor="middle">sin B sin A</text><text x="133.3" y="156.6" font-size="4.2" fill="#2b6cb0" text-anchor="middle">sin B</text><text x="108.0" y="139.2" font-size="5" fill="#c53030">A</text><text x="105" y="112" font-size="4.8" font-weight="bold">③ hypotenuse sin B, angle A at P</text><text x="8" y="120" font-size="4.6" fill="#4a5568"><tspan x="8" dy="0">Cut along the dashed lines.</tspan><tspan x="8" dy="6">Labels in blue are the side lengths</tspan><tspan x="8" dy="6">when the big hypotenuse OP = 1.</tspan><tspan x="8" dy="6">(Here 1 unit = 12 cm.)</tspan></text></svg>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around; font-size: 11pt;">
+            <span class="box-title">🔮 Predict before you assemble</span>
+            <p>When ① sits on top of ②, the top vertex $P$ is at angle $A + B$ from $O$, so its height is $\sin(A + B)$.</p>
+            <p>That height is made of two vertical pieces: ______________ (from ②) + ______________ (from ③).</p>
+            <p>Measure: height of $P$ = ______ cm ÷ 12 = ______ &nbsp;&nbsp; Calculator: $\sin 70^\circ$ = ______</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 2 · Meeting 2 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 2 · Meeting 2: Assembly Mat &amp; Formula Card</h1>
+            <p>Place ② on the floor, ① on top of ②, and ③ in the gap under $P$. Then read the height of $P$.</p>
+        </div>
+        <svg viewBox="0 0 186 150" style="width: 186mm; height: 150mm; align-self: center;"><line x1="20" y1="135" x2="180" y2="135" stroke="#2d3748" stroke-width="0.6"/><line x1="30" y1="140" x2="30" y2="5" stroke="#2d3748" stroke-width="0.6"/><polygon points="30.00,135.00 109.61,89.04 71.04,22.24" fill="#bee3f8" fill-opacity="0.35" stroke="#a0aec0" stroke-width="0.5" stroke-dasharray="1.5,1"/><polygon points="30.00,135.00 109.61,135.00 109.61,89.04" fill="#c6f6d5" fill-opacity="0.35" stroke="#a0aec0" stroke-width="0.5" stroke-dasharray="1.5,1"/><polygon points="71.04,22.24 71.04,89.04 109.61,89.04" fill="#fed7d7" fill-opacity="0.35" stroke="#a0aec0" stroke-width="0.5" stroke-dasharray="1.5,1"/><line x1="71.04" y1="22.24" x2="71.04" y2="135" stroke="#c53030" stroke-width="0.8" stroke-dasharray="2,1"/><text x="69.04" y="115.00" font-size="5" fill="#c53030" transform="rotate(-90 69.04 115.00)">height of P = sin(A + B)</text><text x="31.5" y="133.5" font-size="5.5" font-weight="bold">O</text><text x="111.1" y="133.5" font-size="5.5" font-weight="bold">R</text><text x="111.1" y="87.5" font-size="5.5" font-weight="bold">Q</text><text x="72.5" y="20.7" font-size="5.5" font-weight="bold">P</text><text x="72.5" y="87.5" font-size="5.5" font-weight="bold">T</text><text x="42" y="127" font-size="5" fill="#c53030">A + B = 70°</text></svg>
+        <div class="box guide" style="font-size: 10.5pt;">
+            <span class="box-title">🔎 Read the height of P:</span> height $= RQ + TP = (\cos B)\sin A + (\sin B)\cos A$, so $\sin(A + B) = \sin A\cos B + \cos A\sin B$. &nbsp; The horizontal distance $OR - TQ$ gives $\cos(A + B) = \cos A\cos B - \sin A\sin B$.
+        </div>
+        <div class="card grow" style="padding: 3mm 4mm; display: flex; flex-direction: column; justify-content: space-around; font-size: 12pt;"><span class="sc">✂️</span>
+            <strong style="color: var(--primary);">📌 Formula card — glue in your notebook (signs that change are in red)</strong>
+            <div>$\sin(A \pm B) \equiv \sin A\cos B \pm \cos A\sin B$</div>
+            <div>$\cos(A \pm B) \equiv \cos A\cos B$ <span style="color: #c53030; font-weight: bold;">∓</span> $\sin A\sin B$</div>
+            <div>$\tan(A \pm B) \equiv \dfrac{\tan A \pm \tan B}{1 {\color{red}\mp} \tan A\tan B}$</div>
+            <div style="font-size: 10pt;">Exact values: $\sin 45^\circ = \cos 45^\circ = \frac{\sqrt2}{2}$, &nbsp; $\sin 30^\circ = \frac12$, &nbsp; $\cos 30^\circ = \frac{\sqrt3}{2}$, &nbsp; $\tan 30^\circ = \frac{1}{\sqrt3}$, &nbsp; $\tan 45^\circ = 1$</div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 2 · Meeting 2 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

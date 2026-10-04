@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1 - Reciprocal Ratios</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 1: The Reciprocal Ratios<small>Grade 12 · Topic 3 Trigonometry · Meeting 1 — sec, cosec &amp; cot (3.1) · PBL + 5E</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+        <div class="walt"><strong>WALT:</strong> define $\sec\theta$, $\operatorname{cosec}\theta$ and $\cot\theta$, sketch their graphs, and use $1 + \tan^2\theta \equiv \sec^2\theta$ and $1 + \cot^2\theta \equiv \operatorname{cosec}^2\theta$ to solve equations.</div>
+        <div class="phase engage"><span>🔥 ENGAGE · PBL 1 Orientation · The School Ramp</span><span>10 min</span></div>
+        <div class="box action" style="display: flex; gap: 4mm; align-items: center;"><svg viewBox="0 0 120 40" style="height: 22mm; flex-shrink: 0;">
+                <polygon points="5,35 110,35 110,10" fill="#ebf8ff" stroke="#2b6cb0" stroke-width="1"/>
+                <text x="113" y="25" font-size="6">0.5 m</text><text x="55" y="17" font-size="6" transform="rotate(-13 55 17)">L</text>
+                <path d="M22,35 A17,17 0 0 0 21.6,31.2" fill="none" stroke="#c53030" stroke-width="0.8"/><text x="24" y="33" font-size="6" fill="#c53030">θ</text>
+                <text x="25" y="9" font-size="9">♿</text></svg>
+            <div style="flex: 1;">
+                <p><span class="qn">1.</span> A wheelchair ramp rises 0.5 m. The rule says $\theta \le 4.8^\circ$. Show that $L = \dfrac{0.5}{\sin\theta}$.</p>
+                <p>$L$ at $4.8^\circ$ = <span class="blank" style="min-width: 18mm;"></span> m &nbsp;&nbsp; $L$ at $10^\circ$ = <span class="blank" style="min-width: 18mm;"></span> m</p>
+                <p><span class="qn">2.</span> A ramp is 7 m long. Is it legal? &nbsp; $\theta$ = <span class="blank" style="min-width: 18mm;"></span> → <span class="blank" style="min-width: 25mm;"></span></p>
+            </div>
+        </div>
+        <div class="phase explore"><span>🔍 EXPLORE · PBL 2 · Measuring the Unit Circle</span><span>20 min</span></div>
+        <div class="box action"><span class="box-title">📏 Hands-On 1:</span> On the unit circle ($\theta = 35^\circ$, radius 7 cm) draw the tangent at $A$ and at $B$, extend $OP$ to meet them at $T$ and $S$. Measure each length, divide by 7, and compare with your calculator.</div>
+        <div class="q">
+            <div><span class="qn">3.</span> Complete the table.</div>
+            <table class="tbl">
+                <tr><th class="l">Length</th><th>Measured (cm)</th><th>Measured ÷ 7</th><th>Calculator value</th><th>So this length represents…</th></tr>
+                <tr><td class="l">$AT$</td><td></td><td></td><td>$\tan 35^\circ =$</td><td>$\tan\theta$</td></tr>
+                <tr><td class="l">$OT$</td><td></td><td></td><td>$\dfrac{1}{\cos 35^\circ} =$</td><td></td></tr>
+                <tr><td class="l">$BS$</td><td></td><td></td><td>$\dfrac{1}{\tan 35^\circ} =$</td><td></td></tr>
+                <tr><td class="l">$OS$</td><td></td><td></td><td>$\dfrac{1}{\sin 35^\circ} =$</td><td></td></tr>
+            </table>
+        </div>
+        <div><span class="qn">4.</span> Triangle $OAT$ is right-angled at $A$, so $OT^2 = OA^2 + AT^2$, which means <span class="blank" style="min-width: 20mm;"></span> $= 1 +$ <span class="blank" style="min-width: 20mm;"></span>. &nbsp; Triangle $OBS$ gives <span class="blank" style="min-width: 20mm;"></span> $= 1 +$ <span class="blank" style="min-width: 20mm;"></span>.</div>
+        <div class="phase explain"><span>💡 EXPLAIN · PBL 3 · Definitions &amp; Identities</span><span>20 min</span></div>
+        <div class="box guide">
+            <span class="box-title">🧠 Complete the toolbox</span>
+            <p>$\sec\theta = \dfrac{1}{\square}$ &nbsp;&nbsp; $\operatorname{cosec}\theta = \dfrac{1}{\square}$ &nbsp;&nbsp; $\cot\theta = \dfrac{1}{\square} = \dfrac{\cos\theta}{\square}$ &nbsp;&nbsp; <em>Tip: the 3rd letter tells you the parent — se<strong>c</strong> ↔ <strong>c</strong>os, co<strong>s</strong>ec ↔ <strong>s</strong>in.</em></p>
+            <p>Divide $\sin^2\theta + \cos^2\theta \equiv 1$ by $\cos^2\theta$: &nbsp; <span class="blank" style="min-width: 22mm;"></span> $+ 1 \equiv$ <span class="blank" style="min-width: 22mm;"></span> &nbsp;&nbsp; Divide by $\sin^2\theta$: &nbsp; $1 +$ <span class="blank" style="min-width: 22mm;"></span> $\equiv$ <span class="blank" style="min-width: 22mm;"></span></p>
+        </div>
+        <div class="q grow">
+            <div><span class="qn">5.</span> Exact values (no calculator). Leave surds in the answer.</div>
+            <table class="tbl" style="flex: 1;">
+                <tr><th class="l">$\theta$</th><th>$30^\circ$</th><th>$45^\circ$</th><th>$60^\circ$</th></tr>
+                <tr><td class="l">$\sec\theta$</td><td>$\dfrac{2}{\sqrt3}$</td><td></td><td></td></tr>
+                <tr><td class="l">$\operatorname{cosec}\theta$</td><td></td><td></td><td></td></tr>
+                <tr><td class="l">$\cot\theta$</td><td></td><td></td><td></td></tr>
+            </table>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 1 · Meeting 1 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="phase explain"><span>💡 EXPLAIN · PBL 3 · Sketching the Graphs</span><span>asymptotes where the parent = 0</span></div>
+        <div class="row" style="height: 62mm;">
+            <div class="q"><div><span class="qn">6.</span> Sketch $y = \sec x$ for $0^\circ \le x \le 360^\circ$. Mark the asymptotes.</div><svg viewBox="0 0 180 90" style="width: 100%; flex: 1; min-height: 0;" preserveAspectRatio="none"><line x1="10.0" y1="4" x2="10.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="23.8" y1="4" x2="23.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="37.5" y1="4" x2="37.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="51.2" y1="4" x2="51.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="65.0" y1="4" x2="65.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="78.8" y1="4" x2="78.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="92.5" y1="4" x2="92.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="106.2" y1="4" x2="106.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="120.0" y1="4" x2="120.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="133.8" y1="4" x2="133.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="147.5" y1="4" x2="147.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="161.2" y1="4" x2="161.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="175.0" y1="4" x2="175.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="10" y1="84.0" x2="175" y2="84.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="85.3" font-size="4" text-anchor="end">-3</text><line x1="10" y1="71.0" x2="175" y2="71.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="72.3" font-size="4" text-anchor="end">-2</text><line x1="10" y1="58.0" x2="175" y2="58.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="59.3" font-size="4" text-anchor="end">-1</text><line x1="10" y1="45.0" x2="175" y2="45.0" stroke="#e2e8f0" stroke-width="0.4"/><line x1="10" y1="32.0" x2="175" y2="32.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="33.3" font-size="4" text-anchor="end">1</text><line x1="10" y1="19.0" x2="175" y2="19.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="20.3" font-size="4" text-anchor="end">2</text><line x1="10" y1="6.0" x2="175" y2="6.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="7.3" font-size="4" text-anchor="end">3</text><line x1="10" y1="45.0" x2="175" y2="45.0" stroke="#2d3748" stroke-width="0.7"/><line x1="10" y1="4" x2="10" y2="86" stroke="#2d3748" stroke-width="0.7"/><text x="51.2" y="50.0" font-size="4" text-anchor="middle">90°</text><text x="92.5" y="50.0" font-size="4" text-anchor="middle">180°</text><text x="133.8" y="50.0" font-size="4" text-anchor="middle">270°</text><text x="175.0" y="50.0" font-size="4" text-anchor="middle">360°</text><polyline points="10.0,32.0 10.5,32.0 10.9,32.0 11.4,32.0 11.8,32.0 12.3,32.0 12.8,32.1 13.2,32.1 13.7,32.1 14.1,32.2 14.6,32.2 15.0,32.2 15.5,32.3 16.0,32.3 16.4,32.4 16.9,32.4 17.3,32.5 17.8,32.6 18.2,32.6 18.7,32.7 19.2,32.8 19.6,32.9 20.1,32.9 20.5,33.0 21.0,33.1 21.5,33.2 21.9,33.3 22.4,33.4 22.8,33.5 23.3,33.6 23.8,33.7 24.2,33.9 24.7,34.0 25.1,34.1 25.6,34.2 26.0,34.4 26.5,34.5 27.0,34.6 27.4,34.8 27.9,34.9 28.3,35.0 28.8,35.2 29.2,35.3 29.7,35.5 30.2,35.6 30.6,35.8 31.1,36.0 31.5,36.1 32.0,36.3 32.5,36.5 32.9,36.6 33.4,36.8 33.8,37.0 34.3,37.2 34.8,37.4 35.2,37.5 35.7,37.7 36.1,37.9 36.6,38.1 37.0,38.3 37.5,38.5 38.0,38.7 38.4,38.9 38.9,39.1 39.3,39.3 39.8,39.5 40.2,39.7 40.7,39.9 41.2,40.1 41.6,40.3 42.1,40.6 42.5,40.8 43.0,41.0 43.5,41.2 43.9,41.4 44.4,41.6 44.8,41.9 45.3,42.1 45.8,42.3 46.2,42.5 46.7,42.7 47.1,43.0 47.6,43.2 48.0,43.4 48.5,43.6 49.0,43.9 49.4,44.1 49.9,44.3 50.3,44.5 50.8,44.8 51.2,45.0 51.7,45.2 52.2,45.5 52.6,45.7 53.1,45.9 53.5,46.1 54.0,46.4 54.5,46.6 54.9,46.8 55.4,47.0 55.8,47.3 56.3,47.5 56.8,47.7 57.2,47.9 57.7,48.1 58.1,48.4 58.6,48.6 59.0,48.8 59.5,49.0 60.0,49.2 60.4,49.4 60.9,49.7 61.3,49.9 61.8,50.1 62.2,50.3 62.7,50.5 63.2,50.7 63.6,50.9 64.1,51.1 64.5,51.3 65.0,51.5 65.5,51.7 65.9,51.9 66.4,52.1 66.8,52.3 67.3,52.5 67.8,52.6 68.2,52.8 68.7,53.0 69.1,53.2 69.6,53.4 70.0,53.5 70.5,53.7 71.0,53.9 71.4,54.0 71.9,54.2 72.3,54.4 72.8,54.5 73.2,54.7 73.7,54.8 74.2,55.0 74.6,55.1 75.1,55.2 75.5,55.4 76.0,55.5 76.5,55.6 76.9,55.8 77.4,55.9 77.8,56.0 78.3,56.1 78.8,56.3 79.2,56.4 79.7,56.5 80.1,56.6 80.6,56.7 81.0,56.8 81.5,56.9 82.0,57.0 82.4,57.1 82.9,57.1 83.3,57.2 83.8,57.3 84.2,57.4 84.7,57.4 85.2,57.5 85.6,57.6 86.1,57.6 86.5,57.7 87.0,57.7 87.5,57.8 87.9,57.8 88.4,57.8 88.8,57.9 89.3,57.9 89.8,57.9 90.2,58.0 90.7,58.0 91.1,58.0 91.6,58.0 92.0,58.0 92.5,58.0 93.0,58.0 93.4,58.0 93.9,58.0 94.3,58.0 94.8,58.0 95.3,57.9 95.7,57.9 96.2,57.9 96.6,57.8 97.1,57.8 97.5,57.8 98.0,57.7 98.5,57.7 98.9,57.6 99.4,57.6 99.8,57.5 100.3,57.4 100.8,57.4 101.2,57.3 101.7,57.2 102.1,57.1 102.6,57.1 103.0,57.0 103.5,56.9 104.0,56.8 104.4,56.7 104.9,56.6 105.3,56.5 105.8,56.4 106.2,56.3 106.7,56.1 107.2,56.0 107.6,55.9 108.1,55.8 108.5,55.6 109.0,55.5 109.5,55.4 109.9,55.2 110.4,55.1 110.8,55.0 111.3,54.8 111.8,54.7 112.2,54.5 112.7,54.4 113.1,54.2 113.6,54.0 114.0,53.9 114.5,53.7 115.0,53.5 115.4,53.4 115.9,53.2 116.3,53.0 116.8,52.8 117.2,52.6 117.7,52.5 118.2,52.3 118.6,52.1 119.1,51.9 119.5,51.7 120.0,51.5 120.5,51.3 120.9,51.1 121.4,50.9 121.8,50.7 122.3,50.5 122.8,50.3 123.2,50.1 123.7,49.9 124.1,49.7 124.6,49.4 125.0,49.2 125.5,49.0 126.0,48.8 126.4,48.6 126.9,48.4 127.3,48.1 127.8,47.9 128.2,47.7 128.7,47.5 129.2,47.3 129.6,47.0 130.1,46.8 130.5,46.6 131.0,46.4 131.5,46.1 131.9,45.9 132.4,45.7 132.8,45.5 133.3,45.2 133.8,45.0 134.2,44.8 134.7,44.5 135.1,44.3 135.6,44.1 136.0,43.9 136.5,43.6 137.0,43.4 137.4,43.2 137.9,43.0 138.3,42.7 138.8,42.5 139.2,42.3 139.7,42.1 140.2,41.9 140.6,41.6 141.1,41.4 141.5,41.2 142.0,41.0 142.5,40.8 142.9,40.6 143.4,40.3 143.8,40.1 144.3,39.9 144.8,39.7 145.2,39.5 145.7,39.3 146.1,39.1 146.6,38.9 147.0,38.7 147.5,38.5 148.0,38.3 148.4,38.1 148.9,37.9 149.3,37.7 149.8,37.5 150.2,37.4 150.7,37.2 151.2,37.0 151.6,36.8 152.1,36.6 152.5,36.5 153.0,36.3 153.5,36.1 153.9,36.0 154.4,35.8 154.8,35.6 155.3,35.5 155.8,35.3 156.2,35.2 156.7,35.0 157.1,34.9 157.6,34.8 158.0,34.6 158.5,34.5 159.0,34.4 159.4,34.2 159.9,34.1 160.3,34.0 160.8,33.9 161.2,33.7 161.7,33.6 162.2,33.5 162.6,33.4 163.1,33.3 163.5,33.2 164.0,33.1 164.5,33.0 164.9,32.9 165.4,32.9 165.8,32.8 166.3,32.7 166.8,32.6 167.2,32.6 167.7,32.5 168.1,32.4 168.6,32.4 169.0,32.3 169.5,32.3 170.0,32.2 170.4,32.2 170.9,32.2 171.3,32.1 171.8,32.1 172.2,32.1 172.7,32.0 173.2,32.0 173.6,32.0 174.1,32.0 174.5,32.0 175.0,32.0" fill="none" stroke="#a0aec0" stroke-width="0.8" stroke-dasharray="2,1.5"/><text x="174" y="8" font-size="4.5" text-anchor="end" fill="#718096">dotted: y = cos x &nbsp; sketch: y = sec x</text></svg></div>
+            <div class="q"><div><span class="qn">7.</span> Sketch $y = \cot x$ for $0^\circ \le x \le 360^\circ$. Mark the asymptotes.</div><svg viewBox="0 0 180 90" style="width: 100%; flex: 1; min-height: 0;" preserveAspectRatio="none"><line x1="10.0" y1="4" x2="10.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="23.8" y1="4" x2="23.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="37.5" y1="4" x2="37.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="51.2" y1="4" x2="51.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="65.0" y1="4" x2="65.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="78.8" y1="4" x2="78.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="92.5" y1="4" x2="92.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="106.2" y1="4" x2="106.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="120.0" y1="4" x2="120.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="133.8" y1="4" x2="133.8" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="147.5" y1="4" x2="147.5" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="161.2" y1="4" x2="161.2" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="175.0" y1="4" x2="175.0" y2="86" stroke="#e2e8f0" stroke-width="0.4"/><line x1="10" y1="84.0" x2="175" y2="84.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="85.3" font-size="4" text-anchor="end">-3</text><line x1="10" y1="71.0" x2="175" y2="71.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="72.3" font-size="4" text-anchor="end">-2</text><line x1="10" y1="58.0" x2="175" y2="58.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="59.3" font-size="4" text-anchor="end">-1</text><line x1="10" y1="45.0" x2="175" y2="45.0" stroke="#e2e8f0" stroke-width="0.4"/><line x1="10" y1="32.0" x2="175" y2="32.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="33.3" font-size="4" text-anchor="end">1</text><line x1="10" y1="19.0" x2="175" y2="19.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="20.3" font-size="4" text-anchor="end">2</text><line x1="10" y1="6.0" x2="175" y2="6.0" stroke="#e2e8f0" stroke-width="0.4"/><text x="7" y="7.3" font-size="4" text-anchor="end">3</text><line x1="10" y1="45.0" x2="175" y2="45.0" stroke="#2d3748" stroke-width="0.7"/><line x1="10" y1="4" x2="10" y2="86" stroke="#2d3748" stroke-width="0.7"/><text x="51.2" y="50.0" font-size="4" text-anchor="middle">90°</text><text x="92.5" y="50.0" font-size="4" text-anchor="middle">180°</text><text x="133.8" y="50.0" font-size="4" text-anchor="middle">270°</text><text x="175.0" y="50.0" font-size="4" text-anchor="middle">360°</text><polyline points="10.0,45.0 10.5,44.8 10.9,44.5 11.4,44.3 11.8,44.1 12.3,43.9 12.8,43.6 13.2,43.4 13.7,43.2 14.1,42.9 14.6,42.7 15.0,42.5 15.5,42.2 16.0,42.0 16.4,41.8 16.9,41.5 17.3,41.3 17.8,41.0 18.2,40.8 18.7,40.5 19.2,40.3 19.6,40.0 20.1,39.7 20.5,39.5 21.0,39.2 21.5,38.9 21.9,38.7 22.4,38.4 22.8,38.1 23.3,37.8 23.8,37.5 24.2,37.2 24.7,36.9 25.1,36.6 25.6,36.2 26.0,35.9 26.5,35.6 27.0,35.2 27.4,34.8 27.9,34.5 28.3,34.1 28.8,33.7 29.2,33.3 29.7,32.9 30.2,32.4 30.6,32.0 31.1,31.5 31.5,31.1 32.0,30.6 32.5,30.0 32.9,29.5 33.4,28.9 33.8,28.4 34.3,27.7 34.8,27.1 35.2,26.4 35.7,25.7 36.1,25.0 36.6,24.2 37.0,23.4 37.5,22.5 38.0,21.5 38.4,20.6 38.9,19.5 39.3,18.3 39.8,17.1 40.2,15.8 40.7,14.4 41.2,12.8 41.6,11.1 42.1,9.3 42.5,7.2" fill="none" stroke="#a0aec0" stroke-width="0.8" stroke-dasharray="2,1.5"/><polyline points="60.0,82.8 60.4,80.7 60.9,78.9 61.3,77.2 61.8,75.6 62.2,74.2 62.7,72.9 63.2,71.7 63.6,70.5 64.1,69.4 64.5,68.5 65.0,67.5 65.5,66.6 65.9,65.8 66.4,65.0 66.8,64.3 67.3,63.6 67.8,62.9 68.2,62.3 68.7,61.6 69.1,61.1 69.6,60.5 70.0,60.0 70.5,59.4 71.0,58.9 71.4,58.5 71.9,58.0 72.3,57.6 72.8,57.1 73.2,56.7 73.7,56.3 74.2,55.9 74.6,55.5 75.1,55.2 75.5,54.8 76.0,54.4 76.5,54.1 76.9,53.8 77.4,53.4 77.8,53.1 78.3,52.8 78.8,52.5 79.2,52.2 79.7,51.9 80.1,51.6 80.6,51.3 81.0,51.1 81.5,50.8 82.0,50.5 82.4,50.3 82.9,50.0 83.3,49.7 83.8,49.5 84.2,49.2 84.7,49.0 85.2,48.7 85.6,48.5 86.1,48.2 86.5,48.0 87.0,47.8 87.5,47.5 87.9,47.3 88.4,47.1 88.8,46.8 89.3,46.6 89.8,46.4 90.2,46.1 90.7,45.9 91.1,45.7 91.6,45.5 92.0,45.2 92.5,45.0 93.0,44.8 93.4,44.5 93.9,44.3 94.3,44.1 94.8,43.9 95.3,43.6 95.7,43.4 96.2,43.2 96.6,42.9 97.1,42.7 97.5,42.5 98.0,42.2 98.5,42.0 98.9,41.8 99.4,41.5 99.8,41.3 100.3,41.0 100.8,40.8 101.2,40.5 101.7,40.3 102.1,40.0 102.6,39.7 103.0,39.5 103.5,39.2 104.0,38.9 104.4,38.7 104.9,38.4 105.3,38.1 105.8,37.8 106.2,37.5 106.7,37.2 107.2,36.9 107.6,36.6 108.1,36.2 108.5,35.9 109.0,35.6 109.5,35.2 109.9,34.8 110.4,34.5 110.8,34.1 111.3,33.7 111.8,33.3 112.2,32.9 112.7,32.4 113.1,32.0 113.6,31.5 114.0,31.1 114.5,30.6 115.0,30.0 115.4,29.5 115.9,28.9 116.3,28.4 116.8,27.7 117.2,27.1 117.7,26.4 118.2,25.7 118.6,25.0 119.1,24.2 119.5,23.4 120.0,22.5 120.5,21.5 120.9,20.6 121.4,19.5 121.8,18.3 122.3,17.1 122.8,15.8 123.2,14.4 123.7,12.8 124.1,11.1 124.6,9.3 125.0,7.2" fill="none" stroke="#a0aec0" stroke-width="0.8" stroke-dasharray="2,1.5"/><polyline points="142.5,82.8 142.9,80.7 143.4,78.9 143.8,77.2 144.3,75.6 144.8,74.2 145.2,72.9 145.7,71.7 146.1,70.5 146.6,69.4 147.0,68.5 147.5,67.5 148.0,66.6 148.4,65.8 148.9,65.0 149.3,64.3 149.8,63.6 150.2,62.9 150.7,62.3 151.2,61.6 151.6,61.1 152.1,60.5 152.5,60.0 153.0,59.4 153.5,58.9 153.9,58.5 154.4,58.0 154.8,57.6 155.3,57.1 155.8,56.7 156.2,56.3 156.7,55.9 157.1,55.5 157.6,55.2 158.0,54.8 158.5,54.4 159.0,54.1 159.4,53.8 159.9,53.4 160.3,53.1 160.8,52.8 161.2,52.5 161.7,52.2 162.2,51.9 162.6,51.6 163.1,51.3 163.5,51.1 164.0,50.8 164.5,50.5 164.9,50.3 165.4,50.0 165.8,49.7 166.3,49.5 166.8,49.2 167.2,49.0 167.7,48.7 168.1,48.5 168.6,48.2 169.0,48.0 169.5,47.8 170.0,47.5 170.4,47.3 170.9,47.1 171.3,46.8 171.8,46.6 172.2,46.4 172.7,46.1 173.2,45.9 173.6,45.7 174.1,45.5 174.5,45.2 175.0,45.0" fill="none" stroke="#a0aec0" stroke-width="0.8" stroke-dasharray="2,1.5"/><text x="174" y="8" font-size="4.5" text-anchor="end" fill="#718096">dotted: y = tan x &nbsp; sketch: y = cot x</text></svg></div>
+        </div>
+        <div class="phase elaborate"><span>🚀 ELABORATE · PBL 4 · Solving with Reciprocal Ratios</span><span>20 min</span></div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(2, 1fr); "><div class="q"><div><span class="qn">8.</span> Solve $\sec\theta = 2$ for $0^\circ \le \theta \le 360^\circ$.</div><div class="work">Flip first: cos θ = …</div></div><div class="q"><div><span class="qn">9.</span> Solve $\cot\theta = 0.5$ for $0^\circ \le \theta \le 360^\circ$ (1 d.p.).</div><div class="work"></div></div><div class="q"><div><span class="qn">10.</span> Given $\sin A = \frac{3}{5}$ and $A$ is obtuse, find the exact values of $\sec A$ and $\cot A$.</div><div class="work"></div></div><div class="q"><div><span class="qn">11.</span> Solve $2\tan^2\theta + \sec\theta = 1$ for $0^\circ \le \theta \le 360^\circ$.</div><div class="work">Replace tan²θ with sec²θ − 1, then factorise.</div></div></div>
+        <div class="phase evaluate"><span>✅ EVALUATE · PBL 5 · Exit Ticket</span><span>10 min</span></div>
+        <div class="row" style="height: 32mm;">
+            <div class="q"><div><span class="qn">12.</span> Solve $\operatorname{cosec} x = 3$ for $0^\circ \le x \le 360^\circ$ (1 d.p.).</div><div class="work"></div></div>
+<div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can define sec, cosec and cot and find exact values.</td><td>😀 😐 😟</td></tr><tr><td>I can sketch the reciprocal graphs with asymptotes.</td><td>😀 😐 😟</td></tr><tr><td>I can use $1 + \tan^2\theta \equiv \sec^2\theta$ to solve equations.</td><td>😀 😐 😟</td></tr></table></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 1 · Meeting 1 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

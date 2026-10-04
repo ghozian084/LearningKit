@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Lab - Trigonometry</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']], macros: { cosec: '\\operatorname{cosec}' } }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #ebf8ff;
+            --success: #38a169;
+            --danger: #e53e3e;
+            --bg-color: #f7fafc;
+            --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color); color: #2d3748;
+            margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;
+        }
+        header {
+            background-color: var(--primary); color: white; padding: 15px 30px;
+            display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10;
+        }
+        header h1 { margin: 0; font-size: 1.5em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background-color: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn {
+            background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer;
+            font-weight: bold; transition: 0.3s; border-bottom: 4px solid transparent; white-space: nowrap;
+        }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module {
+            background: #fff; border: 1px solid var(--border-color); border-radius: 10px;
+            padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .controls-row { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 200px; vertical-align: middle; }
+        .controls-row select { padding: 6px 8px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-size: 1.2em; font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 340px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; }
+        .legend { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 8px; font-size: 0.95em; }
+        .legend span::before { content: ''; display: inline-block; width: 18px; height: 4px; margin-right: 5px; vertical-align: middle; background: var(--c); }
+        .sim-text { font-size: 1.1em; font-weight: bold; color: var(--primary); text-align: center; margin-top: 12px; min-height: 28px; }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        .match { color: var(--success); font-weight: bold; }
+        .nomatch { color: var(--danger); font-weight: bold; }
+        button.action-btn {
+            background-color: var(--secondary); color: white; border: none; padding: 10px 18px;
+            border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        button.action-btn:hover { background-color: var(--primary); }
+        button.action-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.05em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 160px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); }
+        .feedback.wrong { color: var(--danger); }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        .ex-row { margin-top: 18px; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔬 Web Lab: Trigonometry</h1>
+        <span class="badge">Grade 12 · Topic 3 · PBL + 5E · 🌊 Tide Challenge</span>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sec1', this)">1. Reciprocal Graphs</button>
+        <button class="tab-btn" onclick="openTab('sec2', this)">2. Compound Angles</button>
+        <button class="tab-btn" onclick="openTab('sec3', this)">3. Double Angle Kick</button>
+        <button class="tab-btn" onclick="openTab('sec4', this)">4. Identity Checker</button>
+        <button class="tab-btn" onclick="openTab('sec5', this)">5. Wave Combiner &amp; Tide</button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ================= TAB 1 ================= -->
+        <div id="sec1" class="section-container active">
+            <div class="module">
+                <h2>🎮 Simulation: sec, cosec and cot from their Parents</h2>
+                <p>Switch graphs on and off. Notice the asymptotes of $y = \sec x$ appear where $\cos x = 0$, and where the parent equals $\pm 1$ the reciprocal touches it.</p>
+                <div class="sim-area">
+                    <div class="controls-row" id="graphToggles"></div>
+                    <div class="controls-row">
+                        <label for="th1">$\theta$:</label>
+                        <input type="range" id="th1" min="0" max="360" value="35" oninput="drawTab1()">
+                        <span class="big-value" id="th1Val">35°</span>
+                    </div>
+                    <canvas class="plot" id="cv1"></canvas>
+                    <table class="vals" id="vals1"></table>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p>Give answers in degrees to 1 d.p. <span class="hint">(Use the graph: draw the horizontal line in your head!)</span></p>
+                <div class="ex-row">a) The <strong>smallest</strong> solution of $\sec\theta = 2$ in $0^\circ \le \theta \le 360^\circ$:
+                    <input type="text" id="e1a" class="exercise-input"><button class="action-btn" onclick="checkNum('e1a', 60, 0.15, 'f1a', 'cos θ = ½ → 60° (and 300°)')">Check</button><div class="feedback" id="f1a"></div></div>
+                <div class="ex-row">b) The <strong>largest</strong> solution of $\cosec x = 3$ in $0^\circ \le x \le 360^\circ$:
+                    <input type="text" id="e1b" class="exercise-input"><button class="action-btn" onclick="checkNum('e1b', 160.5, 0.15, 'f1b', 'sin x = ⅓ → 19.5° and 160.5°')">Check</button><div class="feedback" id="f1b"></div></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2 ================= -->
+        <div id="sec2" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Testing the Compound Angle Formulae</h2>
+                <p>Move $A$ and $B$. The "naive" guess $\sin A + \sin B$ almost never works — the formula always does.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>$A$:</label><input type="range" id="A2" min="0" max="180" value="45" oninput="drawTab2()"><span class="big-value" id="A2v">45°</span>
+                        <label>$B$:</label><input type="range" id="B2" min="0" max="180" value="30" oninput="drawTab2()"><span class="big-value" id="B2v">30°</span>
+                    </div>
+                    <table class="vals" id="vals2"></table>
+                </div>
+            </div>
+            <div class="module">
+                <h2>📝 Step-by-Step Example: exact $\sin 75^\circ$</h2>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex1" onclick="nextStep('ex1', 4)">Show Next Step</button>
+                    <div class="step ex1-1"><strong>Step 1:</strong> $75^\circ = 45^\circ + 30^\circ$, so use $\sin(A + B) = \sin A\cos B + \cos A\sin B$.</div>
+                    <div class="step ex1-2"><strong>Step 2:</strong> $\sin 75^\circ = \sin 45^\circ\cos 30^\circ + \cos 45^\circ\sin 30^\circ$</div>
+                    <div class="step ex1-3"><strong>Step 3:</strong> $= \frac{\sqrt2}{2}\cdot\frac{\sqrt3}{2} + \frac{\sqrt2}{2}\cdot\frac12 = \frac{\sqrt6}{4} + \frac{\sqrt2}{4}$</div>
+                    <div class="step ex1-4"><strong>Step 4:</strong> $\sin 75^\circ = \dfrac{\sqrt6 + \sqrt2}{4} \approx 0.9659$ ✅ (check with the simulation: $A = 45$, $B = 30$)</div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">a) Find $\cos 75^\circ$ exactly on paper, then type its decimal value (4 d.p.):
+                    <input type="text" id="e2a" class="exercise-input"><button class="action-btn" onclick="checkNum('e2a', 0.2588, 0.0006, 'f2a', '(√6 − √2)/4 ≈ 0.2588')">Check</button><div class="feedback" id="f2a"></div></div>
+                <div class="ex-row">b) Smallest solution of $\tan(x + 45^\circ) = 2$, $0^\circ \le x \le 360^\circ$ (1 d.p.):
+                    <input type="text" id="e2b" class="exercise-input"><button class="action-btn" onclick="checkNum('e2b', 18.4, 0.15, 'f2b', '(t + 1)/(1 − t) = 2 → tan x = ⅓ → 18.4°, 198.4°')">Check</button><div class="feedback" id="f2b"></div></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3 ================= -->
+        <div id="sec3" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: The Sepak Takraw Kick ⚽</h2>
+                <p>The range is $R = \dfrac{v^2\sin 2\theta}{g}$ ($g = 10$). Change the angle — which angles give the same range? Why is $45^\circ$ the best?</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Angle $\theta$:</label><input type="range" id="th3" min="5" max="85" value="30" oninput="drawTab3()"><span class="big-value" id="th3v">30°</span>
+                        <label>Speed $v$:</label><input type="range" id="v3" min="6" max="14" value="10" oninput="drawTab3()"><span class="big-value" id="v3v">10 m/s</span>
+                        <label><input type="checkbox" id="mirror3" checked onchange="drawTab3()"> show $90^\circ - \theta$</label>
+                    </div>
+                    <canvas class="plot" id="cv3" style="height: 280px;"></canvas>
+                    <table class="vals" id="vals3"></table>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">a) $\sin A = \frac35$, $A$ acute. Value of $\sin 2A$ (decimal):
+                    <input type="text" id="e3a" class="exercise-input"><button class="action-btn" onclick="checkNum('e3a', 0.96, 0.002, 'f3a', '2 × ⅗ × ⅘ = 24/25 = 0.96')">Check</button><div class="feedback" id="f3a"></div></div>
+                <div class="ex-row">b) With $v = 10$, the <strong>smaller</strong> angle that gives a 7 m range (1 d.p.):
+                    <input type="text" id="e3b" class="exercise-input"><button class="action-btn" onclick="checkNum('e3b', 22.2, 0.15, 'f3b', 'sin 2θ = 0.7 → 2θ = 44.4° or 135.6° → θ = 22.2° or 67.8°')">Check</button><div class="feedback" id="f3b"></div></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4 ================= -->
+        <div id="sec4" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Identity Checker</h2>
+                <p>Choose a claim. If the two graphs lie exactly on top of each other everywhere, it is <em>probably</em> an identity — but only an algebraic proof makes it certain! Some claims are traps.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Claim:</label>
+                        <select id="idSel" onchange="drawTab4()"></select>
+                    </div>
+                    <canvas class="plot" id="cv4"></canvas>
+                    <div class="legend"><span style="--c:#2b6cb0;">Left-hand side</span><span style="--c:#e53e3e;">Right-hand side (dashed)</span></div>
+                    <div class="sim-text" id="id4"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>📝 Step-by-Step Example: prove $\sec\theta - \cos\theta \equiv \sin\theta\tan\theta$</h2>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-ex2" onclick="nextStep('ex2', 4)">Show Next Step</button>
+                    <div class="step ex2-1"><strong>Step 1:</strong> Start with the LHS and rewrite in $\cos$: $\sec\theta - \cos\theta = \dfrac{1}{\cos\theta} - \cos\theta$</div>
+                    <div class="step ex2-2"><strong>Step 2:</strong> Common denominator: $= \dfrac{1 - \cos^2\theta}{\cos\theta}$</div>
+                    <div class="step ex2-3"><strong>Step 3:</strong> Pythagoras: $= \dfrac{\sin^2\theta}{\cos\theta} = \sin\theta \times \dfrac{\sin\theta}{\cos\theta}$</div>
+                    <div class="step ex2-4"><strong>Step 4:</strong> $= \sin\theta\tan\theta = $ RHS $\blacksquare$</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5 ================= -->
+        <div id="sec5" class="section-container">
+            <div class="module">
+                <h2>🎮 Simulation: Wave Combiner — $a\sin\theta + b\cos\theta = R\sin(\theta + \alpha)$</h2>
+                <p>Set $a$ and $b$. The solid curve is $a\sin\theta + b\cos\theta$; the dashed curve is $R\sin(\theta + \alpha)$. They always match!</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>$a$:</label><input type="range" id="a5" min="-10" max="10" step="0.1" value="3" oninput="drawTab5()"><span class="big-value" id="a5v">3</span>
+                        <label>$b$:</label><input type="range" id="b5" min="-10" max="10" step="0.1" value="4" oninput="drawTab5()"><span class="big-value" id="b5v">4</span>
+                        <button class="action-btn" onclick="setAB(3, 4)">3 sin θ + 4 cos θ</button>
+                        <button class="action-btn" onclick="setAB(8, -6)">8 sin θ − 6 cos θ</button>
+                    </div>
+                    <canvas class="plot" id="cv5"></canvas>
+                    <div class="legend"><span style="--c:#a0aec0;">$a\sin\theta$ and $b\cos\theta$</span><span style="--c:#2b6cb0;">sum</span><span style="--c:#e53e3e;">$R\sin(\theta + \alpha)$ (dashed)</span></div>
+                    <div class="sim-text" id="txt5"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>🌊 PBL: The Tanjung Priok Tide</h2>
+                <p>$h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$. Move the ship's required depth and see the safe docking windows (green) between 00:00 and 12:00.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Ship needs $h \ge$</label><input type="range" id="need" min="0.4" max="2.2" step="0.05" value="1.8" oninput="drawTide()"><span class="big-value" id="needv">1.80 m</span>
+                        <label><input type="checkbox" id="showAns" onchange="drawTide()"> show max/min (teacher)</label>
+                    </div>
+                    <canvas class="plot" id="cvT" style="height: 280px;"></canvas>
+                    <div class="sim-text" id="txtT"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">a) $8\sin\theta - 6\cos\theta = R\sin(\theta - \alpha)$. Value of $R$:
+                    <input type="text" id="e5a" class="exercise-input"><button class="action-btn" onclick="checkNum('e5a', 10, 0.01, 'f5a', 'R = √(64 + 36) = 10')">Check</button><div class="feedback" id="f5a"></div></div>
+                <div class="ex-row">b) …and $\alpha$ in degrees (2 d.p.):
+                    <input type="text" id="e5b" class="exercise-input"><button class="action-btn" onclick="checkNum('e5b', 36.87, 0.02, 'f5b', 'tan α = 6/8 → α = 36.87°')">Check</button><div class="feedback" id="f5b"></div></div>
+                <div class="ex-row">c) Smaller solution of $3\sin\theta + 4\cos\theta = 2$ in $0^\circ \le \theta \le 360^\circ$ (1 d.p.):
+                    <input type="text" id="e5c" class="exercise-input"><button class="action-btn" onclick="checkNum('e5c', 103.3, 0.15, 'f5c', 'sin(θ + 53.13°) = 0.4 → θ = 103.3°, 330.4°')">Check</button><div class="feedback" id="f5c"></div></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const D = Math.PI / 180;
+
+        // ---------- Tabs & helpers ----------
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            redrawAll();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        const stepCounters = {};
+        function nextStep(id, total) {
+            stepCounters[id] = (stepCounters[id] || 0) + 1;
+            const s = document.querySelector('.' + id + '-' + stepCounters[id]);
+            if (s) s.classList.add('show');
+            if (stepCounters[id] >= total) document.getElementById('btn-' + id).disabled = true;
+        }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.').replace('°', ''));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r2 = x => Math.round(x * 100) / 100;
+        const r4 = x => Math.round(x * 10000) / 10000;
+
+        // ---------- Generic plotter ----------
+        // series: [{f, color, dash, width}] ; f(x) may return NaN/Infinity
+        function plot(canvas, opt, series, extras) {
+            const dpr = window.devicePixelRatio || 1;
+            const W = canvas.clientWidth, H = canvas.clientHeight;
+            if (!W) return null;
+            canvas.width = W * dpr; canvas.height = H * dpr;
+            const ctx = canvas.getContext('2d');
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            ctx.clearRect(0, 0, W, H);
+            const L = 44, R = 14, T = 12, B = 28;
+            const sx = x => L + (x - opt.x0) / (opt.x1 - opt.x0) * (W - L - R);
+            const sy = y => T + (opt.y1 - y) / (opt.y1 - opt.y0) * (H - T - B);
+            ctx.font = '12px Segoe UI, sans-serif';
+            ctx.strokeStyle = '#e2e8f0'; ctx.fillStyle = '#4a5568'; ctx.lineWidth = 1;
+            for (let x = opt.x0; x <= opt.x1 + 1e-9; x += opt.xs) {
+                ctx.beginPath(); ctx.moveTo(sx(x), T); ctx.lineTo(sx(x), H - B); ctx.stroke();
+                ctx.textAlign = 'center'; ctx.fillText((opt.xfmt ? opt.xfmt(x) : x + '°'), sx(x), H - 10);
+            }
+            for (let y = opt.y0; y <= opt.y1 + 1e-9; y += opt.ys) {
+                ctx.beginPath(); ctx.moveTo(L, sy(y)); ctx.lineTo(W - R, sy(y)); ctx.stroke();
+                ctx.textAlign = 'right'; ctx.fillText(r2(y), L - 6, sy(y) + 4);
+            }
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 1.5;
+            if (opt.y0 <= 0 && opt.y1 >= 0) { ctx.beginPath(); ctx.moveTo(L, sy(0)); ctx.lineTo(W - R, sy(0)); ctx.stroke(); }
+            ctx.beginPath(); ctx.moveTo(sx(opt.x0), T); ctx.lineTo(sx(opt.x0), H - B); ctx.stroke();
+            if (extras && extras.before) extras.before(ctx, sx, sy, W, H, T, B);
+            series.forEach(s => {
+                ctx.strokeStyle = s.color; ctx.lineWidth = s.width || 2.5; ctx.setLineDash(s.dash || []);
+                ctx.beginPath();
+                let pen = false, prev = null;
+                const n = 1200;
+                for (let i = 0; i <= n; i++) {
+                    const x = opt.x0 + (opt.x1 - opt.x0) * i / n;
+                    const y = s.f(x);
+                    const bad = !isFinite(y) || y > opt.y1 + 50 || y < opt.y0 - 50 || (prev !== null && Math.abs(y - prev) > (opt.y1 - opt.y0) * 2);
+                    if (bad) { pen = false; prev = isFinite(y) ? y : null; continue; }
+                    const cy = Math.max(T - 5, Math.min(H - B + 5, sy(y)));
+                    if (!pen) { ctx.moveTo(sx(x), cy); pen = true; } else ctx.lineTo(sx(x), cy);
+                    prev = y;
+                }
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+            if (extras && extras.after) extras.after(ctx, sx, sy, W, H, T, B);
+            return { sx, sy };
+        }
+
+        // ---------- Tab 1 ----------
+        const ratios = [
+            { key: 'sin', f: x => Math.sin(x * D), color: '#a0aec0', on: false },
+            { key: 'cos', f: x => Math.cos(x * D), color: '#718096', on: true },
+            { key: 'tan', f: x => Math.tan(x * D), color: '#cbd5e0', on: false },
+            { key: 'cosec', f: x => 1 / Math.sin(x * D), color: '#d53f8c', on: false },
+            { key: 'sec', f: x => 1 / Math.cos(x * D), color: '#2b6cb0', on: true },
+            { key: 'cot', f: x => 1 / Math.tan(x * D), color: '#38a169', on: false },
+        ];
+        (function buildToggles() {
+            const row = document.getElementById('graphToggles');
+            ratios.forEach((r, i) => {
+                const lab = document.createElement('label');
+                lab.innerHTML = `<input type="checkbox" ${r.on ? 'checked' : ''} onchange="ratios[${i}].on = this.checked; drawTab1()"> <span style="color:${r.color}">y = ${r.key} x</span>`;
+                row.appendChild(lab);
+            });
+        })();
+        function drawTab1() {
+            const th = +document.getElementById('th1').value;
+            document.getElementById('th1Val').innerText = th + '°';
+            plot(document.getElementById('cv1'), { x0: 0, x1: 360, xs: 45, y0: -4, y1: 4, ys: 1 },
+                ratios.filter(r => r.on).map(r => ({ f: r.f, color: r.color, dash: ['sin', 'cos', 'tan'].includes(r.key) ? [6, 4] : [] })),
+                { after: (ctx, sx, sy, W, H, T, B) => {
+                    ctx.strokeStyle = '#e53e3e'; ctx.setLineDash([3, 3]); ctx.lineWidth = 1.2;
+                    ctx.beginPath(); ctx.moveTo(sx(th), T); ctx.lineTo(sx(th), H - B); ctx.stroke(); ctx.setLineDash([]);
+                } });
+            const fmt = v => (!isFinite(v) || Math.abs(v) > 1e6) ? 'undefined' : r4(v);
+            document.getElementById('vals1').innerHTML =
+                '<tr><th>θ</th>' + ratios.map(r => `<th>${r.key} θ</th>`).join('') + '</tr>' +
+                `<tr><td>${th}°</td>` + ratios.map(r => `<td>${fmt(r.f(th))}</td>`).join('') + '</tr>';
+        }
+
+        // ---------- Tab 2 ----------
+        function drawTab2() {
+            const A = +document.getElementById('A2').value, B = +document.getElementById('B2').value;
+            document.getElementById('A2v').innerText = A + '°'; document.getElementById('B2v').innerText = B + '°';
+            const s = x => Math.sin(x * D), c = x => Math.cos(x * D), t = x => Math.tan(x * D);
+            const rows = [
+                ['sin(A + B)', s(A + B), 'sin A + sin B', s(A) + s(B), 'sin A cos B + cos A sin B', s(A) * c(B) + c(A) * s(B)],
+                ['sin(A − B)', s(A - B), 'sin A − sin B', s(A) - s(B), 'sin A cos B − cos A sin B', s(A) * c(B) - c(A) * s(B)],
+                ['cos(A + B)', c(A + B), 'cos A + cos B', c(A) + c(B), 'cos A cos B − sin A sin B', c(A) * c(B) - s(A) * s(B)],
+                ['cos(A − B)', c(A - B), 'cos A − cos B', c(A) - c(B), 'cos A cos B + sin A sin B', c(A) * c(B) + s(A) * s(B)],
+                ['tan(A + B)', t(A + B), 'tan A + tan B', t(A) + t(B), '(tan A + tan B) / (1 − tan A tan B)', (t(A) + t(B)) / (1 - t(A) * t(B))],
+            ];
+            const fmt = v => (!isFinite(v) || Math.abs(v) > 1e6) ? 'undefined' : r4(v);
+            const same = (a, b) => (!isFinite(a) || Math.abs(a) > 1e6) ? (!isFinite(b) || Math.abs(b) > 1e6) : Math.abs(a - b) < 1e-6;
+            document.getElementById('vals2').innerHTML = '<tr><th>Expression</th><th>Value</th><th>Naive guess</th><th>Value</th><th>Formula</th><th>Value</th></tr>' +
+                rows.map(r => `<tr><td>${r[0]}</td><td>${fmt(r[1])}</td><td>${r[2]}</td><td class="${same(r[1], r[3]) ? 'match' : 'nomatch'}">${fmt(r[3])}</td><td>${r[4]}</td><td class="${same(r[1], r[5]) ? 'match' : 'nomatch'}">${fmt(r[5])}</td></tr>`).join('');
+        }
+
+        // ---------- Tab 3 ----------
+        function drawTab3() {
+            const th = +document.getElementById('th3').value, v = +document.getElementById('v3').value, g = 10;
+            document.getElementById('th3v').innerText = th + '°'; document.getElementById('v3v').innerText = v + ' m/s';
+            const mirror = document.getElementById('mirror3').checked;
+            const traj = a => x => { const tn = Math.tan(a * D), cs = Math.cos(a * D); const y = x * tn - g * x * x / (2 * v * v * cs * cs); return y >= -0.01 ? y : NaN; };
+            const range = a => v * v * Math.sin(2 * a * D) / g;
+            const series = [{ f: traj(th), color: '#2b6cb0' }];
+            if (mirror && th !== 45) series.push({ f: traj(90 - th), color: '#dd6b20', dash: [6, 4] });
+            plot(document.getElementById('cv3'), { x0: 0, x1: 20, xs: 2, y0: 0, y1: 10, ys: 2, xfmt: x => x + ' m' }, series,
+                { after: (ctx, sx, sy) => {
+                    ctx.fillStyle = '#c53030'; ctx.beginPath(); ctx.arc(sx(range(th)), sy(0), 6, 0, 2 * Math.PI); ctx.fill();
+                    ctx.font = 'bold 13px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText('R = ' + r2(range(th)) + ' m', sx(range(th)), sy(0) - 12);
+                } });
+            const s = Math.sin(th * D), c = Math.cos(th * D);
+            document.getElementById('vals3').innerHTML = '<tr><th>θ</th><th>sin θ</th><th>cos θ</th><th>2 sin θ cos θ</th><th>sin 2θ</th><th>Range R = v² sin 2θ / g</th>' + (mirror ? '<th>Range at 90° − θ</th>' : '') + '</tr>' +
+                `<tr><td>${th}°</td><td>${r4(s)}</td><td>${r4(c)}</td><td class="match">${r4(2 * s * c)}</td><td class="match">${r4(Math.sin(2 * th * D))}</td><td>${r2(range(th))} m</td>` + (mirror ? `<td>${r2(range(90 - th))} m</td>` : '') + '</tr>';
+        }
+
+        // ---------- Tab 4 ----------
+        const S = x => Math.sin(x * D), C = x => Math.cos(x * D), Tn = x => Math.tan(x * D);
+        const claims = [
+            { t: '(1 − cos 2x) / sin 2x  ≡  tan x', L: x => (1 - C(2 * x)) / S(2 * x), R: x => Tn(x) },
+            { t: 'sec x − cos x  ≡  sin x tan x', L: x => 1 / C(x) - C(x), R: x => S(x) * Tn(x) },
+            { t: 'cos⁴x − sin⁴x  ≡  cos 2x', L: x => C(x) ** 4 - S(x) ** 4, R: x => C(2 * x) },
+            { t: '1/(1 − sin x) + 1/(1 + sin x)  ≡  2 sec²x', L: x => 1 / (1 - S(x)) + 1 / (1 + S(x)), R: x => 2 / C(x) ** 2 },
+            { t: 'tan x + cot x  ≡  sec x cosec x', L: x => Tn(x) + 1 / Tn(x), R: x => 1 / (C(x) * S(x)) },
+            { t: '(sin x + cos x)²  ≡  1 + sin 2x', L: x => (S(x) + C(x)) ** 2, R: x => 1 + S(2 * x) },
+            { t: 'TRAP? sin 2x  ≡  2 sin x', L: x => S(2 * x), R: x => 2 * S(x) },
+            { t: 'TRAP? cos 2x  ≡  1 − sin²x', L: x => C(2 * x), R: x => 1 - S(x) ** 2 },
+            { t: 'TRAP? sin(x + 30°)  ≡  sin x + ½', L: x => S(x + 30), R: x => S(x) + 0.5 },
+        ];
+        (function () { const sel = document.getElementById('idSel'); claims.forEach((c, i) => { const o = document.createElement('option'); o.value = i; o.textContent = c.t; sel.appendChild(o); }); })();
+        function drawTab4() {
+            const c = claims[+document.getElementById('idSel').value];
+            plot(document.getElementById('cv4'), { x0: 0, x1: 360, xs: 45, y0: -4, y1: 4, ys: 1 },
+                [{ f: c.L, color: '#2b6cb0', width: 4 }, { f: c.R, color: '#e53e3e', dash: [8, 6], width: 2 }]);
+            let maxDiff = 0;
+            for (let x = 1.3; x < 360; x += 2.7) { const a = c.L(x), b = c.R(x); if (isFinite(a) && isFinite(b) && Math.abs(a) < 1e4) maxDiff = Math.max(maxDiff, Math.abs(a - b) / Math.max(1, Math.abs(a), Math.abs(b))); }
+            const el = document.getElementById('id4');
+            el.innerHTML = maxDiff < 1e-9
+                ? '<span class="match">✅ The graphs coincide at every point tested — very likely an identity. Now prove it algebraically!</span>'
+                : `<span class="nomatch">❌ Not an identity: the two sides give different values (e.g. at x = 30°: ${r2(c.L(30))} vs ${r2(c.R(30))}). One counter-example is enough to disprove it.</span>`;
+        }
+
+        // ---------- Tab 5 ----------
+        function setAB(a, b) { document.getElementById('a5').value = a; document.getElementById('b5').value = b; drawTab5(); }
+        function drawTab5() {
+            const a = +document.getElementById('a5').value, b = +document.getElementById('b5').value;
+            document.getElementById('a5v').innerText = a; document.getElementById('b5v').innerText = b;
+            const R = Math.hypot(a, b), al = Math.atan2(b, a) / D;
+            const ymax = Math.max(2, Math.ceil(R + 1));
+            plot(document.getElementById('cv5'), { x0: 0, x1: 360, xs: 45, y0: -ymax, y1: ymax, ys: ymax > 8 ? 2 : 1 }, [
+                { f: x => a * S(x), color: '#cbd5e0', width: 1.5 },
+                { f: x => b * C(x), color: '#a0aec0', width: 1.5 },
+                { f: x => a * S(x) + b * C(x), color: '#2b6cb0', width: 4 },
+                { f: x => R * S(x + al), color: '#e53e3e', dash: [8, 6], width: 2 },
+            ], { after: (ctx, sx, sy) => {
+                let xm = ((90 - al) % 360 + 360) % 360;
+                if (R > 0) { ctx.fillStyle = '#c53030'; ctx.beginPath(); ctx.arc(sx(xm), sy(R), 6, 0, 2 * Math.PI); ctx.fill();
+                    ctx.font = 'bold 12px Segoe UI'; ctx.textAlign = 'center'; ctx.fillText('max ' + r2(R) + ' at ' + r2(xm) + '°', sx(xm), sy(R) - 10); }
+            } });
+            const sign = al >= 0 ? '+' : '−';
+            const el = document.getElementById('txt5');
+            el.innerHTML = `$${a}\\sin\\theta ${b >= 0 ? '+' : '-'} ${Math.abs(b)}\\cos\\theta = ${r2(R)}\\sin(\\theta ${sign} ${Math.abs(r2(al))}^\\circ)$ &nbsp; | &nbsp; $R = \\sqrt{(${a})^2 + (${b})^2} = ${r2(R)}$, max $= ${r2(R)}$, min $= ${r2(-R)}$`;
+            typeset(el);
+        }
+        function drawTide() {
+            const need = +document.getElementById('need').value;
+            document.getElementById('needv').innerText = need.toFixed(2) + ' m';
+            const h = t => 1.2 + 0.6 * S(30 * t) + 0.8 * C(30 * t);
+            const showAns = document.getElementById('showAns').checked;
+            // find safe windows numerically
+            const wins = []; let start = null;
+            for (let i = 0; i <= 12000; i++) {
+                const t = i / 1000, ok = h(t) >= need - 1e-9;
+                if (ok && start === null) start = t;
+                if ((!ok || i === 12000) && start !== null) { wins.push([start, ok ? t : t - 0.001]); start = null; }
+            }
+            const hhmm = t => { const m = Math.round(t * 60); return String(Math.floor(m / 60)).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0'); };
+            plot(document.getElementById('cvT'), { x0: 0, x1: 12, xs: 1, y0: 0, y1: 2.5, ys: 0.5, xfmt: x => String(x).padStart(2, '0') + ':00' },
+                [{ f: h, color: '#2b6cb0', width: 3 }],
+                { before: (ctx, sx, sy, W, H, T, B) => {
+                    ctx.fillStyle = 'rgba(56,161,105,0.18)';
+                    wins.forEach(w => ctx.fillRect(sx(w[0]), T, sx(w[1]) - sx(w[0]), H - T - B));
+                    ctx.strokeStyle = '#c53030'; ctx.setLineDash([6, 4]); ctx.lineWidth = 1.5;
+                    ctx.beginPath(); ctx.moveTo(sx(0), sy(need)); ctx.lineTo(sx(12), sy(need)); ctx.stroke(); ctx.setLineDash([]);
+                  },
+                  after: (ctx, sx, sy) => {
+                    if (!showAns) return;
+                    const tmax = (90 - 53.1301) / 30, tmin = (270 - 53.1301) / 30;
+                    ctx.fillStyle = '#c53030'; ctx.font = 'bold 12px Segoe UI'; ctx.textAlign = 'center';
+                    [[tmax, 2.2, 'max 2.2 m'], [tmin, 0.2, 'min 0.2 m']].forEach(([t, v, l]) => {
+                        ctx.beginPath(); ctx.arc(sx(t), sy(v), 5, 0, 2 * Math.PI); ctx.fill();
+                        ctx.fillText(l + ' at ' + hhmm(t), sx(t), sy(v) + (v > 1 ? -10 : 18));
+                    });
+                  } });
+            document.getElementById('txtT').innerText = wins.length
+                ? 'Safe docking: ' + wins.map(w => hhmm(w[0]) + '–' + hhmm(w[1])).join(' and ')
+                : 'No safe time between 00:00 and 12:00 — the tide never gets that high!';
+        }
+
+        function redrawAll() { drawTab1(); drawTab2(); drawTab3(); drawTab4(); drawTab5(); drawTide(); }
+        window.addEventListener('load', redrawAll);
+        window.addEventListener('resize', redrawAll);
+    </script>
+</body>
+</html>

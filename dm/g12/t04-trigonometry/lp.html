@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan - Trigonometry - SMA Semesta</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent-bg: #ebf8ff;
+            --mindful: #2980b9;
+            --meaningful: #27ae60;
+            --joyful: #d35400;
+            --rme: #8e44ad;
+            --char: #c0392b;
+
+            /* WALT & WILT Colors */
+            --walt-header: #1e3a8a;
+            --walt-bg: #e0f2fe;
+            --wilt-header: #831843;
+            --wilt-bg: #fce7f3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 50px;
+            background-color: #fff;
+        }
+        mjx-container { font-size: 1.15em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Print Styles */
+        @page { size: A4; margin: 12mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 9.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            h1, h2, h3 { page-break-after: avoid; margin-top: 15px; margin-bottom: 5px;}
+            .header, .info-grid { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-style: italic; color: #555; }
+
+        /* Header Elements */
+        .header { display: flex; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .header img { width: 90px; margin-right: 20px; }
+        .header-text h1 { margin: 0; font-size: 1.5em; color: var(--primary); }
+        .header-text p { margin: 2px 0; font-size: 0.95em; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 12px; border: 1px solid #dee2e6; margin-bottom: 15px; }
+        .info-grid p { margin: 3px 0; }
+
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 1.2em;}
+
+        .char-dev, .rme, .joyful, .mindful, .meaningful { font-weight: bold; }
+        .char-dev { color: var(--char); } .rme { color: var(--rme); } .joyful { color: var(--joyful); } .mindful { color: var(--mindful); } .meaningful { color: var(--meaningful); }
+
+        /* WALT & WILT Section */
+        .ww-container {
+            display: flex; width: 100%; margin-bottom: 20px; border: 1px solid #cbd5e0; page-break-inside: avoid;
+        }
+        .ww-col { flex: 1; display: flex; flex-direction: column; }
+        .ww-header { color: white; font-weight: bold; text-align: center; padding: 8px; font-size: 1.1em; }
+        .ww-body { padding: 15px; flex: 1; font-size: 0.95em; }
+        .walt-col .ww-header { background-color: var(--walt-header); }
+        .walt-col .ww-body { background-color: var(--walt-bg); color: #1e3a8a;}
+        .wilt-col .ww-header { background-color: var(--wilt-header); }
+        .wilt-col .ww-body { background-color: var(--wilt-bg); color: #831843;}
+        .ww-body h4 { margin-top: 0; margin-bottom: 5px; font-size: 1em;}
+        .ww-body ul, .ww-body ol { margin-top: 5px; padding-left: 20px; margin-bottom: 10px;}
+        .ww-body li { margin-bottom: 5px; }
+
+        /* PjBL Phase Detailed Table Design */
+        .phase-container {
+            border: 1px solid var(--secondary); margin-bottom: 10px; page-break-inside: avoid; display: flex; flex-direction: column;
+        }
+        .phase-header {
+            background-color: var(--secondary); color: white; padding: 5px 12px;
+            font-weight: bold; display: flex; justify-content: space-between; font-size: 0.95em;
+        }
+        .phase-body { display: flex; width: 100%; }
+        .phase-left {
+            width: 22%; background-color: var(--accent-bg); padding: 10px;
+            font-style: italic; color: var(--primary); font-weight: bold;
+            border-right: 1px solid #cbd5e0; font-size: 0.85em;
+        }
+        .phase-right {
+            width: 78%; padding: 10px; background-color: white; font-size: 0.9em;
+        }
+        .phase-right h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 1em; }
+        .phase-right ul { margin: 0 0 5px 0; padding-left: 20px; }
+        .phase-right li { margin-bottom: 3px; }
+        .scaffold-text {
+            color: var(--secondary); font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #f0f4f8; padding: 4px 8px; border-left: 3px solid var(--secondary);
+        }
+
+        /* Differentiation Table Styles */
+        .diff-header {
+            display: flex; align-items: center; color: var(--primary); font-size: 1.2em; font-weight: bold;
+            margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; page-break-after: avoid;
+        }
+        .diff-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: avoid; font-size: 0.9em;}
+        .diff-table th, .diff-table td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; vertical-align: top; }
+        .diff-table th { background-color: #f8f9fa; color: #2d3748; font-weight: bold; }
+        .diff-table td:first-child { font-weight: bold; color: #2c3e50; width: 25%; }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; page-break-inside: avoid; font-size: 0.9em;}
+        .signature-block { width: 45%; text-align: left; }
+        .signature-title { margin-bottom: 50px; line-height: 1.2; }
+        .signature-name { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
+
+        /* Appendix Styles */
+        .appendix-card {
+            border: 1px solid #cbd5e0; border-left: 5px solid; border-radius: 6px;
+            padding: 15px; margin-bottom: 15px; background-color: #fdfdfd; page-break-inside: avoid;
+        }
+        .app-g1 { border-left-color: #48bb78; } /* Green */
+        .app-g2 { border-left-color: #4299e1; } /* Blue */
+        .app-g3 { border-left-color: #f56565; } /* Red */
+        .app-g4 { border-left-color: #ecc94b; } /* Yellow */
+        .appendix-card h3 { margin-top: 0; color: var(--primary); font-size: 1.1em; border-bottom: 1px dotted #cbd5e0; padding-bottom: 5px;}
+        .appendix-card ul { margin-top: 5px; padding-left: 20px;}
+        .tips-box {
+            background-color: #fffff0; border: 1px solid #ecc94b; border-left: 5px solid #d69e2e;
+            padding: 15px; border-radius: 6px; margin-top: 20px; page-break-inside: avoid;
+        }
+        .tips-box h3 { color: #b7791f; margin-top: 0; }
+
+        /* 5E Phase Colours */
+        .five-e-strip { display: flex; gap: 4px; margin-bottom: 15px; page-break-inside: avoid; }
+        .five-e-strip div { flex: 1; color: white; text-align: center; font-weight: bold; padding: 6px 4px; font-size: 0.85em; border-radius: 4px; }
+        .five-e-strip small { font-weight: normal; }
+        .e-engage, .ph-engage { background-color: #d69e2e !important; }
+        .e-explore, .ph-explore { background-color: #38a169 !important; }
+        .e-explain, .ph-explain { background-color: #3182ce !important; }
+        .e-elaborate, .ph-elaborate { background-color: #805ad5 !important; }
+        .e-evaluate, .ph-evaluate { background-color: #e53e3e !important; }
+        @media print { .five-e-strip div, .phase-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Lesson Plan</button>
+
+    <div class="header">
+        <img src="https://semesta.sch.id/wp-content/uploads/2025/09/cropped-Logo-Semesta-2017-200x200-1-1-300x300.png" alt="SMA Semesta Logo">
+        <div class="header-text">
+            <h1>Lesson Plan: Trigonometry</h1>
+            <p><strong>School:</strong> SMA Semesta 2026/2025 | <strong>Grade:</strong> 12</p>
+            <p><strong>Time Allocation:</strong> 6 Meetings (2 x 40 minutes = 80 mins per meeting)</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div>
+            <p><strong>📌 Topic:</strong> 3. Trigonometry</p>
+            <p><strong>Reference:</strong> Cambridge International AS &amp; A Level Mathematics: Pure Mathematics 2 &amp; 3</p>
+            <p><strong>Method:</strong> Problem Based Learning (PBL) integrated with the 5E Model</p>
+        </div>
+        <div>
+            <p><strong>Approach:</strong> Hands-on Activity &amp; Deep Learning (Pembelajaran Mendalam: <span class="mindful">Mindful</span>, <span class="meaningful">Meaningful</span>, <span class="joyful">Joyful</span>)</p>
+            <p><strong>Character Focus:</strong> <span class="char-dev">Self-Regulated, Creativity, Critical Thinking</span></p>
+            <p><strong>Differentiation:</strong> Extension, Scaffolding, EAL, SEN</p>
+        </div>
+    </div>
+
+    <h2>🎯 Objectives</h2>
+    <ul style="font-size: 0.9em;">
+        <li><strong>2.3.1 / 3.3.1:</strong> Understand and use the definitions of cosecant, secant, and cotangent, and their relationships to sine, cosine, and tangent.</li>
+        <li><strong>2.3.2 / 3.3.2:</strong> Use the compound angle formulae for sine, cosine, and tangent.</li>
+        <li><strong>2.3.3 / 3.3.3:</strong> Use the double angle formulae for sine, cosine, and tangent.</li>
+        <li><strong>2.3.4 / 3.3.4:</strong> Prove and use further trigonometric identities, including those involving cosecant, secant, cotangent, and sums and differences of angles.</li>
+        <li><strong>2.3.5 / 3.3.5:</strong> Express $a\sin\theta + b\cos\theta$ in the form $R\sin(\theta \pm \alpha)$ or $R\cos(\theta \pm \alpha)$, and use this form to solve equations and find maximum and minimum values.</li>
+    </ul>
+
+    <!-- WALT & WILT SECTION -->
+    <div class="ww-container">
+        <div class="ww-col walt-col">
+            <div class="ww-header">WALT — We Are Learning To...</div>
+            <div class="ww-body">
+                <h4>Learning Objective:</h4>
+                <p>Use reciprocal ratios, compound and double angle formulae, trigonometric identities and the $R$-formula to model and solve real wave and angle problems — ending with a safe-docking plan for a ship using a tide model.</p>
+                <br>
+                <h4>Bloom's Level:</h4>
+                <p>Apply, Analyse &amp; Evaluate (Levels 3–5), with Create in the Tide Report</p>
+            </div>
+        </div>
+        <div class="ww-col wilt-col">
+            <div class="ww-header">WILT — What I'm Looking For...</div>
+            <div class="ww-body">
+                <h4>Success Criteria (self-assessable):</h4>
+                <ol>
+                    <li>I can use $\sec$, $\operatorname{cosec}$ and $\cot$ and the identities $1 + \tan^2\theta \equiv \sec^2\theta$ and $1 + \cot^2\theta \equiv \operatorname{cosec}^2\theta$.</li>
+                    <li>I can use the compound angle formulae to find exact values and solve equations.</li>
+                    <li>I can use the double angle formulae, choosing the right form of $\cos 2A$.</li>
+                    <li>I can prove identities with clear, logical steps (one side to the other).</li>
+                    <li>I can write $a\sin\theta + b\cos\theta$ as $R\sin(\theta \pm \alpha)$ or $R\cos(\theta \pm \alpha)$ and use it for maximum/minimum values and equations.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <!-- PBL + 5E Overview -->
+    <div style="background-color: #f0fdf4; border-left: 5px solid #38a169; padding: 10px; margin-bottom: 10px; font-size: 0.95em;">
+        <strong>🌊 PBL Driving Problem: "The Tanjung Priok Tide Challenge"</strong><br>
+        The port authority models the tide height by $h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$ metres, where $t$ is the number of hours after midnight. A cargo ship needs $h \ge 1.8$ m to dock safely. <em>When should the ship dock, and what is the highest tide?</em> Each meeting gives every student one more trigonometric tool; in Meeting 5 each student solves the problem and writes an individual Tide Report, which is presented in Meeting 6.<br>
+        <strong>Learning organisation:</strong> students work <strong>individually</strong> (with short "turn &amp; check" moments with a neighbour). Every meeting follows the PBL syntax inside a full 5E cycle:
+    </div>
+    <div class="five-e-strip">
+        <div class="e-engage">ENGAGE<br><small>PBL 1 · Orientation to the problem</small></div>
+        <div class="e-explore">EXPLORE<br><small>PBL 2 · Organise for learning</small></div>
+        <div class="e-explain">EXPLAIN<br><small>PBL 3 · Guided investigation</small></div>
+        <div class="e-elaborate">ELABORATE<br><small>PBL 4 · Develop &amp; present</small></div>
+        <div class="e-evaluate">EVALUATE<br><small>PBL 5 · Analyse &amp; evaluate</small></div>
+    </div>
+
+    <!-- ========================================== MEETING 1 =========================================== -->
+    <h2>📅 Meeting 1: The Cosecant, Secant and Cotangent Ratios (Subtopic 3.1)</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>ENGAGE · PBL 1 Orientation — The School Ramp</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Teacher-led Hook</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> A wheelchair ramp must rise 0.5 m at no more than $4.8^\circ$. Students find the ramp length $L = \frac{0.5}{\sin\theta}$ and notice the ratio $\frac{1}{\sin\theta}$ keeps appearing — it deserves its own name.</li>
+                    <li>Introduce the chapter driving problem (the Tanjung Priok tide) and show the tide graph.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>EXPLORE · PBL 2 — Measuring the Unit Circle</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Investigation</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Each student constructs tangent lines on the printed unit circle (Hands-on 1, $\theta = 35^\circ$) and measures the lengths that represent $\tan\theta$, $\sec\theta$, $\cot\theta$ and $\operatorname{cosec}\theta$, then compares them with $\frac{1}{\cos\theta}$, $\frac{1}{\sin\theta}$, $\frac{1}{\tan\theta}$ on a calculator.</li>
+                    <li>Spot the right triangle $OAT$: $OT^2 = 1 + AT^2$, i.e. $\sec^2\theta = 1 + \tan^2\theta$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>EXPLAIN · PBL 3 — Definitions, Graphs &amp; Pythagorean Identities</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction &amp; Guided Practice</div>
+            <div class="phase-right">
+                <ul>
+                    <li>$\sec\theta = \frac{1}{\cos\theta}$, $\operatorname{cosec}\theta = \frac{1}{\sin\theta}$, $\cot\theta = \frac{1}{\tan\theta} = \frac{\cos\theta}{\sin\theta}$; exact values for $30^\circ, 45^\circ, 60^\circ$.</li>
+                    <li>Sketch $y = \sec x$, $y = \operatorname{cosec} x$, $y = \cot x$ from their parent graphs (asymptotes where the parent is zero). Use the Web Lab, Tab 1.</li>
+                    <li>Derive $1 + \tan^2\theta \equiv \sec^2\theta$ and $1 + \cot^2\theta \equiv \operatorname{cosec}^2\theta$ by dividing $\sin^2\theta + \cos^2\theta \equiv 1$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>ELABORATE · PBL 4 — Solving with Reciprocal Ratios</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Application</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Worksheet 1: equations such as $\sec\theta = 2$, exact values in other quadrants, and the quadratic $2\tan^2\theta + \sec\theta = 1$.</li>
+                    <li><span class="scaffold-text">Scaffold: "Flip first" — rewrite every reciprocal ratio as $\sin$, $\cos$ or $\tan$ before solving.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="mindful">Mindful:</span> Exit ticket — solve $\operatorname{cosec} x = 3$ for $0^\circ \le x \le 360^\circ$; self-rate WILT 1.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== MEETING 2 =========================================== -->
+    <h2>📅 Meeting 2: Compound Angle Formulae (Subtopic 3.2)</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>ENGAGE · PBL 1 Orientation — Is $\sin(A+B) = \sin A + \sin B$?</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Discussion &amp; Prediction</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="char-dev">Critical Thinking:</span> Test $\sin(30^\circ + 60^\circ)$ against $\sin 30^\circ + \sin 60^\circ$. A Joglo roof designer needs the <em>exact</em> value of $\sin 75^\circ$ without a calculator — how?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>EXPLORE · PBL 2 — The Three-Triangle Proof Kit</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Investigation</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Each student cuts the three scaled triangles ($A = 30^\circ$, $B = 40^\circ$) from Hands-on 2 and assembles them on the mat. The height of the top vertex is $\sin(A+B)$ — and it splits into $\sin A\cos B + \cos A\sin B$.</li>
+                    <li>Verify numerically for other angle pairs (Worksheet 2 table, Web Lab Tab 2).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>EXPLAIN · PBL 3 — The Six Formulae</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction</div>
+            <div class="phase-right">
+                <ul>
+                    <li>$\sin(A \pm B)$, $\cos(A \pm B)$ (note the sign swap!), $\tan(A \pm B) = \frac{\tan A \pm \tan B}{1 \mp \tan A\tan B}$. Exact values: $\sin 75^\circ = \frac{\sqrt6 + \sqrt2}{4}$, $\tan 75^\circ = 2 + \sqrt3$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>ELABORATE · PBL 4 — Exact Values &amp; Equations</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Application</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Worksheet 2: $\sin(A+B)$ from given ratios, solve $\sin(\theta + 30^\circ) = 2\cos\theta$ and $\tan(x + 45^\circ) = 2$, prove $\cos(A+B) + \cos(A-B) \equiv 2\cos A\cos B$.</li>
+                    <li><span class="scaffold-text">Scaffold: formula card with colour-coded signs (Hands-on 2, page 2).</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right"><ul><li>Find the exact value of $\cos 75^\circ$. Self-rate WILT 2.</li></ul></div>
+        </div>
+    </div>
+
+    <!-- ========================================== MEETING 3 =========================================== -->
+    <h2>📅 Meeting 3: Double Angle Formulae (Subtopic 3.3)</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>ENGAGE · PBL 1 Orientation — The Perfect Sepak Takraw Kick</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Visual Hook</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> The range of a kicked ball is $R = \frac{v^2 \sin 2\theta}{g}$. Students tabulate $R$ for $15^\circ$ to $75^\circ$ ($v = 10$, $g = 10$) and ask: why do $30^\circ$ and $60^\circ$ give the same range, and why is $45^\circ$ best?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>EXPLORE · PBL 2 — Cut-and-Rearrange Proof</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Investigation</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Cut the isosceles triangle (apex $2\theta$, equal sides 1) from Hands-on 3 along its altitude. Its area is $\frac12\sin 2\theta$, but the two halves also form a rectangle of area $\sin\theta\cos\theta$ — so $\sin 2\theta = 2\sin\theta\cos\theta$.</li>
+                    <li>Set $B = A$ in the compound formulae to derive all three double angle formulae.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>EXPLAIN · PBL 3 — Three Faces of $\cos 2A$</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction</div>
+            <div class="phase-right">
+                <ul>
+                    <li>$\cos 2A = \cos^2 A - \sin^2 A = 2\cos^2 A - 1 = 1 - 2\sin^2 A$; $\tan 2A = \frac{2\tan A}{1 - \tan^2 A}$; rearranged forms $\cos^2 A = \frac{1 + \cos 2A}{2}$, $\sin^2 A = \frac{1 - \cos 2A}{2}$.</li>
+                    <li>Card sort (Hands-on 3, page 2): which form of $\cos 2A$ makes each equation a single-ratio quadratic?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>ELABORATE · PBL 4 — Solving Double Angle Equations</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Application</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Worksheet 3: $\cos 2x = \sin x$, $\sin 2\theta = \cos\theta$, and the takraw angles that give a 7 m range.</li>
+                    <li><span class="scaffold-text">Scaffold: never divide by $\cos\theta$ — factorise instead, or solutions are lost!</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right"><ul><li>Given $\cos A = \frac13$, find $\cos 2A$. Self-rate WILT 3.</li></ul></div>
+        </div>
+    </div>
+
+    <!-- ========================================== MEETING 4 =========================================== -->
+    <h2>📅 Meeting 4: Further Trigonometric Identities (Subtopic 3.4)</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>ENGAGE · PBL 1 Orientation — Two Engineers, Two Formulas</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Discussion</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="char-dev">Critical Thinking:</span> One engineer uses $\frac{1 - \cos 2\theta}{\sin 2\theta}$, another uses $\tan\theta$. Testing $\theta = 20^\circ$ gives the same answer. Is that enough? What makes a <em>proof</em> different from checking examples?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>EXPLORE · PBL 2 — Proof Puzzles</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Investigation</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Each student cuts and re-orders the shuffled proof strips (Hands-on 4) for four identities. Each puzzle contains one <strong>trap</strong> strip that is mathematically wrong — find it and explain why.</li>
+                    <li>Use the identity checker (Web Lab, Tab 4) to see that both sides have the same graph.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>EXPLAIN · PBL 3 — Proof Strategies</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Start from the more complicated side; rewrite in $\sin$/$\cos$; use Pythagorean and double angle identities; combine fractions; factorise (difference of two squares). Never "move terms across" an identity you are proving.</li>
+                    <li>Solving equations in $\sec$, $\operatorname{cosec}$, $\cot$ by turning them into quadratics with one ratio.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>ELABORATE · PBL 4 — Prove &amp; Solve</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Application</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Worksheet 4: five proofs of increasing difficulty and the equations $3\cot^2\theta - 5\operatorname{cosec}\theta + 1 = 0$ and $2\sec^2\theta = 3\tan\theta + 1$.</li>
+                    <li><span class="scaffold-text">Scaffold: identity "toolbox" card listing every identity met so far.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right"><ul><li>Prove $\tan\theta + \cot\theta \equiv \sec\theta\operatorname{cosec}\theta$. Self-rate WILT 4.</li></ul></div>
+        </div>
+    </div>
+
+    <!-- ========================================== MEETING 5 =========================================== -->
+    <h2>📅 Meeting 5: $a\sin\theta + b\cos\theta = R\sin(\theta \pm \alpha)$ — Solving the Tide Problem (Subtopic 3.5)</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>ENGAGE · PBL 1 Orientation — Back to Tanjung Priok</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Problem Re-launch</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> Revisit the tide model. From a table of $h(t)$ values students estimate the highest tide — but where exactly is the maximum, and when is $h \ge 1.8$?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>EXPLORE · PBL 2 — Adding Two Waves</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Investigation</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> On the printed graph (Hands-on 5) students add the ordinates of $y = 3\sin x$ and $y = 4\cos x$ point by point. The sum is a single sine wave with amplitude 5, shifted left by about $53^\circ$.</li>
+                    <li>Use the wave combiner (Web Lab, Tab 5) to test other values of $a$ and $b$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>EXPLAIN · PBL 3 — The $R$-Formula Method</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Expand $R\sin(\theta + \alpha)$ and compare coefficients: $R\cos\alpha = a$, $R\sin\alpha = b$, so $R = \sqrt{a^2 + b^2}$ and $\tan\alpha = \frac{b}{a}$. Choose $\sin(\theta \pm \alpha)$ or $\cos(\theta \pm \alpha)$ to keep $R > 0$ and $\alpha$ acute.</li>
+                    <li>Maximum $= R$, minimum $= -R$; solving $a\sin\theta + b\cos\theta = c$ becomes one sine equation (adjust the interval for $\theta + \alpha$).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>ELABORATE · PBL 4 — Develop the Tide Report</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Product</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Each student writes $0.6\sin x + 0.8\cos x = \sin(x + 53.13^\circ)$, finds the highest tide (2.2 m at about 01:14), the lowest tide (0.2 m at about 07:14) and the safe docking windows (00:00–03:00 and from about 11:27), and completes the Tide Report (Hands-on 5, page 2).</li>
+                    <li><span class="scaffold-text">Scaffold: step-by-step $R$-formula "recipe" card; Extension: find the safe windows for a ship that needs 2.0 m.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right"><ul><li>Express $\sqrt3\sin\theta + \cos\theta$ in the form $R\sin(\theta + \alpha)$. Self-rate WILT 5.</li></ul></div>
+        </div>
+    </div>
+
+    <!-- ========================================== MEETING 6 =========================================== -->
+    <h2>📅 Meeting 6: Present, Review &amp; Chapter 3 Evaluation</h2>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>PBL 4 — Presenting the Tide Reports</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Presentations</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Three students present their docking recommendation (2–3 minutes each); the class checks the $R$, $\alpha$ and the safe windows. Teacher assesses Tide Reports with the rubric (Appendix).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-engage"><span>Review — "I Have… Who Has…?" Loop</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Whole-Class Game</div>
+            <div class="phase-right">
+                <ul>
+                    <li><span class="joyful">Joyful:</span> 20 loop cards (Hands-on 6) covering every subtopic; the chain must return to the START card. Time the class.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>EVALUATE · PBL 5 — Chapter 3 Test &amp; Reflection</span><span>[60 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Summative Test</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Chapter 3 Test (Worksheet 6, 55 min, 50 marks) covering all five subtopics.</li>
+                    <li><span class="mindful">Mindful:</span> Reflection (5 min): "Which identity was the most useful tool in solving the tide problem, and why?" Self-rate all five WILT criteria.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ========================================== DIFFERENTIATION =========================================== -->
+    <div class="diff-header">🌟 Differentiation Strategies</div>
+    <table class="diff-table">
+        <thead><tr><th>Profile</th><th>Strategies &amp; Actions in Class</th></tr></thead>
+        <tbody>
+            <tr>
+                <td>Extension (High Achievers)</td>
+                <td>Prove $\sin 3x \equiv 3\sin x - 4\sin^3 x$ and $\tan 3A$ in terms of $\tan A$; find the maximum of $\frac{1}{12 + 8\sin\theta - 6\cos\theta}$; tide extension with a deeper ship (2.0 m); derive $\cos(A - B)$ with vectors or the distance formula.</td>
+            </tr>
+            <tr>
+                <td>Scaffolding (Middle/Low)</td>
+                <td>"Flip first" rule for reciprocal ratios; colour-coded compound-angle formula card (sign swap for $\cos$ in red); $\cos 2A$ decision card; step-by-step $R$-formula recipe; worked example before each worksheet section.</td>
+            </tr>
+            <tr>
+                <td>EAL (English Additional Language)</td>
+                <td>Bilingual glossary: <em>identity (identitas), compound angle (sudut majemuk), double angle (sudut ganda), reciprocal (kebalikan), amplitude (amplitudo), maximum/minimum (nilai maksimum/minimum), prove (buktikan)</em>. Model proof language: "LHS ≡ … ≡ RHS".</td>
+            </tr>
+            <tr>
+                <td>SEN (Special Educational Needs)</td>
+                <td>Pre-cut proof kits and puzzles; enlarged unit circle; formula strip taped to the desk; reduced question set (core questions marked ⭐ by the teacher); graph-first approach using the Web Lab before algebra.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-title">Acknowledged by,<br><strong>Principal</strong></div>
+            <div class="signature-name">Ahmad Nurani, S.T., M.Pd.</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-title"><br><strong>Subject Teacher</strong></div>
+            <div class="signature-name">Muhammad Ghozian Kafi Ahsan, S.Pd., M.Pd., Gr.</div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ========================================== APPENDIX =========================================== -->
+    <h2 style="text-align: center; color: var(--primary); border: none; font-size: 1.6em;">Appendix: PBL Driving Problem, Tide Report Rubric &amp; Teacher Notes</h2>
+
+    <div class="appendix-card app-g2">
+        <h3>🌊 The Tanjung Priok Tide Challenge (student brief)</h3>
+        <p>The tide height at the port is modelled by $h(t) = 1.2 + 0.6\sin(30t)^\circ + 0.8\cos(30t)^\circ$ metres, $0 \le t \le 12$ hours after midnight. A cargo ship needs at least <strong>1.8 m</strong> of water above the reference level to dock safely.</p>
+        <ol>
+            <li>Express $0.6\sin x + 0.8\cos x$ in the form $R\sin(x + \alpha)$.</li>
+            <li>Find the highest and lowest tide and the times they occur.</li>
+            <li>Find all times between 00:00 and 12:00 when it is safe to dock.</li>
+            <li>Write a short recommendation for the harbour master, with a sketch of $h(t)$.</li>
+        </ol>
+        <p><strong>Teacher answers:</strong> $R = 1$, $\alpha = 53.13^\circ$; max 2.2 m at $t \approx 1.23$ h (01:14); min 0.2 m at $t \approx 7.23$ h (07:14); safe when $0 \le t \le 3$ and $11.46 \le t \le 12$ (00:00–03:00 and 11:27–12:00).</p>
+    </div>
+
+    <div class="appendix-card app-g1">
+        <h3>📋 Tide Report Rubric (individual, 4 levels)</h3>
+        <table class="diff-table" style="margin-bottom: 0;">
+            <tr><th>Criterion</th><th>4 — Excellent</th><th>3 — Good</th><th>2 — Developing</th><th>1 — Beginning</th></tr>
+            <tr><td>$R$-form</td><td>Correct $R$ and $\alpha$ with full working</td><td>Correct with a minor slip</td><td>Method right, $R$ or $\alpha$ wrong</td><td>No valid method</td></tr>
+            <tr><td>Max / min</td><td>Both values and times correct</td><td>Values correct, one time wrong</td><td>Only values</td><td>Incorrect</td></tr>
+            <tr><td>Safe windows</td><td>Both windows, interval adjusted correctly</td><td>One window</td><td>Equation set up only</td><td>Not attempted</td></tr>
+            <tr><td>Communication</td><td>Clear recommendation and accurate sketch</td><td>Clear, small gaps</td><td>Hard to follow</td><td>Missing</td></tr>
+        </table>
+    </div>
+
+    <div class="tips-box">
+        <h3>💡 Teacher Tips for Execution</h3>
+        <ol>
+            <li><strong>Explore before Explain:</strong> let students build the unit circle, the three-triangle kit and the wave graph <em>before</em> naming the formulae — the Explain phase then starts from their observations.</li>
+            <li><strong>Degrees vs radians:</strong> keep calculators in degree mode for this chapter; remind students when an interval is given in radians.</li>
+            <li><strong>Lost solutions:</strong> insist on factorising rather than dividing by $\cos\theta$ or $\sin\theta$ (Meetings 3–4).</li>
+            <li><strong>Proof Puzzle key (Hands-on 4):</strong> Puzzle ①: B → F → D → A → G → C (trap E). Puzzle ②: D → B → F → E → A (trap C). Puzzle ③: E → A → F → B → D (trap C). Puzzle ④: C → E → B → D → F (trap A).</li>
+            <li><strong>Printing:</strong> every worksheet and hands-on file is laid out as full A4 pages, one file per meeting — print double-sided with no wasted paper.</li>
+        </ol>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+    <script>document.getElementById('print-footer').style.display = 'block';</script>
+</body>
+</html>

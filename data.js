@@ -109,11 +109,21 @@ const LEARNING_KIT_DATA = {
             ws: {
               label: "Worksheet",
               files: [
-                { index: 1, file: "ws-01.html", title: "Worksheet 1 Fractions" },
-                { index: 2, file: "ws-02.html", title: "Worksheet 2 Percentages & Standard Form" },
+                { index: 1, file: "ws-01.html", title: "Worksheet 1 Fractions (Meeting 1)" },
+                { index: 2, file: "ws-02.html", title: "Worksheet 2 Percentages (Meeting 2)" },
+                { index: 3, file: "ws-03.html", title: "Worksheet 3 Standard Form (Meeting 3)" },
+                { index: 4, file: "ws-04.html", title: "Worksheet 4 Chapter 5 Test (Meeting 4)" },
               ],
             },
-            ha: { label: "Hands-on Activity", files: [{ index: 1, file: "ha-01.html", title: "Hands-on Activity 1" }] },
+            ha: {
+              label: "Hands-on Activity",
+              files: [
+                { index: 1, file: "ha-01.html", title: "Hands-on 1 Fraction Circles (Meeting 1)" },
+                { index: 2, file: "ha-02.html", title: "Hands-on 2 Nutrition Labels (Meeting 2)" },
+                { index: 3, file: "ha-03.html", title: "Hands-on 3 Frog-Jump Strips (Meeting 3)" },
+                { index: 4, file: "ha-04.html", title: "Hands-on 4 Review Loop Cards (Meeting 4)" },
+              ],
+            },
           },
         },
         {

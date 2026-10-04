@@ -134,6 +134,13 @@
         .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
         .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
         .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
     </style>
 </head>
 <body>
@@ -149,22 +156,41 @@
 
     <div id="presentation-container">
 
-        <!-- SLIDE 0: TITLE -->
+        <!-- SLIDE: TITLE -->
         <div class="slide title-slide active">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
                 <h1>Fractions, Percentages &amp; Standard Form</h1>
                 <h2>Grade 9 Mathematics — Topic 5</h2>
-                <p style="font-size: 1.4em; color: #276749; font-weight: bold;">🏥 PjBL: "The Global Nutrition &amp; Micro-Health Portfolio"</p>
+                <div class="five-e"><span class="b-engage">Engage</span><span class="b-explore">Explore</span><span class="b-explain">Explain</span><span class="b-elaborate">Elaborate</span><span class="b-evaluate">Evaluate</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">🏥 Healthy Living Analysts — 4 Health Teams</p>
                 <p><em>Interactive Teaching Slides | Use the pen above to write directly on any slide.</em></p>
             </div>
         </div>
 
-        <!-- SLIDE 1: M1 HOOK -->
+        <!-- SLIDE: HEALTH TEAMS -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 1: The Recipe Dilemma</h2>
+                <h2 class="header-title">Meet Your Health Team</h2>
+                <p>You stay in the same team for the whole chapter. In every <strong>Elaborate</strong> phase your team solves its own health problem and presents it.</p>
+                <div class="group-grid">
+                    <div class="group-card" style="border-color:#48bb78;"><strong>🟢 Team 1: The Dietary Planners</strong>Nutrition focus — salad recipes, sugar intake, Vitamin C.</div>
+                    <div class="group-card" style="border-color:#4299e1;"><strong>🔵 Team 2: The Epidemiologists</strong>Disease focus — hospital beds, flu cases, virus sizes.</div>
+                    <div class="group-card" style="border-color:#f56565;"><strong>🔴 Team 3: The Fitness Coaches</strong>Exercise focus — running laps, heart rate, heartbeats.</div>
+                    <div class="group-card" style="border-color:#ecc94b;"><strong>🟡 Team 4: The Hydration Specialists</strong>Water focus — bottles, daily water goal, body cells.</div>
+                </div>
+                <div class="content-box" style="margin-top: 12px;">
+                    <p>📅 <strong>Meeting 1</strong> Fractions &nbsp;|&nbsp; <strong>Meeting 2</strong> Percentages &nbsp;|&nbsp; <strong>Meeting 3</strong> Standard Form &nbsp;|&nbsp; <strong>Meeting 4</strong> Review &amp; Chapter Test</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 1 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-engage tag">Engage</span> The Recipe Dilemma</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="recipe-card">
@@ -180,131 +206,74 @@
                         <div class="content-box">
                             <h3><span class="badge bg-hook">Essential Question</span></h3>
                             <p><em>"This serves 4 people and needs $1\frac{1}{2}$ cups of flour. How do we make it for the <strong>whole class of 30</strong>?"</em></p>
+                            <p>✍️ Write your first guess on Worksheet 1.</p>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Class Brainstorm</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Class Guesses</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 2: M1 PROJECT LAUNCH -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 1: Project Launch — Health Portfolio</h2>
-                <p>You are <strong>health &amp; nutrition analysts</strong>. Over 4 meetings your group builds a 3-page portfolio:</p>
-                <div class="content-box" style="margin-bottom: 10px;">
-                    <p>📄 <strong>Page 1:</strong> The Scaled Healthy Recipe <em>(Fractions)</em> &nbsp;|&nbsp; 📄 <strong>Page 2:</strong> Health Improvement Analysis <em>(Percentages)</em> &nbsp;|&nbsp; 📄 <strong>Page 3:</strong> Micro/Macro Data Chart <em>(Standard Form)</em></p>
-                </div>
-                <div class="group-grid">
-                    <div class="group-card" style="border-color:#48bb78;"><strong>🟢 Group 1: The Dietary Planners</strong>Nutrition focus — salad recipes, sugar intake, Vitamin C.</div>
-                    <div class="group-card" style="border-color:#4299e1;"><strong>🔵 Group 2: The Epidemiologists</strong>Disease focus — hospital beds, flu cases, virus sizes.</div>
-                    <div class="group-card" style="border-color:#f56565;"><strong>🔴 Group 3: The Fitness Coaches</strong>Exercise focus — running laps, heart rate, heartbeats.</div>
-                    <div class="group-card" style="border-color:#ecc94b;"><strong>🟡 Group 4: The Hydration Specialists</strong>Water focus — bottles, daily water goal, body cells.</div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 3: M1 MIXED / IMPROPER -->
-        <div class="slide">
-            <canvas class="drawing-board"></canvas>
-            <div class="content-layer">
-                <h2 class="header-title">Meeting 1: Fraction Language (5.1)</h2>
+                <h2 class="header-title">Meeting 1 · <span class="b-explore tag">Explore</span> Fraction Circles &amp; Paper Folding</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-concept">Main Concept</span> Types of Fractions</h3>
-                            <ul>
-                                <li><strong>Proper:</strong> top &lt; bottom, e.g. $\frac{3}{4}$</li>
-                                <li><strong>Improper:</strong> top ≥ bottom, e.g. $\frac{7}{4}$</li>
-                                <li><strong>Mixed number:</strong> whole + fraction, e.g. $1\frac{3}{4}$</li>
-                                <li><strong>Equivalent:</strong> $\frac{1}{2} = \frac{2}{4} = \frac{4}{8}$</li>
-                            </ul>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-concept">Convert</span></h3>
-                            <p>Mixed → Improper: $2\frac{3}{4} = \frac{2 \times 4 + 3}{4} = \frac{11}{4}$</p>
-                            <p>Improper → Mixed: $\frac{17}{5} = 17 \div 5 = 3$ remainder $2 = 3\frac{2}{5}$</p>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-question">Try It</span></h3>
-                            <p>a) $1\frac{1}{2}$ as improper &nbsp;&nbsp; b) $\frac{23}{6}$ as a mixed number</p>
-                        </div>
-                    </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 4: M1 ADD/SUB -->
-        <div class="slide">
-            <canvas class="drawing-board"></canvas>
-            <div class="content-layer">
-                <h2 class="header-title">Meeting 1: Adding &amp; Subtracting (5.2)</h2>
-                <div class="two-column">
-                    <div class="col">
-                        <div class="content-box">
-                            <h3><span class="badge bg-activity">Fraction Circles</span> Why a common denominator?</h3>
+                            <h3><span class="badge bg-activity">Investigate</span> Can you add these pieces?</h3>
                             <div class="circle-row">
                                 <div><div class="frac-circle" style="background: conic-gradient(#f6ad55 0 50%, #fff 50% 100%);"></div><div class="circle-caption">$\frac{1}{2}$</div></div>
                                 <div style="font-size:2em;">+</div>
                                 <div><div class="frac-circle" style="background: conic-gradient(#68d391 0 33.33%, #fff 33.33% 100%);"></div><div class="circle-caption">$\frac{1}{3}$</div></div>
                                 <div style="font-size:2em;">=</div>
-                                <div><div class="frac-circle" style="background: repeating-conic-gradient(from 0deg, transparent 0 59deg, #2d3748 59deg 60deg), conic-gradient(#f6ad55 0 50%, #68d391 50% 83.33%, #fff 83.33% 100%);"></div><div class="circle-caption">$\frac{3}{6} + \frac{2}{6} = \frac{5}{6}$</div></div>
+                                <div style="font-size:2.5em; font-weight:bold; color:#a0aec0;">?</div>
                             </div>
-                            <p>Pieces must be the <span class="highlight">same size</span> before we can count them together!</p>
+                            <ul>
+                                <li>Which <strong>one size</strong> of piece covers both exactly?</li>
+                                <li>Ali says $\frac{1}{2} + \frac{1}{3} = \frac{2}{5}$. Prove him wrong with the circles!</li>
+                            </ul>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-question">Sample Question</span></h3>
-                            <p>a) $2\frac{1}{4} + 1\frac{2}{3}$ &nbsp;&nbsp; b) $3\frac{1}{2} - 1\frac{3}{4}$</p>
-                            <p style="font-size:1em; color:#718096;"><em>Tip: change mixed numbers to improper fractions first.</em></p>
+                            <h3><span class="badge bg-activity">Fold</span> 📄 $\frac{2}{3}$ of $\frac{3}{4}$</h3>
+                            <p>Fold 4 columns, shade 3. Fold 3 rows, shade 2. Count the double-shaded boxes.</p>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Pairs Share Here</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 5: M1 MULT / DIV -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 1: Multiplying &amp; Dividing (5.2)</h2>
+                <h2 class="header-title">Meeting 1 · <span class="b-explain tag">Explain</span> The Fraction Rules</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-concept">Multiply</span> Top × Top, Bottom × Bottom</h3>
-                            <p>📄 <em>Paper folding:</em> fold $\frac{3}{4}$, then shade $\frac{2}{3}$ of it.</p>
-                            <p>$\frac{2}{3} \times \frac{3}{4} = \frac{6}{12} = \frac{1}{2}$</p>
+                            <h3><span class="badge bg-concept">Language</span> Types of Fractions</h3>
+                            <p><strong>Proper</strong> $\frac{3}{4}$ &nbsp; <strong>Improper</strong> $\frac{7}{4}$ &nbsp; <strong>Mixed</strong> $1\frac{3}{4}$ &nbsp; <strong>Equivalent</strong> $\frac{1}{2} = \frac{2}{4}$</p>
+                            <p>$2\frac{3}{4} = \frac{2 \times 4 + 3}{4} = \frac{11}{4}$ &nbsp;|&nbsp; $\frac{17}{5} = 3\frac{2}{5}$</p>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-concept">Divide</span> Keep, Change, Flip</h3>
-                            <p>$\frac{3}{4} \div \frac{3}{8} = \frac{3}{4} \times \frac{8}{3} = \frac{24}{12} = 2$</p>
-                            <p>⚠️ Convert mixed numbers to improper fractions <strong>first</strong>!</p>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-question">Group 3 &amp; 4 Preview</span></h3>
-                            <p>a) $3\frac{1}{2}$ laps × $\frac{2}{5}$ km &nbsp;&nbsp; b) $15\frac{1}{2}$ L ÷ $\frac{3}{4}$ L bottles</p>
+                            <h3><span class="badge bg-concept">Operations</span></h3>
+                            <ul>
+                                <li><strong>$+$ / $-$:</strong> common denominator first. $\frac{1}{2} + \frac{1}{3} = \frac{3}{6} + \frac{2}{6} = \frac{5}{6}$</li>
+                                <li><strong>$\times$:</strong> top × top, bottom × bottom. $\frac{2}{3} \times \frac{3}{4} = \frac{6}{12} = \frac{1}{2}$</li>
+                                <li><strong>$\div$:</strong> Keep, Change, Flip. $\frac{3}{4} \div \frac{3}{8} = \frac{3}{4} \times \frac{8}{3} = 2$</li>
+                                <li>⚠️ Mixed numbers → improper fractions <strong>first</strong>!</li>
+                            </ul>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Guided Practice: $2\frac{1}{4} + 1\frac{2}{3}$</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 6: M1 SOLVE THE HOOK -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 1: Solving the Recipe Dilemma</h2>
+                <h2 class="header-title">Meeting 1 · <span class="b-elaborate tag">Elaborate</span> Scale the Recipe</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
@@ -313,211 +282,307 @@
                             <p>Flour: $1\frac{1}{2} \times \frac{15}{2} = \frac{3}{2} \times \frac{15}{2} = \frac{45}{4} = 11\frac{1}{4}$ cups</p>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-activity">Portfolio Page 1</span> Scaling Recipes</h3>
+                            <h3><span class="badge bg-activity">Your Turn</span></h3>
                             <ul>
-                                <li>Choose a traditional healthy Indonesian recipe.</li>
-                                <li>Scale it <strong>UP</strong> for the school festival: <strong>50 people</strong>.</li>
-                                <li>Scale it <strong>DOWN</strong> for exactly <strong>3 people</strong>.</li>
-                                <li>Show every fraction calculation!</li>
+                                <li>Complete the Klepon table for <strong>30</strong> and for <strong>3</strong> people.</li>
+                                <li>Solve your <strong>Health Team Card</strong> (Hands-on 1) — present in 1 minute.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Team Solutions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-evaluate tag">Evaluate</span> Exit Ticket</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p style="font-size: 1.4em;">Scale $\frac{3}{4}$ cup of pandan water for <strong>30 people</strong>.</p>
+                        </div>
+                        <div class="content-box" style="background:#f0fff4; border-color:#9ae6b4;">
+                            <h3><span class="badge bg-activity">Self-Check</span> WILT</h3>
+                            <ul>
+                                <li>😀 😐 😟 I can convert mixed ↔ improper fractions.</li>
+                                <li>😀 😐 😟 I can use all four operations to scale recipes.</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 2 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-engage tag">Engage</span> "20% Less Sugar!"</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box" style="text-align:center; border: 3px solid #c53030; background: #fff5f5;">
+                            <p style="font-size:1.4em; font-weight:bold; color:#c53030;">🥤 SPORTS DRINK</p>
+                            <p style="font-size:2em; font-weight:bold;">NEW! 20% LESS SUGAR</p>
+                            <p>Original recipe: <strong>30 g</strong> sugar</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Predict</span></h3>
+                            <p>How much sugar is in the new drink?</p>
+                            <p>Budi says "$30 - 20 = 10$ g". Do you agree? Why?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Predictions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explore tag">Explore</span> The Multiplier Pattern</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">100-Square</span></h3>
+                            <p>Shade 20 squares (the sugar removed). How many are left? What % of the sugar stays?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Discover</span> Find New ÷ Original</h3>
+                            <table class="mult-table">
+                                <tr><th>Original</th><th>Change</th><th>New</th><th>New ÷ Original</th></tr>
+                                <tr><td>30 g</td><td>−20%</td><td>24 g</td><td>?</td></tr>
+                                <tr><td>50 g</td><td>−10%</td><td>45 g</td><td>?</td></tr>
+                                <tr><td>200 kcal</td><td>+15%</td><td>230 kcal</td><td>?</td></tr>
+                                <tr><td>80 bpm</td><td>+25%</td><td>100 bpm</td><td>?</td></tr>
+                            </table>
+                        </div>
+                        <div class="content-box"><p>🏷️ Then use the <strong>Nutrition Label Cards</strong> (Hands-on 2): what % of the daily limit is in each snack?</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">What Pattern?</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explain tag">Explain</span> The Multiplier Method</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Rules</span></h3>
+                            <ul>
+                                <li>$r\%$ of a quantity → multiply by $\frac{r}{100}$: &nbsp; 15% of 2000 = $0.15 \times 2000 = 300$</li>
+                                <li>Increase $r\%$ → $\times\left(1 + \frac{r}{100}\right)$; &nbsp; Decrease $r\%$ → $\times\left(1 - \frac{r}{100}\right)$</li>
+                                <li>$A$ as a % of $B$: $\frac{A}{B} \times 100\%$ <em>(same units!)</em></li>
+                                <li>$\text{Percentage change} = \dfrac{\text{New} - \text{Original}}{\text{Original}} \times 100\%$</li>
                             </ul>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
-                            <p>Scale $\frac{3}{4}$ cup of pandan water for 30 people.</p>
-                        </div>
-                    </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 7: M2 MULTIPLIER -->
-        <div class="slide">
-            <canvas class="drawing-board"></canvas>
-            <div class="content-layer">
-                <h2 class="header-title">Meeting 2: The Multiplier Method (5.3)</h2>
-                <div class="two-column">
-                    <div class="col">
-                        <div class="content-box">
-                            <h3><span class="badge bg-hook">Hook</span> 🥤 "20% LESS SUGAR!"</h3>
-                            <p>The original sports drink had <strong>30 g</strong> of sugar. How much is in the new one?</p>
-                            <p>$100\% - 20\% = 80\% \Rightarrow 0.80 \times 30 = 24$ g</p>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-concept">Multiplier Table</span></h3>
                             <table class="mult-table">
-                                <tr><th>Change</th><th>Multiplier</th></tr>
-                                <tr><td>Increase by 15%</td><td>1.15</td></tr>
-                                <tr><td>Decrease by 20%</td><td>0.80</td></tr>
-                                <tr><td>Decrease by 35%</td><td>0.65</td></tr>
-                                <tr><td>Find 15% of …</td><td>0.15</td></tr>
+                                <tr><th>Change</th><th>+15%</th><th>−20%</th><th>−35%</th><th>+8%</th></tr>
+                                <tr><td><strong>Multiplier</strong></td><td>1.15</td><td>0.80</td><td>0.65</td><td>1.08</td></tr>
                             </table>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Guided Practice</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 8: M2 PERCENTAGE CHANGE -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 2: Percentage Change in Health Data</h2>
+                <h2 class="header-title">Meeting 2 · <span class="b-elaborate tag">Elaborate</span> Before &amp; After Health Analysis</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-concept">Main Concept</span></h3>
-                            <p style="font-size:1.3em; text-align:center;">$\text{Percentage change} = \dfrac{\text{Difference}}{\text{Original}} \times 100\%$</p>
-                            <p>One quantity as a % of another: $\dfrac{\text{part}}{\text{whole}} \times 100\%$ <em>(same units!)</em></p>
+                            <h3><span class="badge bg-question">Worked Example</span> ❤️ Jogging for a month</h3>
+                            <p>Resting heart rate: <strong>85 bpm</strong> → <strong>68 bpm</strong></p>
+                            <p>$\dfrac{68 - 85}{85} \times 100\% = \dfrac{-17}{85} \times 100\% = -20\%$ → <strong>20% decrease</strong></p>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-question">Before &amp; After</span> ❤️ Jogging for a month</h3>
-                            <p>Resting heart rate drops from <strong>85 bpm</strong> to <strong>68 bpm</strong>.</p>
-                            <p>Difference $= 85 - 68 = 17$ &nbsp;→&nbsp; $\frac{17}{85} \times 100\% = 20\%$ decrease</p>
+                            <h3><span class="badge bg-activity">Your Turn</span></h3>
+                            <ul>
+                                <li>Complete the Before &amp; After table on Worksheet 2.</li>
+                                <li>Solve your <strong>Health Team Card</strong> (Hands-on 2): increase or decrease?</li>
+                            </ul>
                         </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Team Solutions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-evaluate tag">Evaluate</span> Exit Ticket</h2>
+                <div class="two-column">
+                    <div class="col">
                         <div class="content-box">
                             <h3><span class="badge bg-exit">Exit Ticket</span></h3>
-                            <p>Sugar intake drops from 65 g to 25 g. Find the percentage decrease (1 d.p.).</p>
+                            <p style="font-size: 1.3em;">A snack has 40 g of fat. The "light" version has <strong>15% less</strong> fat. How much fat is in the light version?</p>
+                        </div>
+                        <div class="content-box" style="background:#f0fff4; border-color:#9ae6b4;">
+                            <h3><span class="badge bg-activity">Self-Check</span> WILT</h3>
+                            <ul><li>😀 😐 😟 I can calculate percentage increases/decreases in health data.</li></ul>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 9: M2 STANDARD FORM -->
+        <!-- ================= MEETING 3 ================= -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 2: The Micro &amp; the Macro (5.4)</h2>
+                <h2 class="header-title">Meeting 3 · <span class="b-engage tag">Engage</span> Counting Zeros Race</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box" style="text-align:center;">
+                            <p style="font-size:1.3em;">🦠 Covid-19 virus width</p>
+                            <p style="font-size:2.2em; font-family: 'Courier New', monospace; font-weight:bold;">0.00000012 m</p>
+                            <p style="font-size:1.3em;">🇮🇩 Indonesia's population</p>
+                            <p style="font-size:2.2em; font-family: 'Courier New', monospace; font-weight:bold;">275000000</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Critical Thinking</span></h3>
+                            <p><em>Read them aloud — fast! How do scientists write these without miscounting zeros?</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Ideas</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explore tag">Explore</span> Frog-Jump Strips 🐸</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-hook">Critical Thinking</span> 🦠 vs 🇮🇩</h3>
-                            <p>Covid-19 virus width: <strong>0.000 000 12 m</strong></p>
-                            <p>Indonesia's population: <strong>275 000 000</strong></p>
-                            <p><em>How do scientists write these without miscounting zeros?</em></p>
+                            <h3><span class="badge bg-activity">Hands-on 3</span> Hop the decimal point</h3>
+                            <ul>
+                                <li>Put the frog where the decimal point is now.</li>
+                                <li>Hop one box at a time until only <strong>one non-zero digit</strong> is in front.</li>
+                                <li>Count the hops and note the direction.</li>
+                            </ul>
                         </div>
+                        <div class="content-box">
+                            <div class="jump-line"><span class="a-digit">2.75</span>000000</div>
+                            <div class="jump-line">0.000000<span class="a-digit">1.2</span></div>
+                            <p>🤔 What do the big numbers have in common? The tiny ones?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Draw the Frog Jumps</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explain tag">Explain</span> $A \times 10^n$ &amp; Index Laws</h2>
+                <div class="two-column">
+                    <div class="col">
                         <div class="content-box">
                             <h3><span class="badge bg-concept">Standard Form</span> $A \times 10^n$, &nbsp;$1 \le A &lt; 10$</h3>
-                            <div class="jump-line"><span class="a-digit">2.75</span>000000 → $2.75 \times 10^{8}$ <span style="font-size:0.55em; letter-spacing:0;">(point jumps 8 places → n = +8)</span></div>
-                            <div class="jump-line">0.000000<span class="a-digit">1.2</span> → $1.2 \times 10^{-7}$ <span style="font-size:0.55em; letter-spacing:0;">(point jumps 7 places → n = −7)</span></div>
-                            <p>🐸 Count the <strong>frog jumps</strong> of the decimal point: big numbers → $n$ positive, tiny numbers → $n$ negative.</p>
+                            <p>$275\,000\,000 = 2.75 \times 10^{8}$ &nbsp;(8 hops → $n = +8$)</p>
+                            <p>$0.000\,000\,12 = 1.2 \times 10^{-7}$ &nbsp;(7 hops → $n = -7$)</p>
+                            <p>Big numbers → $n$ positive; tiny numbers → $n$ negative. <em>(= Scientific Notation)</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Index Laws</span></h3>
+                            <p>$(2 \times 10^3) \times (4 \times 10^5) = 8 \times 10^{8}$</p>
+                            <p>$(6 \times 10^8) \div (3 \times 10^2) = 2 \times 10^{6}$</p>
+                            <p>$(9 \times 10^4)(5 \times 10^3) = 45 \times 10^7 = 4.5 \times 10^8$ ⚠️ fix $A$!</p>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Draw the Frog Jumps</div>
-                    </div>
+                    <div class="col-write"><div class="write-label">Guided Practice</div></div>
                 </div>
             </div>
         </div>
 
-        <!-- SLIDE 10: M2 SF CALCULATIONS -->
         <div class="slide">
             <canvas class="drawing-board"></canvas>
             <div class="content-layer">
-                <h2 class="header-title">Meeting 2: Calculating in Standard Form</h2>
+                <h2 class="header-title">Meeting 3 · <span class="b-elaborate tag">Elaborate</span> Micro → Macro Ranking</h2>
                 <div class="two-column">
                     <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-concept">Index Laws</span></h3>
-                            <p>Multiply: $(2 \times 10^3) \times (4 \times 10^5) = 8 \times 10^{3+5} = 8 \times 10^8$</p>
-                            <p>Divide: $(6 \times 10^8) \div (3 \times 10^2) = 2 \times 10^{8-2} = 2 \times 10^6$</p>
-                            <p>Fix $A$: $(9 \times 10^4)(5 \times 10^3) = 45 \times 10^7 = 4.5 \times 10^8$</p>
+                            <h3><span class="badge bg-activity">Team Task</span> Health Data Cards (Hands-on 3)</h3>
+                            <ul>
+                                <li>Convert all 10 cards into standard form.</li>
+                                <li>Place them on the power-of-ten line from smallest to largest.</li>
+                                <li>Tip: compare $n$ first, then compare $A$.</li>
+                            </ul>
                         </div>
                         <div class="content-box">
-                            <h3><span class="badge bg-question">Sample Question</span> ❤️ Group 3</h3>
-                            <p>A heart beats $3.5 \times 10^7$ times a year. How many beats in 80 years? Give your answer in standard form.</p>
+                            <h3><span class="badge bg-question">Sample Question</span> ❤️ Team 3</h3>
+                            <p>A heart beats $3.5 \times 10^7$ times a year. How many beats in 80 years?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Team Solutions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-evaluate tag">Evaluate</span> Exit Ticket &amp; Reflection</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p style="font-size: 1.3em;">One body has $3.7 \times 10^{13}$ cells. How many cells are in a class of 30? (standard form)</p>
                         </div>
                         <div class="content-box">
                             <h3><span class="badge bg-exit">Extension</span></h3>
                             <p>$(3.2 \times 10^5) + (4.5 \times 10^4)$ — match the indices first!</p>
                         </div>
-                    </div>
-                    <div class="col-write">
-                        <div class="write-label">Solve Here</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 11: M3 PROJECT ASSEMBLY -->
-        <div class="slide">
-            <canvas class="drawing-board"></canvas>
-            <div class="content-layer">
-                <h2 class="header-title">Meeting 3: Project Assembly &amp; Synthesis</h2>
-                <div class="two-column">
-                    <div class="col">
                         <div class="content-box">
-                            <h3><span class="badge bg-activity">Task 1 · 40 min</span> Micro-Health Factsheet</h3>
-                            <ul>
-                                <li>Collect <strong>5 massive</strong> global health statistics.</li>
-                                <li>Collect <strong>5 microscopic</strong> biological measurements.</li>
-                                <li>Convert all 10 into standard form.</li>
-                                <li>Make a <strong>ranking chart</strong> from smallest to largest.</li>
-                            </ul>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-activity">Task 2 · 40 min</span> Assemble the Portfolio (A3)</h3>
-                            <ol>
-                                <li>The Scaled Healthy Recipe — Fractions</li>
-                                <li>The Health Improvement Analysis — Percentages</li>
-                                <li>The Micro/Macro Data Chart — Standard Form</li>
-                            </ol>
-                        </div>
-                    </div>
-                    <div class="col">
-                        <div class="content-box" style="background:#f0fff4; border-color:#9ae6b4;">
-                            <h3><span class="badge bg-exit">Self-Regulated Check</span></h3>
-                            <ul>
-                                <li>☐ Mixed numbers converted correctly?</li>
-                                <li>☐ Recipe scaled for 50 AND for 3?</li>
-                                <li>☐ Percentage change uses the <em>original</em> value?</li>
-                                <li>☐ Every $A$ value is $1 \le A &lt; 10$?</li>
-                                <li>☐ Units written on every answer?</li>
-                            </ul>
-                            <p style="font-size:1em;"><em>EAL tip: Standard Form = Scientific Notation (Notasi Ilmiah)</em></p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- SLIDE 12: M4 GALLERY WALK -->
-        <div class="slide">
-            <canvas class="drawing-board"></canvas>
-            <div class="content-layer">
-                <h2 class="header-title">Meeting 4: Showcase &amp; Reflection</h2>
-                <div class="two-column">
-                    <div class="col">
-                        <div class="content-box">
-                            <h3><span class="badge bg-activity">Gallery Walk · 20 min</span></h3>
-                            <ul>
-                                <li>Visit every other group's portfolio.</li>
-                                <li>Check: Is the fraction scaling accurate?</li>
-                                <li>Check: Is standard form written correctly?</li>
-                                <li>Leave one ⭐ (praise) and one 💡 (suggestion) sticky note.</li>
-                            </ul>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-question">Chapter 5 Evaluation · 55 min</span></h3>
-                            <p>Visual aids away. Mixed number arithmetic, percentage change, standard form.</p>
-                        </div>
-                        <div class="content-box">
-                            <h3><span class="badge bg-exit">Reflection</span></h3>
+                            <h3><span class="badge bg-hook">Reflection</span></h3>
                             <p><em>"How does writing numbers in standard form prevent dangerous medical/scientific errors?"</em></p>
                         </div>
                     </div>
-                    <div class="col-write">
-                        <div class="write-label">Class Reflections</div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 4 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · Review &amp; <span class="b-evaluate tag">Evaluate</span> Chapter 5</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Review Game · 20 min</span> "I Have… Who Has…?"</h3>
+                            <ul>
+                                <li>Everyone gets one loop card (Hands-on 4).</li>
+                                <li>⭐ START reads "Who has…?" — the answer card replies "I have…".</li>
+                                <li>The loop must come back to START. Beat the class record!</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Chapter 5 Test · 55 min</span></h3>
+                            <p>Visual aids away. Fractions · Percentages · Standard Form (Worksheet 4).</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Reflection · 5 min</span></h3>
+                            <p>Rate yourself on all 5 WILT criteria and set one goal for the next chapter.</p>
+                        </div>
                     </div>
+                    <div class="col-write"><div class="write-label">Record Time ⏱️</div></div>
                 </div>
             </div>
         </div>

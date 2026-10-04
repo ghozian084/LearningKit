@@ -143,6 +143,17 @@
             padding: 15px; border-radius: 6px; margin-top: 20px; page-break-inside: avoid;
         }
         .tips-box h3 { color: #b7791f; margin-top: 0; }
+
+        /* 5E Phase Colours */
+        .five-e-strip { display: flex; gap: 4px; margin-bottom: 15px; page-break-inside: avoid; }
+        .five-e-strip div { flex: 1; color: white; text-align: center; font-weight: bold; padding: 6px 4px; font-size: 0.85em; border-radius: 4px; }
+        .five-e-strip small { font-weight: normal; }
+        .e-engage, .ph-engage { background-color: #d69e2e !important; }
+        .e-explore, .ph-explore { background-color: #38a169 !important; }
+        .e-explain, .ph-explain { background-color: #3182ce !important; }
+        .e-elaborate, .ph-elaborate { background-color: #805ad5 !important; }
+        .e-evaluate, .ph-evaluate { background-color: #e53e3e !important; }
+        @media print { .five-e-strip div, .phase-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; } }
     </style>
 </head>
 <body>
@@ -162,7 +173,7 @@
         <div>
             <p><strong>📌 Topic:</strong> 5. Fractions, percentages and standard form</p>
             <p><strong>Reference:</strong> Cambridge IGCSE® Math Core & Extended</p>
-            <p><strong>Method:</strong> Project Based Learning (PjBL)</p>
+            <p><strong>Method:</strong> 5E Instructional Model (Engage, Explore, Explain, Elaborate, Evaluate)</p>
         </div>
         <div>
             <p><strong>Approach:</strong> Hands-on Activity & Deep Learning</p>
@@ -185,10 +196,10 @@
             <div class="ww-header">WALT — We Are Learning To...</div>
             <div class="ww-body">
                 <h4>Learning Objective:</h4>
-                <p>Apply fractions, percentages, and standard form to analyze global and personal health data, scaling nutritional recipes, calculating caloric changes, and measuring microscopic/macroscopic statistics.</p>
+                <p>Apply fractions, percentages, and standard form to analyze personal and global health data: scaling nutritional recipes, calculating changes in health measurements, and comparing microscopic and macroscopic statistics.</p>
                 <br>
                 <h4>Bloom's Level:</h4>
-                <p>Apply, Analyse & Create (Levels 3–6)</p>
+                <p>Understand, Apply & Analyse (Levels 2–4), with Evaluate in the reflection tasks</p>
             </div>
         </div>
         <div class="ww-col wilt-col">
@@ -200,53 +211,86 @@
                     <li>I can add, subtract, multiply, and divide fractions to scale recipes.</li>
                     <li>I can calculate percentage increases/decreases in health metrics (e.g., heart rate, calories).</li>
                     <li>I can convert microscopic sizes (viruses) and large populations into standard form ($A \times 10^n$).</li>
-                    <li>I can collaborate to build a "Global Nutrition & Micro-Health Portfolio".</li>
+                    <li>I can explain my method clearly to my Health Team.</li>
                 </ol>
             </div>
         </div>
     </div>
 
-    <!-- PjBL Overarching Theme -->
-    <div style="background-color: #f0fdf4; border-left: 5px solid #38a169; padding: 10px; margin-bottom: 15px; font-size: 0.95em;">
-        <strong>🏥 PjBL Theme: "The Global Nutrition & Micro-Health Portfolio"</strong><br>
-        Students act as health and nutrition analysts. Throughout these 4 meetings, they will apply fraction operations to scale healthy traditional recipes, use percentages to analyze caloric and nutritional intake changes, and apply standard form to understand microscopic health threats (viruses/bacteria) vs massive global health statistics.
+    <!-- 5E Model Overview -->
+    <div style="background-color: #f0fdf4; border-left: 5px solid #38a169; padding: 10px; margin-bottom: 10px; font-size: 0.95em;">
+        <strong>🔁 Learning Model: 5E Instructional Model — Health Context "Healthy Living Analysts"</strong><br>
+        Every meeting runs a full 5E cycle. Students first meet a real health problem (<em>Engage</em>), investigate it with hands-on media before any rule is given (<em>Explore</em>), formalise the mathematics with the teacher (<em>Explain</em>), apply it to their Health Team's problem (<em>Elaborate</em>), and check their own understanding with an exit ticket and the WILT criteria (<em>Evaluate</em>). Students work in 4 Health Teams for the whole chapter (see Appendix).
+    </div>
+    <div class="five-e-strip">
+        <div class="e-engage">ENGAGE<br><small>Hook &amp; question</small></div>
+        <div class="e-explore">EXPLORE<br><small>Hands-on discovery</small></div>
+        <div class="e-explain">EXPLAIN<br><small>Formalise concept</small></div>
+        <div class="e-elaborate">ELABORATE<br><small>Apply to new problems</small></div>
+        <div class="e-evaluate">EVALUATE<br><small>Check understanding</small></div>
     </div>
 
     <!-- ==========================================
          MEETING 1
     =========================================== -->
-    <h2>📅 Meeting 1: Fractions Recap & Project Launch (Subtopics 5.1 & 5.2)</h2>
+    <h2>📅 Meeting 1: Fractions — The Recipe Dilemma (Subtopics 5.1 & 5.2)</h2>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 1 | Essential Question & Hook</span><span>[20 mins]</span></div>
+        <div class="phase-header ph-engage"><span>5E Phase 1 | ENGAGE — The Recipe Dilemma</span><span>[10 mins]</span></div>
         <div class="phase-body">
             <div class="phase-left">Teacher-led & Class Discussion</div>
             <div class="phase-right">
-                <h4>Hook — The Recipe Dilemma (10 min):</h4>
                 <ul>
-                    <li><span class="char-dev">Health Context:</span> Show a healthy recipe for *Klepon*. "This serves 4 people and needs $1 \frac{1}{2}$ cups of flour. How do we make it for the whole class of 30?"</li>
-                </ul>
-                <h4>Project Launch (10 min):</h4>
-                <ul>
-                    <li>Introduce the "Nutrition & Health Portfolio" project. Assign groups (See Appendix).</li>
+                    <li><span class="char-dev">Health Context:</span> Show a healthy recipe for <em>Klepon</em>. "This serves 4 people and needs $1 \frac{1}{2}$ cups of flour. How do we make it for the whole class of 30?"</li>
+                    <li>Students write a first guess on Worksheet 1 and share strategies. Form the 4 Health Teams (See Appendix).</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 2 | Operations on Fractions</span><span>[60 mins]</span></div>
+        <div class="phase-header ph-explore"><span>5E Phase 2 | EXPLORE — Fraction Circles & Paper Folding</span><span>[20 mins]</span></div>
         <div class="phase-body">
-            <div class="phase-left">Hands-On Activity & Practice</div>
+            <div class="phase-left">Hands-On Investigation (Pairs)</div>
             <div class="phase-right">
-                <h4>Rapid Concept Review (20 min):</h4>
                 <ul>
-                    <li><span class="joyful">Joyful:</span> Use physical plastic fraction circles to demonstrate why we need a <strong>Common Denominator</strong> for Addition/Subtraction.</li>
-                    <li>Demonstrate Paper Folding for Multiplication (Top $\times$ Top, Bottom $\times$ Bottom).</li>
-                    <li>Division: "Keep, Change, Flip." Remind students to convert mixed numbers to improper fractions first!</li>
+                    <li><span class="joyful">Joyful:</span> Pairs use fraction circles (Hands-on 1) to try to combine $\frac{1}{2}$ and $\frac{1}{3}$. They discover they must swap to <strong>sixths</strong> before counting pieces.</li>
+                    <li>Investigate "Ali says $\frac{1}{2} + \frac{1}{3} = \frac{2}{5}$" — use the circles to show why it is wrong.</li>
+                    <li>Fold paper to show $\frac{2}{3}$ of $\frac{3}{4}$ and count the double-shaded boxes.</li>
                 </ul>
-                <h4>Elaborate: Scaling Recipes (40 min):</h4>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>5E Phase 3 | EXPLAIN — Formalising the Four Operations</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Guided Practice</div>
+            <div class="phase-right">
                 <ul>
-                    <li>Groups select a traditional healthy Indonesian recipe. They must use fraction operations to scale it up for a school festival (50 people) and scale it down for exactly 3 people. This forms Page 1 of their Portfolio.</li>
+                    <li>Students explain their discoveries first; the teacher then names the rules: proper/improper/mixed, equivalence, <strong>Common Denominator</strong> for $+$/$-$, Top $\times$ Top & Bottom $\times$ Bottom, "Keep, Change, Flip" for $\div$.</li>
+                    <li>Key reminder: convert mixed numbers to improper fractions first! Guided practice on Worksheet 1.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>5E Phase 4 | ELABORATE — Scaling Recipes</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Collaborative Application (Health Teams)</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Return to the hook: scale the Klepon recipe up for 30 people and down for 3 people using a scale factor.</li>
+                    <li>Each Health Team solves its Fractions Team Problem Card and presents one solution in 1 minute.</li>
                     <li><span class="scaffold-text">Scaffold: Provide SEN students with physical fraction bars to assist with calculations.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>5E Phase 5 | EVALUATE — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Exit ticket: scale $\frac{3}{4}$ cup of pandan water for 30 people. Students self-assess against WILT criteria 1 & 2.</li>
                 </ul>
             </div>
         </div>
@@ -255,39 +299,61 @@
     <!-- ==========================================
          MEETING 2
     =========================================== -->
-    <h2>📅 Meeting 2: Percentages & Standard Form (Subtopics 5.3 & 5.4)</h2>
+    <h2>📅 Meeting 2: Percentages in Health Data (Subtopic 5.3)</h2>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 3 | Percentages in Health Data</span><span>[40 mins]</span></div>
+        <div class="phase-header ph-engage"><span>5E Phase 1 | ENGAGE — "20% Less Sugar!"</span><span>[10 mins]</span></div>
         <div class="phase-body">
-            <div class="phase-left">Direct Instruction & Discovery</div>
+            <div class="phase-left">Visual Hook & Discussion</div>
             <div class="phase-right">
-                <h4>Discovery: The Multiplier Method (20 min):</h4>
                 <ul>
-                    <li><span class="meaningful">Meaningful:</span> "A sports drink claims '20% less sugar!' If the original had 30g, how much is in the new one?"</li>
-                    <li>Teach students to use multipliers ($0.80 \times 30g$) instead of subtracting.</li>
-                    <li>Percentage change: $\frac{\text{Difference}}{\text{Original}} \times 100\%$.</li>
-                </ul>
-                <h4>Elaborate (20 min):</h4>
-                <ul>
-                    <li>Groups analyze a "Before & After" health scenario (e.g., a person's resting heart rate drops from 85 bpm to 68 bpm after jogging for a month). Calculate percentage change for the Portfolio.</li>
+                    <li><span class="meaningful">Meaningful:</span> "A sports drink claims '20% less sugar!' If the original had 30g, how much is in the new one?" Students predict; discuss the common error $30 - 20 = 10$ g.</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 3 | The Micro and Macro (Standard Form)</span><span>[40 mins]</span></div>
+        <div class="phase-header ph-explore"><span>5E Phase 2 | EXPLORE — Nutrition Label Detectives</span><span>[20 mins]</span></div>
         <div class="phase-body">
-            <div class="phase-left">Visual Hook & Practice</div>
+            <div class="phase-left">Hands-On Investigation (Pairs)</div>
             <div class="phase-right">
-                <h4>Concept: Standard Form (20 min):</h4>
                 <ul>
-                    <li><span class="char-dev">Critical Thinking:</span> "The Covid-19 virus is $0.00000012$ m wide. Indonesia's population is $275,000,000$. How do scientists write these without making a mistake counting zeros?"</li>
-                    <li>Teach $A \times 10^n$, where $1 \le A < 10$. Show how positive $n$ jumps right, negative $n$ jumps left.</li>
-                    <li>Multiplying standard form: $(2 \times 10^3) \times (4 \times 10^5) = 8 \times 10^8$. Use Index Laws!</li>
+                    <li>Shade 20% of a 100-square grid; notice that 80% is left. Pairs complete a discovery table (Original, Change, New, New ÷ Original) and spot the <strong>multiplier</strong> pattern.</li>
+                    <li>Use the Nutrition Label Cards (Hands-on 2) to find what percentage of the daily limit each snack contains.</li>
                 </ul>
-                <h4>Elaborate (20 min):</h4>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>5E Phase 3 | EXPLAIN — The Multiplier Method</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Guided Practice</div>
+            <div class="phase-right">
                 <ul>
-                    <li>Worksheet on Standard Form calculations to prepare for the final project assembly.</li>
+                    <li>Formalise: percentage of a quantity, one quantity as a percentage of another (same units), increase/decrease with multipliers ($0.80 \times 30g$ instead of subtracting).</li>
+                    <li>Percentage change: $\frac{\text{Difference}}{\text{Original}} \times 100\%$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>5E Phase 4 | ELABORATE — Before & After Health Analysis</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Collaborative Application (Health Teams)</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Analyse "Before & After" health scenarios (e.g., resting heart rate drops from 85 bpm to 68 bpm after jogging for a month).</li>
+                    <li>Each Health Team solves its Percentages Team Problem Card and explains whether the change is an increase or a decrease.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>5E Phase 5 | EVALUATE — Exit Ticket</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Exit ticket: sugar intake drops from 65 g to 25 g — find the percentage decrease. Self-assess WILT criterion 3.</li>
                 </ul>
             </div>
         </div>
@@ -296,22 +362,62 @@
     <!-- ==========================================
          MEETING 3
     =========================================== -->
-    <h2>📅 Meeting 3: Project Assembly & Synthesis</h2>
+    <h2>📅 Meeting 3: The Micro and the Macro — Standard Form (Subtopic 5.4)</h2>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 4 | Artifact Generation</span><span>[80 mins]</span></div>
+        <div class="phase-header ph-engage"><span>5E Phase 1 | ENGAGE — Counting Zeros Race</span><span>[10 mins]</span></div>
         <div class="phase-body">
-            <div class="phase-left">Collaborative Project Work</div>
+            <div class="phase-left">Visual Hook & Discussion</div>
             <div class="phase-right">
-                <h4>Project Task: The Micro-Health Factsheet (40 min):</h4>
                 <ul>
-                    <li>Groups research (or are provided) 5 massive global health statistics and 5 microscopic biological measurements relevant to their assigned group theme.</li>
-                    <li>They must convert all data into Standard Form and create a visual ranking chart for their Portfolio.</li>
+                    <li><span class="char-dev">Critical Thinking:</span> "The Covid-19 virus is $0.00000012$ m wide. Indonesia's population is $275,000,000$. How do scientists write these without making a mistake counting zeros?" Students race to read the numbers aloud.</li>
                 </ul>
-                <h4>Finalizing the Health Portfolio (40 min):</h4>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explore"><span>5E Phase 2 | EXPLORE — Frog-Jump Strips</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Hands-On Investigation (Pairs)</div>
+            <div class="phase-right">
                 <ul>
-                    <li>Groups assemble their 3 pages: 1) The Scaled Healthy Recipe (Fractions), 2) The Health Improvement Analysis (Percentages), 3) The Micro/Macro Data Chart (Standard Form).</li>
-                    <li><span class="char-dev">Self-Regulated:</span> Groups double-check all calculations against the success criteria rubric before submission.</li>
-                    <li><span class="scaffold-text">Scaffold: EAL students practice translating "Scientific Notation" as a synonym for Standard Form.</span></li>
+                    <li>Slide a frog token (the decimal point) along digit strips (Hands-on 3) until one non-zero digit is in front. Count the jumps and record the direction.</li>
+                    <li>Pairs find the pattern: big numbers give positive $n$, tiny numbers give negative $n$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-explain"><span>5E Phase 3 | EXPLAIN — $A \times 10^n$ and Index Laws</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Guided Practice</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Teach $A \times 10^n$, where $1 \le A < 10$. Convert into and out of standard form.</li>
+                    <li>Multiplying standard form: $(2 \times 10^3) \times (4 \times 10^5) = 8 \times 10^8$. Use Index Laws! Adjust $A$ when it is 10 or more.</li>
+                    <li><span class="scaffold-text">Scaffold: EAL students learn "Scientific Notation" as a synonym for Standard Form.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-elaborate"><span>5E Phase 4 | ELABORATE — Micro → Macro Ranking</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Collaborative Application (Health Teams)</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Teams convert the 10 Health Data Cards (viruses, cells, populations, heartbeats) into standard form and rank them from smallest to largest.</li>
+                    <li>Each Health Team solves its Standard Form Team Problem Card.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header ph-evaluate"><span>5E Phase 5 | EVALUATE — Exit Ticket & Reflection</span><span>[10 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Assessment</div>
+            <div class="phase-right">
+                <ul>
+                    <li>Exit ticket: $(3.7 \times 10^{13}) \times 30$ in standard form. Reflection: "How does writing numbers in standard form prevent dangerous medical/scientific errors?"</li>
                 </ul>
             </div>
         </div>
@@ -320,32 +426,31 @@
     <!-- ==========================================
          MEETING 4
     =========================================== -->
-    <h2>📅 Meeting 4: Showcase & Summative Evaluation</h2>
+    <h2>📅 Meeting 4: Chapter Review & Summative Evaluation</h2>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 5 | Presenting Solutions</span><span>[20 mins]</span></div>
+        <div class="phase-header ph-engage"><span>Review | "I Have… Who Has…?" Loop Game</span><span>[20 mins]</span></div>
         <div class="phase-body">
-            <div class="phase-left">Student-led Gallery Walk</div>
+            <div class="phase-left">Whole-Class Game</div>
             <div class="phase-right">
-                <h4>Health Portfolio Gallery Walk (20 min):</h4>
                 <ul>
-                    <li>Portfolios are displayed. Students evaluate peers' work checking for accurate fraction scaling and correct standard form formatting.</li>
-                    <li>Teacher assesses communication and mathematical accuracy artifacts.</li>
+                    <li><span class="joyful">Joyful:</span> Each student holds a loop card (Hands-on 4) mixing fractions, percentages and standard form. The chain must return to the start card — time the class and try to beat the record.</li>
+                    <li>Teacher notes the cards that cause hesitation and re-explains them briefly.</li>
                 </ul>
             </div>
         </div>
     </div>
     <div class="phase-container">
-        <div class="phase-header"><span>PjBL Phase 6 | Evaluating the Experience</span><span>[60 mins]</span></div>
+        <div class="phase-header ph-evaluate"><span>5E Phase 5 | EVALUATE — Chapter 5 Test</span><span>[60 mins]</span></div>
         <div class="phase-body">
             <div class="phase-left">Summative Test</div>
             <div class="phase-right">
                 <h4>Chapter 5 Evaluation (55 min):</h4>
                 <ul>
-                    <li>Remove visual aids. Distribute the Chapter 5 Test covering mixed number arithmetic, percentage changes, and standard form operations.</li>
+                    <li>Remove visual aids. Distribute the Chapter 5 Test (Worksheet 4) covering mixed number arithmetic, percentage changes, and standard form operations.</li>
                 </ul>
                 <h4>Closure & Reflection (5 min):</h4>
                 <ul>
-                    <li>Self-Reflection: "How does writing numbers in standard form prevent dangerous medical/scientific errors?"</li>
+                    <li>Self-Reflection: students rate themselves on all 5 WILT criteria and set one goal for the next chapter.</li>
                 </ul>
             </div>
         </div>
@@ -400,48 +505,48 @@
     <div class="page-break"></div>
 
     <!-- ==========================================
-         APPENDIX: PJBL GROUP MISSIONS
+         APPENDIX: HEALTH TEAM PROBLEMS
     =========================================== -->
-    <h2 style="text-align: center; color: var(--primary); border: none; font-size: 1.6em;">Appendix: PjBL Group Missions & Execution Guide</h2>
-    <p style="text-align: center; color: #4a5568; margin-bottom: 25px;">Each group is assigned a unique health topic. They must apply Fractions, Percentages, and Standard Form to their specific domain to build their "Global Nutrition & Micro-Health Portfolio" in Meeting 3.</p>
+    <h2 style="text-align: center; color: var(--primary); border: none; font-size: 1.6em;">Appendix: Health Team Problems (Elaborate Phase)</h2>
+    <p style="text-align: center; color: #4a5568; margin-bottom: 25px;">Students stay in the same Health Team for the whole chapter. In the <strong>Elaborate</strong> phase of each meeting, the team solves its problem for that meeting's subtopic and presents it to the class.</p>
 
     <!-- Group 1 -->
     <div class="appendix-card app-g1" style="border-left-color: #48bb78;">
-        <h3>🟢 Group 1: The Dietary Planners (Nutrition Focus)</h3>
+        <h3>🟢 Team 1: The Dietary Planners (Nutrition Focus)</h3>
         <ul>
-            <li><strong>Fractions:</strong> Scale a healthy salad recipe (using mixed numbers like $1 \frac{3}{4}$ cups of spinach) originally for 4 people up to feed 18 people.</li>
-            <li><strong>Percentages:</strong> A student replaces sugary soda with water. Their daily sugar intake drops from 65g to 25g. Calculate the exact percentage decrease.</li>
-            <li><strong>Standard Form:</strong> Research the size of a Vitamin C molecule and write it in Standard Form. Compare it to the global annual production of Vitamin C (in kg).</li>
+            <li><strong>Meeting 1 — Fractions:</strong> Scale a healthy salad recipe (using mixed numbers like $1 \frac{3}{4}$ cups of spinach) originally for 4 people up to feed 18 people.</li>
+            <li><strong>Meeting 2 — Percentages:</strong> A student replaces sugary soda with water. Their daily sugar intake drops from 65g to 25g. Calculate the exact percentage decrease.</li>
+            <li><strong>Meeting 3 — Standard Form:</strong> A Vitamin C molecule is about $0.0000000007$ m across. Write it in Standard Form and compare it with a red blood cell ($0.000008$ m).</li>
         </ul>
     </div>
 
     <!-- Group 2 -->
     <div class="appendix-card app-g2" style="border-left-color: #4299e1;">
-        <h3>🔵 Group 2: The Epidemiologists (Disease Focus)</h3>
+        <h3>🔵 Team 2: The Epidemiologists (Disease Focus)</h3>
         <ul>
-            <li><strong>Fractions:</strong> A hospital has $\frac{5}{8}$ of its beds occupied. If they add 120 new beds, what fraction is now occupied? (Calculate new fractional capacity).</li>
-            <li><strong>Percentages:</strong> A vaccination campaign reduces flu cases from 4,500 to 1,200 in one month. Calculate the percentage decrease.</li>
-            <li><strong>Standard Form:</strong> Write the exact diameter of the Influenza virus ($0.0000001$ meters) and the global population ($8,100,000,000$) in Standard Form. Calculate how many viruses laid end-to-end span the equator.</li>
+            <li><strong>Meeting 1 — Fractions:</strong> A hospital has 480 beds and $\frac{5}{8}$ of them are occupied. If they add 120 new beds, what fraction is now occupied?</li>
+            <li><strong>Meeting 2 — Percentages:</strong> A vaccination campaign reduces flu cases from 4,500 to 1,200 in one month. Calculate the percentage decrease.</li>
+            <li><strong>Meeting 3 — Standard Form:</strong> Write the diameter of the Influenza virus ($0.0000001$ meters) and the global population ($8,100,000,000$) in Standard Form. Calculate how many viruses laid end-to-end span the equator ($4 \times 10^7$ m).</li>
         </ul>
     </div>
 
     <!-- Group 3 -->
     <div class="appendix-card app-g3" style="border-left-color: #f56565;">
-        <h3>🔴 Group 3: The Fitness Coaches (Exercise Focus)</h3>
+        <h3>🔴 Team 3: The Fitness Coaches (Exercise Focus)</h3>
         <ul>
-            <li><strong>Fractions:</strong> A runner completes $3 \frac{1}{2}$ laps of a track. Each lap is $\frac{2}{5}$ of a kilometer. Calculate the total distance run using fraction multiplication.</li>
-            <li><strong>Percentages:</strong> An athlete's resting heart rate improves from 78 bpm to 62 bpm after a training camp. Express the improvement as a percentage decrease.</li>
-            <li><strong>Standard Form:</strong> An average human heart beats about $35,000,000$ times a year. Write this in Standard Form. Calculate how many times it beats in an 80-year lifespan, leaving the answer in Standard Form.</li>
+            <li><strong>Meeting 1 — Fractions:</strong> A runner completes $3 \frac{1}{2}$ laps of a track. Each lap is $\frac{2}{5}$ of a kilometer. Calculate the total distance run using fraction multiplication.</li>
+            <li><strong>Meeting 2 — Percentages:</strong> An athlete's resting heart rate improves from 78 bpm to 62 bpm after a training camp. Express the improvement as a percentage decrease.</li>
+            <li><strong>Meeting 3 — Standard Form:</strong> An average human heart beats about $35,000,000$ times a year. Write this in Standard Form. Calculate how many times it beats in an 80-year lifespan, leaving the answer in Standard Form.</li>
         </ul>
     </div>
 
     <!-- Group 4 -->
     <div class="appendix-card app-g4" style="border-left-color: #ecc94b;">
-        <h3>🟡 Group 4: The Hydration Specialists (Water Focus)</h3>
+        <h3>🟡 Team 4: The Hydration Specialists (Water Focus)</h3>
         <ul>
-            <li><strong>Fractions:</strong> A water dispenser holds $15 \frac{1}{2}$ liters. If a student's bottle holds $\frac{3}{4}$ of a liter, how many full bottles can be filled from the dispenser?</li>
-            <li><strong>Percentages:</strong> A student aims to drink 2.5 liters of water a day. By noon, they have drunk 800 ml. What percentage of their daily goal have they reached?</li>
-            <li><strong>Standard Form:</strong> The human body contains approximately $3.7 \times 10^{13}$ cells, and each cell is mostly water. Calculate the total number of cells in a classroom of 30 students using Standard Form multiplication.</li>
+            <li><strong>Meeting 1 — Fractions:</strong> A water dispenser holds $15 \frac{1}{2}$ liters. If a student's bottle holds $\frac{3}{4}$ of a liter, how many full bottles can be filled from the dispenser?</li>
+            <li><strong>Meeting 2 — Percentages:</strong> A student aims to drink 2.5 liters of water a day. By noon, they have drunk 800 ml. What percentage of their daily goal have they reached?</li>
+            <li><strong>Meeting 3 — Standard Form:</strong> The human body contains approximately $3.7 \times 10^{13}$ cells, and each cell is mostly water. Calculate the total number of cells in a classroom of 30 students using Standard Form multiplication.</li>
         </ul>
     </div>
 
@@ -449,9 +554,10 @@
     <div style="background-color: #fffff0; border: 1px solid #ecc94b; border-left: 5px solid #d69e2e; padding: 15px; border-radius: 6px; margin-top: 20px; page-break-inside: avoid;">
         <h3 style="color: #b7791f; margin-top: 0;">💡 Teacher Tips for Execution</h3>
         <ol>
-            <li><strong>Portfolio Assembly (Meeting 3):</strong> Provide A3 colored cardstock for the groups to glue their calculations onto. This makes the Gallery Walk in Meeting 4 much more visually engaging.</li>
-            <li><strong>Fraction Manipulatives (Meeting 1):</strong> Use physical plastic fraction circles (or paper cut-outs) when reviewing addition/subtraction to ensure students visually remember why finding a Common Denominator is mandatory.</li>
-            <li><strong>The "Jump" Method (Meeting 2):</strong> When teaching Standard Form, explicitly draw the "frog jumps" under the zeros on the whiteboard to help SEN and visual learners count the index $n$ accurately.</li>
+            <li><strong>Explore before Explain:</strong> Resist giving the rule during Explore. Let pairs struggle with the fraction circles, 100-grids and frog strips first; the Explain phase then starts from <em>their</em> words.</li>
+            <li><strong>Fraction Manipulatives (Meeting 1):</strong> Use physical plastic fraction circles (or the paper cut-outs) when reviewing addition/subtraction to ensure students visually remember why finding a Common Denominator is mandatory.</li>
+            <li><strong>The "Jump" Method (Meeting 3):</strong> When teaching Standard Form, explicitly draw the "frog jumps" under the zeros on the whiteboard to help SEN and visual learners count the index $n$ accurately.</li>
+            <li><strong>Printing:</strong> Every worksheet and hands-on file is laid out as full A4 pages — one file per meeting — so print each one double-sided with no wasted paper.</li>
         </ol>
     </div>
 

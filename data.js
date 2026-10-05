@@ -112,7 +112,7 @@ const LEARNING_KIT_DATA = {
                 { index: 1, file: "ws-01.html", title: "Worksheet 1 Fractions (Meeting 1)" },
                 { index: 2, file: "ws-02.html", title: "Worksheet 2 Percentages (Meeting 2)" },
                 { index: 3, file: "ws-03.html", title: "Worksheet 3 Standard Form (Meeting 3)" },
-                { index: 4, file: "ws-04.html", title: "Worksheet 4 Chapter 5 Test (Meeting 4)" },
+                { index: 4, file: "ws-04.html", title: "🔒 Worksheet 4 Chapter 5 Test (Meeting 4)" },
               ],
             },
             ha: {
@@ -197,7 +197,7 @@ const LEARNING_KIT_DATA = {
                 { index: 3, file: "ws-03.html", title: "Worksheet 3 Double Angles (Meeting 3)" },
                 { index: 4, file: "ws-04.html", title: "Worksheet 4 Identities (Meeting 4)" },
                 { index: 5, file: "ws-05.html", title: "Worksheet 5 R-Formula & Tide (Meeting 5)" },
-                { index: 6, file: "ws-06.html", title: "Worksheet 6 Chapter 3 Test (Meeting 6)" },
+                { index: 6, file: "ws-06.html", title: "🔒 Worksheet 6 Chapter 3 Test (Meeting 6)" },
               ],
             },
             ha: {

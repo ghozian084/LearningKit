@@ -3,179 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worksheet 6 - Chapter 3 Evaluation (Trigonometry)</title>
-    <!-- MathJax Configuration -->
-    <script>
-        MathJax = {
-            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <title>🔒 Chapter 3 Test — Trigonometry</title>
     <style>
-        :root {
-            --primary: #1a365d;
-            --secondary: #2b6cb0;
-            --cut-line: #718096;
-            --engage: #d69e2e;
-            --explore: #38a169;
-            --explain: #3182ce;
-            --elaborate: #805ad5;
-            --evaluate: #e53e3e;
-        }
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --danger: #e53e3e; }
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
-            line-height: 1.3; font-size: 10.5pt;
-            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center; padding: 16px;
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: #2d3748;
         }
-        mjx-container { font-size: 1.05em !important; }
-        p { margin: 0.8mm 0; }
-
-        /* Print Button */
-        .print-btn {
-            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
-            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
-            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
-        }
-        .print-btn:hover { background-color: var(--primary); }
-
-        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
-        @page { size: A4; margin: 0; }
-        .page {
-            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
-            background: #fff; display: flex; flex-direction: column; gap: 2mm;
-            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
-        @media print {
-            body { background: none; padding: 0; }
-            .print-btn { display: none !important; }
-            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
-            .page:last-child { break-after: auto; page-break-after: auto; }
-        }
-
-        /* Layout helpers */
-        .grow { flex: 1 1 0; min-height: 0; }
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
-        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
-        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
-        .qn { font-weight: bold; color: var(--primary); }
-        .work {
-            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
-            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
-        }
-        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
-        .line { border-bottom: 1px solid #555; height: 6.5mm; }
-
-        /* Headers */
-        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
-        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
-        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
-        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
-        .student-info div { border-bottom: 1px dotted #718096; }
-        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
-        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
-        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
-        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
-        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
-
-        /* 5E phase banners */
-        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
-        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
-        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
-
-        /* Boxes */
-        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
-        .guide { background: #fffff0; border-color: #ecc94b; }
-        .action { background: #f0fff4; border-color: #38a169; }
-        .box-title { font-weight: bold; color: #276749; }
-        .guide .box-title { color: #b7791f; }
-
-        /* Tables */
-        .tbl { width: 100%; border-collapse: collapse; }
-        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
-        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
-        .tbl td.l, .tbl th.l { text-align: left; }
-        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
-        .check table { width: 100%; border-collapse: collapse; }
-        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
-        .check td:last-child { text-align: right; white-space: nowrap; }
-
-        /* Fraction bars */
-        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
-        .bar div { flex: 1; border-right: 1px solid #2d3748; }
-        .bar div:last-child { border-right: none; }
-        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
-        .bar-row span { width: 18mm; font-weight: bold; }
-
-        /* Cut-out cards */
-        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
-        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
-        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
-        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
-
-        /* Digit strips */
-        .digits { display: flex; }
-        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
-        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+        .lock-card { background: #fff; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .lock-icon { font-size: 3em; }
+        h1 { color: var(--primary); font-size: 1.3em; margin: 10px 0 4px; }
+        p { color: #4a5568; margin: 0 0 18px; font-size: 0.95em; }
+        input { width: 100%; padding: 12px; font-size: 1.1em; border: 2px solid #cbd5e0; border-radius: 6px; text-align: center; letter-spacing: 2px; }
+        input:focus { outline: none; border-color: var(--secondary); }
+        button { width: 100%; margin-top: 12px; padding: 12px; font-size: 1.05em; font-weight: bold; color: #fff; background: var(--secondary); border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: var(--primary); }
+        button:disabled { background: #a0aec0; cursor: wait; }
+        .msg { min-height: 22px; margin-top: 12px; font-weight: bold; font-size: 0.95em; }
+        .msg.err { color: var(--danger); }
+        .note { margin-top: 14px; font-size: 0.8em; color: #718096; }
     </style>
 </head>
 <body>
-
-    <button class="print-btn" onclick="window.print()">🖨️ Print Test</button>
-
-    <!-- ===================== PAGE 1 ===================== -->
-    <div class="page">
-        <div class="ws-header">
-            <div class="ws-title">Chapter 3 Evaluation: Trigonometry<small>Grade 12 · Topic 3 · Meeting 6 — Summative Test · 55 minutes · Calculator allowed · Give angles to 1 d.p.</small></div>
-            <div class="student-info">
-                <div>Name:</div>
-                <div>Class:</div>
-                <div>Score: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 50</div>
-            </div>
-        </div>
-        <div class="teacher-note"><strong>Instructions:</strong> Answer all questions. Show full working — method marks are awarded. Exact answers must be given where the question asks for them.</div>
-        <div class="grid22 grow" style="grid-template-rows: repeat(3, 1fr); "><div class="q"><div><span class="qn">1.</span> Given $\tan A = \frac{5}{12}$ and $180^\circ &lt; A &lt; 270^\circ$, find the exact values of $\sec A$ and $\operatorname{cosec} A$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">2.</span> Solve $\operatorname{cosec}^2\theta = 3 + \cot\theta$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">3.</span> Find the exact value of $\tan 15^\circ$ in the form $a + b\sqrt3$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">4.</span> $\sin A = \frac45$ ($A$ acute), $\cos B = -\frac{5}{13}$ ($B$ obtuse). Find the exact value of $\sin(A + B)$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">5.</span> Solve $2\cos(\theta + 60^\circ) = \sin\theta$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">6.</span> Prove that $\sin 3x \equiv 3\sin x - 4\sin^3 x$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div></div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 1 of 3</div>
-    </div>
-
-    <!-- ===================== PAGE 2 ===================== -->
-    <div class="page">
-        <div class="grid22 grow" style="grid-template-rows: repeat(3, 1fr); "><div class="q"><div><span class="qn">7.</span> Solve $\cos 2x + 3\cos x = 1$ for $0^\circ \le x \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[5]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">8.</span> Prove that $\dfrac{\sin 2\theta}{1 - \cos 2\theta} \equiv \cot\theta$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">9.</span> Prove that $\dfrac{1 + \cos\theta}{\sin\theta} + \dfrac{\sin\theta}{1 + \cos\theta} \equiv 2\operatorname{cosec}\theta$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10a.</span> Express $8\sin\theta - 6\cos\theta$ in the form $R\sin(\theta - \alpha)$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10b.</span> Hence solve $8\sin\theta - 6\cos\theta = 5$ for $0^\circ \le \theta \le 360^\circ$. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div><div class="q"><div><span class="qn">10c.</span> Find the greatest value of $\dfrac{1}{12 + 8\sin\theta - 6\cos\theta}$ and the value of $\theta$ where it occurs. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div></div>
-        <div class="row" style="height: 44mm;">
-            <div class="q"><div><span class="qn">11.</span> 🎡 A Ferris wheel seat is at height $h = 20 + 5\sin(15t)^\circ - 12\cos(15t)^\circ$ m after $t$ minutes. Use the $R$-form to find the greatest height and the first time it occurs. <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">✍️ Reflection:</span> Which identity or method from this chapter was the most useful tool for you, and why?</div><div class="line"></div><div class="line"></div><div class="line"></div></div>
-        </div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 2 of 3</div>
-    </div>
-
-    <!-- ===================== PAGE 3 ===================== -->
-    <div class="page">
-        <div class="media-header">
-            <h1>🔑 Teacher Answer Key — Chapter 3 Evaluation (Trigonometry)</h1>
-            <p>Print separately · M = method mark, A = accuracy mark, B = independent mark</p>
-        </div>
-        <table class="tbl grow" style="font-size: 9pt;">
-            <tr><th style="width: 7%;">Q</th><th class="l">Working</th><th style="width: 27%;">Answer</th><th style="width: 10%;">Marks</th></tr>
-            <tr><td>1</td><td class="l">Hypotenuse 13; third quadrant so $\cos A = -\frac{12}{13}$, $\sin A = -\frac{5}{13}$</td><td>$\sec A = -\frac{13}{12}$, $\operatorname{cosec} A = -\frac{13}{5}$</td><td>M1 A1 A1</td></tr>
-            <tr><td>2</td><td class="l">$1 + \cot^2\theta = 3 + \cot\theta \Rightarrow (\cot\theta - 2)(\cot\theta + 1) = 0 \Rightarrow \tan\theta = \frac12$ or $-1$</td><td>$26.6^\circ, 206.6^\circ, 135^\circ, 315^\circ$</td><td>M1 M1 A1 A1 A1</td></tr>
-            <tr><td>3</td><td class="l">$\tan(45^\circ - 30^\circ) = \frac{1 - \frac{1}{\sqrt3}}{1 + \frac{1}{\sqrt3}} = \frac{\sqrt3 - 1}{\sqrt3 + 1}$, rationalise</td><td>$2 - \sqrt3$</td><td>M1 M1 A1</td></tr>
-            <tr><td>4</td><td class="l">$\cos A = \frac35$, $\sin B = \frac{12}{13}$; $\frac45 \cdot (-\frac{5}{13}) + \frac35 \cdot \frac{12}{13}$</td><td>$\frac{16}{65}$</td><td>B1 B1 M1 A1</td></tr>
-            <tr><td>5</td><td class="l">$\cos\theta - \sqrt3\sin\theta = \sin\theta \Rightarrow \tan\theta = \frac{1}{1 + \sqrt3} = 0.366$</td><td>$20.1^\circ, 200.1^\circ$</td><td>M1 M1 A1 A1 A1</td></tr>
-            <tr><td>6</td><td class="l">$\sin(2x + x) = 2\sin x\cos^2 x + (1 - 2\sin^2 x)\sin x = 2\sin x(1 - \sin^2 x) + \sin x - 2\sin^3 x$</td><td>$3\sin x - 4\sin^3 x$ shown</td><td>M1 M1 M1 A1</td></tr>
-            <tr><td>7</td><td class="l">$2\cos^2 x - 1 + 3\cos x - 1 = 0 \Rightarrow (2\cos x - 1)(\cos x + 2) = 0$; $\cos x = -2$ rejected</td><td>$60^\circ, 300^\circ$</td><td>M1 M1 B1 A1 A1</td></tr>
-            <tr><td>8</td><td class="l">$\frac{2\sin\theta\cos\theta}{1 - (1 - 2\sin^2\theta)} = \frac{2\sin\theta\cos\theta}{2\sin^2\theta}$</td><td>$\cot\theta$ shown</td><td>M1 M1 A1</td></tr>
-            <tr><td>9</td><td class="l">$\frac{(1 + \cos\theta)^2 + \sin^2\theta}{\sin\theta(1 + \cos\theta)} = \frac{2 + 2\cos\theta}{\sin\theta(1 + \cos\theta)}$</td><td>$\frac{2}{\sin\theta} = 2\operatorname{cosec}\theta$ shown</td><td>M1 M1 M1 A1</td></tr>
-            <tr><td>10a</td><td class="l">$R = \sqrt{64 + 36}$, $\tan\alpha = \frac68$</td><td>$10\sin(\theta - 36.87^\circ)$</td><td>B1 M1 A1</td></tr>
-            <tr><td>10b</td><td class="l">$\sin(\theta - 36.87^\circ) = 0.5 \Rightarrow \theta - 36.87^\circ = 30^\circ, 150^\circ$</td><td>$66.9^\circ, 186.9^\circ$</td><td>M1 M1 A1 A1</td></tr>
-            <tr><td>10c</td><td class="l">Least denominator $12 - 10 = 2$ when $\theta - 36.87^\circ = 270^\circ$</td><td>$\frac12$ at $\theta = 306.9^\circ$</td><td>M1 A1 A1</td></tr>
-            <tr><td>11</td><td class="l">$5\sin x - 12\cos x = 13\sin(x - 67.38^\circ)$; max when $x - 67.38^\circ = 90^\circ$, $x = 15t$</td><td>33 m at $t = 10.5$ min</td><td>M1 A1 A1 A1</td></tr>
-        </table>
-        <div class="teacher-note"><strong>Grade boundaries (suggested):</strong> 45–50 Excellent · 38–44 Good · 30–37 Satisfactory · below 30 Remedial (re-use Worksheets 1–5 and the Web Lab).</div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 3 Evaluation · Page 3 of 3</div>
-    </div>
-
+    <form class="lock-card" id="lockForm" autocomplete="off">
+        <div class="lock-icon">🔒</div>
+        <h1>Chapter 3 Test — Trigonometry</h1>
+        <p>This assessment is locked. Enter the teacher password to open it.</p>
+        <input type="password" id="pw" placeholder="Password" aria-label="Password" autofocus>
+        <button type="submit" id="unlockBtn">Unlock</button>
+        <div class="msg" id="msg"></div>
+        <div class="note">For teachers only · Made with ❤️ by Mr Ghozi</div>
+    </form>
+    <script>
+        const DATA = { salt: 'l0t5+dkDFv4N/3ESOJBNRw==', iv: '4rfAAPi6oshalQGb', iter: 600000, ct: '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' };
+        const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+        async function unlock(password) {
+            const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+            const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: fromB64(DATA.salt), iterations: DATA.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+            const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(DATA.iv) }, key, fromB64(DATA.ct));
+            return new TextDecoder().decode(plain);
+        }
+        function show(html) { document.open(); document.write(html); document.close(); }
+        const form = document.getElementById('lockForm'), msg = document.getElementById('msg'), btn = document.getElementById('unlockBtn');
+        if (!window.crypto || !crypto.subtle) {
+            msg.className = 'msg err'; msg.textContent = 'This browser cannot unlock the file. Please open it via https:// or from a local file in Chrome/Edge/Firefox.';
+            btn.disabled = true;
+        }
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const pw = document.getElementById('pw').value;
+            if (!pw) return;
+            btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Unlocking…';
+            try {
+                const html = await unlock(pw);
+                try { sessionStorage.setItem('lk-pw', pw); } catch (_) {}
+                show(html);
+            } catch (_) {
+                msg.className = 'msg err'; msg.textContent = '❌ Wrong password. Try again.';
+                btn.disabled = false; document.getElementById('pw').select();
+            }
+        });
+        // Teacher convenience: stay unlocked for this browser tab session (e.g. after a refresh).
+        (async () => {
+            let saved = null;
+            try { saved = sessionStorage.getItem('lk-pw'); } catch (_) {}
+            if (saved && window.crypto && crypto.subtle) { try { show(await unlock(saved)); } catch (_) {} }
+        })();
+    </script>
 </body>
 </html>

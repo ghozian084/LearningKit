@@ -1,0 +1,745 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Tangkap Suku</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=STIX+Two+Text:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+/* Layout: layar penuh untuk proyektor. Video kamera (dicerminkan) di belakang, kanvas permainan di atasnya, HUD besar di tepi atas, umpan balik di bawah. Tampilan tunggal bertema papan tulis. */
+:root{
+  --board:#16302a;
+  --board-deep:#0c1c18;
+  --chalk:#f3f1e7;
+  --chalk-dim:#a9b8ae;
+  --yellow:#f4c84a;
+  --sky:#7cc8ff;
+  --good:#5fd394;
+  --bad:#ff7b6b;
+  --line:rgba(243,241,231,.16);
+  --panel:rgba(12,28,24,.92);
+  --f-display:'Bricolage Grotesque','Arial Rounded MT Bold',system-ui,sans-serif;
+  --f-body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-math:'STIX Two Text','Cambria Math','Times New Roman',serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0}
+body{background:var(--board-deep);color:var(--chalk);font-family:var(--f-body);overflow:hidden;font-size:16px}
+button,select,input{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--yellow);outline-offset:3px}
+i.v{font-family:var(--f-math);font-style:italic;font-weight:600}
+.m{font-family:var(--f-math);font-weight:600}
+
+/* panggung */
+#stage{position:fixed;inset:0;background:
+  linear-gradient(var(--line) 1px,transparent 1px) 0 0/48px 48px,
+  linear-gradient(90deg,var(--line) 1px,transparent 1px) 0 0/48px 48px,
+  radial-gradient(ellipse at 50% 40%,var(--board),var(--board-deep));}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1);opacity:.55}
+#stage.cam #cam{display:block}
+#stage:not(.cam) #cam{display:none}
+#shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,28,24,.75),rgba(12,28,24,.15) 30%,rgba(12,28,24,.15) 75%,rgba(12,28,24,.7))}
+#cv{position:absolute;inset:0;touch-action:none}
+
+/* HUD */
+.hud{position:absolute;left:0;right:0;top:0;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,2.4fr) minmax(0,1fr);gap:16px;align-items:start;padding:16px 20px 0;pointer-events:none}
+.score{display:flex;flex-direction:column;gap:2px;min-width:0}
+.score.r{align-items:flex-end;text-align:right}
+.score .lbl{font-size:clamp(12px,1.5vw,18px);letter-spacing:.12em;text-transform:uppercase;color:var(--chalk-dim);font-weight:700}
+.score .num{font-family:var(--f-display);font-weight:800;font-size:clamp(34px,6vw,84px);line-height:1;font-variant-numeric:tabular-nums}
+.score.l .num{color:var(--yellow)}
+.score.r .num{color:var(--sky)}
+.mission{justify-self:center;text-align:center;background:var(--panel);border:2px solid var(--yellow);border-radius:14px;padding:10px 22px 12px;max-width:100%}
+.mission .kick{font-size:clamp(11px,1.3vw,16px);letter-spacing:.14em;text-transform:uppercase;color:var(--yellow);font-weight:700}
+.mission .what{font-family:var(--f-display);font-weight:800;font-size:clamp(22px,3.6vw,52px);line-height:1.05;text-wrap:balance}
+.mission .rule{font-size:clamp(13px,1.4vw,19px);color:var(--chalk-dim);margin-top:4px;text-wrap:balance}
+.timebar{position:absolute;left:0;right:0;top:0;height:6px;background:rgba(243,241,231,.1)}
+.timebar>span{display:block;height:100%;background:var(--yellow);transform-origin:left;transition:transform .2s linear}
+.secs{font-family:var(--f-display);font-weight:800;font-variant-numeric:tabular-nums}
+.divider{position:absolute;top:0;bottom:0;left:50%;width:0;border-left:3px dashed rgba(243,241,231,.35)}
+
+/* umpan balik */
+.toast{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);max-width:min(900px,calc(100% - 32px));background:var(--panel);border-radius:14px;padding:12px 22px;font-size:clamp(17px,2.2vw,30px);text-align:center;border:2px solid var(--line);transition:opacity .25s;pointer-events:none;text-wrap:balance}
+.toast.good{border-color:var(--good)}
+.toast.bad{border-color:var(--bad)}
+.toast .tag{font-weight:700;margin-right:.4em}
+.toast.good .tag{color:var(--good)}
+.toast.bad .tag{color:var(--bad)}
+
+.ctrls{position:absolute;right:16px;bottom:16px;display:flex;gap:8px}
+.ctrls button{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:14px;cursor:pointer}
+.ctrls button:hover{border-color:var(--chalk-dim)}
+
+/* lapisan layar */
+.layer{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:24px 16px;overflow:auto;background:rgba(8,20,17,.78)}
+.card{background:var(--board);border:2px solid var(--line);border-radius:18px;padding:clamp(20px,3vw,40px);width:min(980px,100%);max-height:100%;overflow:auto;box-shadow:0 30px 80px rgba(0,0,0,.45)}
+h1,h2{font-family:var(--f-display);font-weight:800;margin:0;text-wrap:balance;line-height:1.02}
+h1{font-size:clamp(44px,7vw,96px);letter-spacing:-.02em}
+h1 span{color:var(--yellow)}
+h2{font-size:clamp(28px,4vw,52px)}
+.eyebrow{font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:var(--chalk-dim);font-weight:700}
+p{line-height:1.5;margin:0}
+.lead{font-size:clamp(16px,1.6vw,20px);color:var(--chalk-dim);max-width:60ch}
+
+.menu-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(20px,3vw,40px);margin-top:20px}
+@media (max-width:760px){.menu-grid{grid-template-columns:1fr}}
+.howto{display:flex;flex-direction:column;gap:14px}
+.howto ol{margin:0;padding-left:1.3em;display:flex;flex-direction:column;gap:8px;line-height:1.45}
+.legend{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:4px}
+.legend div{border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}
+.legend b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow)}
+.legend .m{font-size:26px}
+.legend small{display:block;color:var(--chalk-dim);font-size:13px;line-height:1.3}
+.big-eq{font-size:clamp(34px,4vw,48px);font-family:var(--f-math);font-weight:600;letter-spacing:.02em}
+
+.settings{display:flex;flex-direction:column;gap:14px;background:rgba(12,28,24,.55);border:1px solid var(--line);border-radius:14px;padding:18px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field>label,.field>span{font-size:13px;letter-spacing:.1em;text-transform:uppercase;color:var(--chalk-dim);font-weight:700}
+.seg{display:flex;flex-wrap:wrap;gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{border:1px solid var(--line);border-radius:999px;padding:7px 14px;cursor:pointer;font-size:15px}
+.seg input:checked+label{background:var(--chalk);color:var(--board-deep);border-color:var(--chalk);font-weight:700}
+.seg input:focus-visible+label{outline:3px solid var(--yellow);outline-offset:2px}
+.checks{display:flex;flex-direction:column;gap:6px}
+.checks label{display:flex;gap:10px;align-items:center;cursor:pointer;font-size:15px}
+.checks input{width:18px;height:18px;accent-color:var(--yellow)}
+.btns{display:flex;flex-wrap:wrap;gap:10px;margin-top:4px}
+.btn{border:0;border-radius:12px;padding:13px 20px;font-weight:700;font-size:17px;cursor:pointer;background:var(--yellow);color:var(--board-deep)}
+.btn.ghost{background:transparent;color:var(--chalk);border:2px solid var(--line)}
+.btn:hover{filter:brightness(1.06)}
+.btn:disabled{opacity:.5;cursor:wait}
+.status{font-size:15px;color:var(--chalk-dim);min-height:1.4em}
+.status.err{color:var(--bad)}
+.kbd{font-size:13px;color:var(--chalk-dim)}
+kbd{border:1px solid var(--line);border-radius:5px;padding:1px 6px;font-family:var(--f-body);font-size:12px}
+
+/* intro & rekap */
+.intro .rule{font-size:clamp(20px,2.4vw,32px);margin-top:12px;max-width:40ch;text-wrap:balance}
+.ex-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:22px}
+.ex{border-radius:14px;padding:14px 18px;border:2px solid var(--line);min-width:0}
+.ex b{font-size:13px;letter-spacing:.12em;text-transform:uppercase}
+.ex.yes{border-color:var(--good)} .ex.yes b{color:var(--good)}
+.ex.no{border-color:var(--bad)} .ex.no b{color:var(--bad)}
+.ex .m{font-size:clamp(28px,3.4vw,44px);display:block;margin-top:4px;word-spacing:.35em}
+.count{margin-top:22px;font-size:20px;color:var(--chalk-dim)}
+.count .secs{color:var(--yellow);font-size:30px}
+.recap-list{display:flex;flex-direction:column;gap:8px;margin-top:16px}
+.recap-list div{border-left:4px solid var(--bad);padding:6px 12px;background:rgba(255,123,107,.08);border-radius:0 8px 8px 0;font-size:clamp(16px,1.7vw,21px)}
+.recap-list .none{border-color:var(--good);background:rgba(95,211,148,.08)}
+.key{margin-top:16px;padding:14px 18px;border-radius:12px;background:rgba(244,200,74,.1);border:1px solid rgba(244,200,74,.45);font-size:clamp(17px,1.8vw,22px)}
+.key b{color:var(--yellow)}
+.res{display:flex;gap:28px;flex-wrap:wrap;margin-top:12px}
+.res .score .num{font-size:clamp(44px,6vw,72px)}
+.ask{margin-top:22px;border:2px dashed var(--line);border-radius:14px;padding:18px}
+.ask .big-eq{display:block;margin:6px 0 8px}
+.ans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}
+.ans div{border:1px solid var(--line);border-radius:10px;padding:10px;min-width:0}
+.ans b{display:block;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow)}
+.ans .m{font-size:28px}
+@media (max-width:560px){.legend,.ans{grid-template-columns:1fr}.ex-row{grid-template-columns:1fr}.hud{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.mission{grid-column:1/-1;grid-row:2}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div id="stage">
+  <video id="cam" playsinline muted></video>
+  <div id="shade"></div>
+  <canvas id="cv"></canvas>
+  <div class="divider" id="divider" hidden></div>
+  <div class="timebar" id="timebarWrap" hidden><span id="timebar"></span></div>
+
+  <div class="hud" id="hud" hidden>
+    <div class="score l"><span class="lbl" id="lblL">Skor</span><span class="num" id="scoreL">0</span></div>
+    <div class="mission">
+      <div class="kick" id="mKick">Ronde 1</div>
+      <div class="what" id="mWhat">Tangkap KONSTANTA</div>
+      <div class="rule"><span id="mRule"></span> · <span class="secs" id="mSecs">35</span> dtk</div>
+    </div>
+    <div class="score r" id="scoreRWrap"><span class="lbl">Tim Kanan</span><span class="num" id="scoreR">0</span></div>
+  </div>
+
+  <div class="toast" id="toast" style="opacity:0"></div>
+
+  <div class="ctrls" id="ctrls" hidden>
+    <button id="btnPause" type="button">Jeda <kbd>Spasi</kbd></button>
+    <button id="btnQuit" type="button">Selesai</button>
+  </div>
+
+  <!-- MENU -->
+  <div class="layer" id="menu">
+    <div class="card">
+      <div class="eyebrow">Ice breaking aljabar · SMP</div>
+      <h1>Tangkap <span>Suku</span></h1>
+      <div class="menu-grid">
+        <div class="howto">
+          <p class="lead">Suku-suku aljabar berjatuhan dari atas layar. Gerakkan tanganmu di depan kamera untuk menangkap suku yang sesuai misi. Salah tangkap, poin berkurang.</p>
+          <div>
+            <div class="eyebrow" style="margin-bottom:6px">Bagian-bagian dari</div>
+            <span class="big-eq">3<i class="v">x</i> + 5</span>
+            <div class="legend">
+              <div><b>Koefisien</b><span class="m">3</span><small>bilangan yang menempel di depan variabel</small></div>
+              <div><b>Variabel</b><span class="m"><i class="v">x</i></span><small>huruf pengganti nilai yang belum diketahui</small></div>
+              <div><b>Konstanta</b><span class="m">5</span><small>bilangan yang berdiri sendiri</small></div>
+            </div>
+          </div>
+          <ol>
+            <li>Berdiri 1,5–2 meter dari kamera sampai badan dan kedua tangan terlihat.</li>
+            <li>Baca misi di atas layar. Tangkap suku yang benar: +10. Salah: −5.</li>
+            <li>Mode 2 tim: layar dibagi dua, tiap tim menangkap di sisinya sendiri.</li>
+          </ol>
+          <p class="kbd"><kbd>Spasi</kbd> jeda · <kbd>Enter</kbd> lanjut · <kbd>Esc</kbd> ke menu</p>
+        </div>
+        <form class="settings" id="setForm">
+          <div class="field"><span>Mode</span>
+            <div class="seg">
+              <input type="radio" name="teams" id="t1" value="1" checked><label for="t1">1 kelompok</label>
+              <input type="radio" name="teams" id="t2" value="2"><label for="t2">2 tim (kiri vs kanan)</label>
+            </div>
+          </div>
+          <div class="field"><span>Durasi tiap ronde</span>
+            <div class="seg">
+              <input type="radio" name="dur" id="d25" value="25"><label for="d25">25 dtk</label>
+              <input type="radio" name="dur" id="d35" value="35" checked><label for="d35">35 dtk</label>
+              <input type="radio" name="dur" id="d45" value="45"><label for="d45">45 dtk</label>
+            </div>
+          </div>
+          <div class="field"><span>Kecepatan jatuh</span>
+            <div class="seg">
+              <input type="radio" name="spd" id="s0" value="0"><label for="s0">Pelan</label>
+              <input type="radio" name="spd" id="s1" value="1" checked><label for="s1">Sedang</label>
+              <input type="radio" name="spd" id="s2" value="2"><label for="s2">Cepat</label>
+            </div>
+          </div>
+          <div class="field"><span>Ronde</span>
+            <div class="checks">
+              <label><input type="checkbox" id="r_const" checked> Konstanta</label>
+              <label><input type="checkbox" id="r_var" checked> Variabel</label>
+              <label><input type="checkbox" id="r_coef" checked> Koefisien</label>
+              <label><input type="checkbox" id="r_one" checked> Jebakan: koefisien 1</label>
+              <label><input type="checkbox" id="snd" checked> Suara</label>
+            </div>
+          </div>
+          <div class="btns">
+            <button class="btn" type="button" id="btnCam">Mulai dengan kamera</button>
+            <button class="btn ghost" type="button" id="btnMouse">Coba pakai mouse</button>
+          </div>
+          <div class="status" id="status" role="status"></div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTRO RONDE -->
+  <div class="layer intro" id="intro" hidden>
+    <div class="card">
+      <div class="eyebrow" id="iKick">Ronde 1 dari 4</div>
+      <h2 id="iTitle">Tangkap KONSTANTA</h2>
+      <p class="rule" id="iRule"></p>
+      <div class="ex-row">
+        <div class="ex yes"><b>Tangkap</b><span class="m" id="iYes"></span></div>
+        <div class="ex no"><b>Biarkan jatuh</b><span class="m" id="iNo"></span></div>
+      </div>
+      <p class="count">Mulai dalam <span class="secs" id="iCount">6</span> · tekan <kbd>Enter</kbd> untuk langsung mulai</p>
+    </div>
+  </div>
+
+  <!-- REKAP RONDE -->
+  <div class="layer" id="recap" hidden>
+    <div class="card">
+      <div class="eyebrow" id="rKick">Ronde 1 selesai</div>
+      <h2 id="rTitle">Yang perlu kita bahas</h2>
+      <div class="res" id="rRes"></div>
+      <div class="recap-list" id="rList"></div>
+      <div class="key" id="rKey"></div>
+      <div class="btns" style="margin-top:20px">
+        <button class="btn" type="button" id="btnNext">Ronde berikutnya</button>
+        <button class="btn ghost" type="button" id="btnMenu1">Ke menu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- AKHIR -->
+  <div class="layer" id="final" hidden>
+    <div class="card">
+      <div class="eyebrow">Permainan selesai</div>
+      <h2 id="fTitle">Kerja bagus!</h2>
+      <div class="res" id="fRes"></div>
+      <div class="ask">
+        <div class="eyebrow">Pertanyaan pembuka pelajaran</div>
+        <p style="font-size:clamp(17px,1.8vw,22px);margin-top:6px">Pada bentuk aljabar ini, mana variabel, koefisien, dan konstantanya?</p>
+        <span class="big-eq" id="fEq"></span>
+        <button class="btn ghost" type="button" id="btnReveal">Tunjukkan jawaban</button>
+        <div class="ans" id="fAns" hidden></div>
+      </div>
+      <div class="btns" style="margin-top:20px">
+        <button class="btn" type="button" id="btnAgain">Main lagi</button>
+        <button class="btn ghost" type="button" id="btnMenu2">Ke menu</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+const $ = s => document.querySelector(s);
+const stage = $('#stage'), cv = $('#cv'), ctx = cv.getContext('2d'), video = $('#cam');
+const MATHFONT = "'STIX Two Text','Cambria Math','Times New Roman',serif";
+const C = { chalk:'#f3f1e7', dim:'#a9b8ae', yellow:'#f4c84a', sky:'#7cc8ff', good:'#5fd394', bad:'#ff7b6b', ink:'#0c1c18' };
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+let W = 0, H = 0, DPR = 1;
+function resize(){
+  DPR = Math.min(2, window.devicePixelRatio || 1);
+  W = innerWidth; H = innerHeight;
+  cv.width = W * DPR; cv.height = H * DPR;
+  cv.style.width = W + 'px'; cv.style.height = H + 'px';
+  ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+}
+addEventListener('resize', resize); resize();
+
+/* ---------- utilitas suku ---------- */
+const rint = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+const pick = a => a[Math.floor(Math.random() * a.length)];
+const VARS = ['x', 'y', 'a', 'b', 'p', 'n'];
+const fmt = n => n < 0 ? '−' + Math.abs(n) : String(n);
+function parts(t){
+  if (t.v === null) return [{ s: fmt(t.c), it: false }];
+  const P = [];
+  if (t.c === -1) P.push({ s: '−', it: false });
+  else if (t.c !== 1) P.push({ s: fmt(t.c), it: false });
+  P.push({ s: t.v, it: true });
+  return P;
+}
+const html = t => parts(t).map(p => p.it ? `<i class="v">${p.s}</i>` : p.s).join('');
+const nz = (a, b, not = []) => { let n; do { n = rint(a, b); } while (n === 0 || not.includes(n)); return n; };
+const otherVar = v => pick(VARS.filter(x => x !== v));
+
+/* ---------- misi ---------- */
+const MISSIONS = {
+  const: () => ({
+    title: 'Tangkap KONSTANTA',
+    short: 'KONSTANTA',
+    rule: 'Konstanta adalah bilangan yang berdiri sendiri, tanpa variabel.',
+    yes: '7 &nbsp;−3 &nbsp;12', no: `4<i class="v">x</i> &nbsp;<i class="v">y</i> &nbsp;−2<i class="v">a</i>`,
+    gen(){ return Math.random() < .45 ? { c: nz(-9, 15), v: null } : { c: nz(-9, 9), v: pick(VARS) }; },
+    ok: t => t.v === null,
+    why: t => `${html(t)} masih punya variabel <i class="v">${t.v}</i>, jadi bukan konstanta.`,
+    key: '<b>Konstanta</b> tidak punya variabel. Begitu ada huruf, ia bukan konstanta lagi.'
+  }),
+  var: () => {
+    const V = pick(['x', 'y', 'a']);
+    return {
+      title: `Tangkap suku dengan VARIABEL ${V}`,
+      short: `VARIABEL ${V}`,
+      rule: 'Variabel adalah huruf pengganti nilai yang belum diketahui.',
+      yes: `5<i class="v">${V}</i> &nbsp;<i class="v">${V}</i> &nbsp;−2<i class="v">${V}</i>`,
+      no: `3<i class="v">${otherVar(V)}</i> &nbsp;8`,
+      gen(){
+        const r = Math.random();
+        if (r < .45) return { c: nz(-9, 9), v: V };
+        if (r < .8) return { c: nz(-9, 9), v: otherVar(V) };
+        return { c: nz(-9, 12), v: null };
+      },
+      ok: t => t.v === V,
+      why: t => t.v === null ? `${html(t)} tidak punya variabel, itu konstanta.` : `Variabel ${html(t)} adalah <i class="v">${t.v}</i>, bukan <i class="v">${V}</i>.`,
+      key: `<b>Variabel</b> adalah hurufnya. Angka di depannya tidak mengubah variabel: 2<i class="v">${V}</i> dan −7<i class="v">${V}</i> sama-sama bervariabel <i class="v">${V}</i>.`
+    };
+  },
+  coef: () => {
+    const K = rint(2, 6);
+    return {
+      title: `Tangkap suku dengan KOEFISIEN ${K}`,
+      short: `KOEFISIEN ${K}`,
+      rule: 'Koefisien adalah bilangan yang menempel di depan variabel.',
+      yes: `${K}<i class="v">x</i> &nbsp;${K}<i class="v">p</i>`,
+      no: `${K} &nbsp;${K + 1}<i class="v">x</i>`,
+      gen(){
+        const r = Math.random();
+        if (r < .4) return { c: K, v: pick(VARS) };
+        if (r < .65) return { c: K, v: null };
+        return { c: nz(-9, 9, [K]), v: pick(VARS) };
+      },
+      ok: t => t.v !== null && t.c === K,
+      why: t => t.v === null ? `${html(t)} berdiri sendiri, jadi konstanta. Koefisien selalu menempel pada variabel.` : `Koefisien ${html(t)} adalah ${fmt(t.c)}, bukan ${K}.`,
+      key: `Angka ${K} baru menjadi <b>koefisien</b> kalau menempel pada variabel, seperti ${K}<i class="v">x</i>. Kalau berdiri sendiri, ${K} adalah konstanta.`
+    };
+  },
+  one: () => ({
+    title: 'Ronde Jebakan: KOEFISIEN 1',
+    short: 'KOEFISIEN 1',
+    rule: 'Kalau tidak ada angka di depan variabel, koefisiennya 1. Jadi x sama dengan 1x.',
+    yes: `<i class="v">x</i> &nbsp;<i class="v">y</i> &nbsp;<i class="v">n</i>`,
+    no: `1 &nbsp;−<i class="v">a</i> &nbsp;10<i class="v">b</i>`,
+    gen(){
+      const r = Math.random();
+      if (r < .4) return { c: 1, v: pick(VARS) };
+      if (r < .6) return { c: 1, v: null };
+      if (r < .8) return { c: -1, v: pick(VARS) };
+      return { c: pick([10, 11, 2, 3, 5]), v: pick(VARS) };
+    },
+    ok: t => t.v !== null && t.c === 1,
+    okNote: t => `<i class="v">${t.v}</i> = 1<i class="v">${t.v}</i>, koefisiennya 1.`,
+    why: t => t.v === null ? '1 tanpa variabel adalah konstanta, bukan koefisien.'
+      : t.c === -1 ? `${html(t)} = −1<i class="v">${t.v}</i>, koefisiennya −1.`
+      : `Koefisien ${html(t)} adalah ${t.c}. Ada angka 1-nya, tapi bukan koefisien 1.`,
+    key: 'Variabel tanpa angka di depannya punya <b>koefisien 1</b>. Tanda minus ikut: −<i class="v">a</i> berkoefisien −1.'
+  })
+};
+
+/* ---------- suara ---------- */
+let AC = null, soundOn = true;
+function beep(f, d = .12, type = 'sine', g = .15, slide = 0){
+  if (!soundOn) return;
+  try {
+    AC = AC || new (window.AudioContext || window.webkitAudioContext)();
+    const o = AC.createOscillator(), v = AC.createGain(), t = AC.currentTime;
+    o.type = type; o.frequency.setValueAtTime(f, t);
+    if (slide) o.frequency.exponentialRampToValueAtTime(f * slide, t + d);
+    v.gain.setValueAtTime(g, t); v.gain.exponentialRampToValueAtTime(.001, t + d);
+    o.connect(v).connect(AC.destination); o.start(t); o.stop(t + d);
+  } catch (e) {}
+}
+const sGood = () => { beep(660, .09, 'triangle'); setTimeout(() => beep(990, .12, 'triangle'), 70); };
+const sBad = () => beep(180, .22, 'sawtooth', .08, .6);
+
+/* ---------- state ---------- */
+const G = {
+  state: 'menu', input: 'mouse', teams: 1, dur: 35, speed: 1,
+  rounds: [], ri: 0, m: null, t: 0, introT: 0,
+  scores: [0, 0], roundStats: null, streak: [0, 0],
+  items: [], fx: [], hands: [], spawnT: [0, 0], paused: false
+};
+const SPEED = [{ fall: .13, every: 1.3 }, { fall: .19, every: .95 }, { fall: .26, every: .72 }];
+
+const show = (id, on) => { $(id).hidden = !on; };
+function setLayer(name){
+  ['#menu', '#intro', '#recap', '#final'].forEach(id => show(id, id === '#' + name));
+  const inGame = name !== 'menu';
+  show('#hud', inGame); show('#ctrls', inGame); show('#timebarWrap', inGame);
+  show('#divider', inGame && G.teams === 2);
+}
+
+/* ---------- kamera & deteksi pose ---------- */
+let pose = null, lastVT = -1;
+const prevHands = new Map();
+async function startCamera(){
+  const st = $('#status');
+  st.className = 'status'; st.textContent = 'Membuka kamera…';
+  if (!navigator.mediaDevices?.getUserMedia) throw new Error('Browser ini tidak mendukung akses kamera. Gunakan Chrome atau Edge terbaru.');
+  const stream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 }, facingMode: 'user' }, audio: false });
+  video.srcObject = stream; await video.play();
+  if (!pose){
+    st.textContent = 'Memuat pendeteksi gerak tubuh (sekali saja, butuh internet)…';
+    const V = await import('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14');
+    const files = await V.FilesetResolver.forVisionTasks('https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm');
+    const opts = d => ({
+      baseOptions: { modelAssetPath: 'https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task', delegate: d },
+      runningMode: 'VIDEO', numPoses: 4, minPoseDetectionConfidence: .5, minTrackingConfidence: .5
+    });
+    try { pose = await V.PoseLandmarker.createFromOptions(files, opts('GPU')); }
+    catch (e) { pose = await V.PoseLandmarker.createFromOptions(files, opts('CPU')); }
+  }
+  st.textContent = '';
+}
+function toScreen(lm){
+  const vw = video.videoWidth || 1280, vh = video.videoHeight || 720;
+  const s = Math.max(W / vw, H / vh), ox = (W - vw * s) / 2, oy = (H - vh * s) / 2;
+  return { x: W - (ox + lm.x * vw * s), y: oy + lm.y * vh * s };
+}
+function detect(now){
+  if (!pose || video.readyState < 2 || video.currentTime === lastVT) return;
+  lastVT = video.currentTime;
+  let res;
+  try { res = pose.detectForVideo(video, now); } catch (e) { return; }
+  const hands = [];
+  (res.landmarks || []).forEach((lms, i) => {
+    // 15/16 pergelangan, 19/20 ujung telunjuk: titik tangan = rata-rata keduanya
+    [[15, 19], [16, 20]].forEach(([w, f], side) => {
+      const a = lms[w], b = lms[f];
+      if (!a || !b || (a.visibility ?? 1) < .45) return;
+      const p = toScreen({ x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 });
+      const key = i + '-' + side, pv = prevHands.get(key);
+      if (pv){ p.x = pv.x + (p.x - pv.x) * .6; p.y = pv.y + (p.y - pv.y) * .6; }
+      prevHands.set(key, p);
+      hands.push(p);
+    });
+  });
+  G.hands = hands;
+}
+
+/* ---------- input mouse / sentuh ---------- */
+const pointers = new Map();
+cv.addEventListener('pointermove', e => { if (G.input === 'mouse') pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); });
+cv.addEventListener('pointerdown', e => { if (G.input === 'mouse') pointers.set(e.pointerId, { x: e.clientX, y: e.clientY }); });
+['pointerup', 'pointercancel', 'pointerleave'].forEach(ev => cv.addEventListener(ev, e => { if (e.pointerType !== 'mouse' || ev === 'pointerleave') pointers.delete(e.pointerId); }));
+
+/* ---------- alur permainan ---------- */
+function readSettings(){
+  const f = $('#setForm');
+  G.teams = +f.teams.value; G.dur = +f.dur.value; G.speed = +f.spd.value;
+  soundOn = $('#snd').checked;
+  const order = [['r_const', 'const'], ['r_var', 'var'], ['r_coef', 'coef'], ['r_one', 'one']];
+  G.rounds = order.filter(([id]) => $('#' + id).checked).map(([, k]) => k);
+  if (!G.rounds.length) G.rounds = ['const'];
+}
+function newGame(){
+  if (!G.rounds.length) readSettings();
+  G.scores = [0, 0]; G.ri = 0; G.streak = [0, 0];
+  $('#lblL').textContent = G.teams === 2 ? 'Tim Kiri' : 'Skor';
+  show('#scoreRWrap', G.teams === 2);
+  $('#scoreRWrap').style.visibility = G.teams === 2 ? 'visible' : 'hidden';
+  $('#scoreRWrap').hidden = false;
+  startIntro();
+}
+function startIntro(){
+  const mk = MISSIONS[G.rounds[G.ri]] || MISSIONS.const;
+  G.m = mk();
+  G.items = []; G.introT = 6; G.state = 'intro'; G.paused = false;
+  $('#iKick').textContent = `Ronde ${G.ri + 1} dari ${G.rounds.length}`;
+  $('#iTitle').textContent = G.m.title;
+  $('#iRule').textContent = G.m.rule;
+  $('#iYes').innerHTML = G.m.yes; $('#iNo').innerHTML = G.m.no;
+  $('#mKick').textContent = `Ronde ${G.ri + 1} dari ${G.rounds.length}`;
+  $('#mWhat').textContent = 'Tangkap ' + G.m.short;
+  $('#mRule').textContent = G.m.rule.split('.')[0];
+  $('#mSecs').textContent = G.dur;
+  $('#timebar').style.transform = 'scaleX(1)';
+  updScores();
+  setLayer('intro');
+}
+function startPlay(){
+  G.state = 'play'; G.t = G.dur; G.spawnT = [0, .45];
+  G.roundStats = { good: [0, 0], bad: [0, 0], mistakes: new Map() };
+  setLayer('play');
+}
+function endRound(){
+  G.state = 'recap'; G.items = [];
+  const rs = G.roundStats, last = G.ri === G.rounds.length - 1;
+  $('#rKick').textContent = `Ronde ${G.ri + 1} selesai`;
+  $('#rTitle').textContent = rs.mistakes.size ? 'Yang perlu kita bahas' : 'Tanpa salah tangkap!';
+  const teamTxt = i => `<div class="score ${i ? 'r' : 'l'}" style="align-items:flex-start;text-align:left"><span class="lbl">${G.teams === 2 ? (i ? 'Tim Kanan' : 'Tim Kiri') : 'Ronde ini'}</span><span class="num">${rs.good[i]}✓ ${rs.bad[i]}✗</span></div>`;
+  $('#rRes').innerHTML = G.teams === 2 ? teamTxt(0) + teamTxt(1) : teamTxt(0);
+  const list = [...rs.mistakes.values()].slice(0, 4);
+  $('#rList').innerHTML = list.length ? list.map(x => `<div>${x}</div>`).join('') : '<div class="none">Semua tangkapan benar. Coba tanya siswa: bagaimana kalian membedakannya?</div>';
+  $('#rKey').innerHTML = 'Ingat: ' + G.m.key;
+  $('#btnNext').textContent = last ? 'Lihat hasil akhir' : 'Ronde berikutnya';
+  setLayer('recap');
+}
+function nextRound(){
+  if (G.ri < G.rounds.length - 1){ G.ri++; startIntro(); } else finish();
+}
+function finish(){
+  G.state = 'final';
+  const [a, b] = G.scores;
+  $('#fTitle').textContent = G.teams === 2 ? (a === b ? 'Seri!' : (a > b ? 'Tim Kiri menang!' : 'Tim Kanan menang!')) : 'Kerja bagus!';
+  const sc = (lbl, v, cls) => `<div class="score ${cls}" style="align-items:flex-start;text-align:left"><span class="lbl">${lbl}</span><span class="num">${v}</span></div>`;
+  $('#fRes').innerHTML = G.teams === 2 ? sc('Tim Kiri', a, 'l') + sc('Tim Kanan', b, 'r') : sc('Skor akhir', a, 'l');
+  const k = rint(2, 9), v = pick(['x', 'y', 'p', 'n']), c = nz(-9, 9), op = c < 0 ? '−' : '+';
+  $('#fEq').innerHTML = `${k}<i class="v">${v}</i> ${op} ${Math.abs(c)}`;
+  $('#fAns').innerHTML = `<div><b>Variabel</b><span class="m"><i class="v">${v}</i></span></div><div><b>Koefisien</b><span class="m">${k}</span></div><div><b>Konstanta</b><span class="m">${fmt(c)}</span></div>`;
+  $('#fAns').hidden = true; $('#btnReveal').hidden = false;
+  setLayer('final');
+}
+function toMenu(){
+  G.state = 'menu'; G.items = []; G.fx = [];
+  setLayer('menu');
+}
+function togglePause(){
+  if (G.state !== 'play') return;
+  G.paused = !G.paused;
+  $('#btnPause').innerHTML = G.paused ? 'Lanjut <kbd>Spasi</kbd>' : 'Jeda <kbd>Spasi</kbd>';
+  if (G.paused) toast('Dijeda', 'Tekan Spasi untuk lanjut.', '', 99);
+  else hideToast();
+}
+function updScores(){ $('#scoreL').textContent = G.scores[0]; $('#scoreR').textContent = G.scores[1]; }
+
+/* ---------- umpan balik ---------- */
+let toastT = 0;
+function toast(tag, msg, cls, secs = 2.6){
+  const el = $('#toast');
+  el.className = 'toast ' + cls;
+  el.innerHTML = `<span class="tag">${tag}</span>${msg}`;
+  el.style.opacity = 1; toastT = secs;
+}
+function hideToast(){ $('#toast').style.opacity = 0; toastT = 0; }
+
+/* ---------- logika ronde ---------- */
+function chipSize(){ return Math.max(34, Math.min(80, H * .075)); }
+function spawn(team){
+  const t = G.m.gen(), size = chipSize();
+  let tw = 0;
+  for (const p of parts(t)){ ctx.font = `${p.it ? 'italic ' : ''}600 ${size}px ${MATHFONT}`; tw += ctx.measureText(p.s).width; }
+  const w = tw + size * .9, h = size * 1.35, m = w / 2 + 16;
+  const x0 = G.teams === 2 ? (team ? W / 2 + m : m) : m;
+  const x1 = G.teams === 2 ? (team ? W - m : W / 2 - m) : W - m;
+  const sp = SPEED[G.speed];
+  G.items.push({ t, x: x0 + Math.random() * Math.max(1, x1 - x0), y: -h, w, h, size, vy: H * sp.fall * (.85 + Math.random() * .3), rot: (Math.random() - .5) * .12, team });
+}
+function catchItem(it, team){
+  const ok = G.m.ok(it.t), rs = G.roundStats;
+  if (ok){
+    G.streak[team]++;
+    const bonus = G.streak[team] > 0 && G.streak[team] % 4 === 0 ? 5 : 0;
+    G.scores[team] += 10 + bonus; rs.good[team]++;
+    sGood();
+    burst(it.x, it.y, C.good, bonus ? `+${10 + bonus} beruntun!` : '+10');
+    toast('Benar', G.m.okNote ? G.m.okNote(it.t) : `${html(it.t)} termasuk ${G.m.short.toLowerCase()}.`, 'good', 1.6);
+  } else {
+    G.streak[team] = 0;
+    G.scores[team] = Math.max(0, G.scores[team] - 5); rs.bad[team]++;
+    sBad();
+    burst(it.x, it.y, C.bad, '−5');
+    const why = G.m.why(it.t);
+    toast('Ups', why, 'bad', 3);
+    rs.mistakes.set(html(it.t), why);
+  }
+  updScores();
+}
+function burst(x, y, col, label){
+  const n = reduceMotion ? 0 : 16;
+  for (let i = 0; i < n; i++){
+    const a = Math.random() * Math.PI * 2, s = 120 + Math.random() * 260;
+    G.fx.push({ k: 'p', x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life: .6, max: .6, col });
+  }
+  G.fx.push({ k: 't', x, y, vy: -70, life: 1, max: 1, col, label });
+}
+
+function update(dt){
+  if (toastT > 0 && toastT < 90){ toastT -= dt; if (toastT <= 0) hideToast(); }
+  G.fx = G.fx.filter(f => (f.life -= dt) > 0);
+  for (const f of G.fx){ f.x += (f.vx || 0) * dt; f.y += f.vy * dt; if (f.k === 'p') f.vy += 500 * dt; }
+  if (G.paused) return;
+
+  if (G.state === 'intro'){
+    G.introT -= dt;
+    $('#iCount').textContent = Math.max(1, Math.ceil(G.introT));
+    if (G.introT <= 0) startPlay();
+    return;
+  }
+  if (G.state !== 'play') return;
+
+  G.t -= dt;
+  $('#mSecs').textContent = Math.max(0, Math.ceil(G.t));
+  $('#timebar').style.transform = `scaleX(${Math.max(0, G.t / G.dur)})`;
+  if (G.t <= 0){ endRound(); return; }
+
+  const every = SPEED[G.speed].every;
+  for (let team = 0; team < G.teams; team++){
+    G.spawnT[team] -= dt;
+    if (G.spawnT[team] <= 0){ spawn(team); G.spawnT[team] = every * (.8 + Math.random() * .4); }
+  }
+
+  const hands = G.input === 'mouse' ? [...pointers.values()] : G.hands;
+  const hr = Math.max(26, H * .045);
+  for (const it of G.items){
+    it.y += it.vy * dt;
+    if (it.dead) continue;
+    for (const hd of hands){
+      const dx = Math.abs(hd.x - it.x) - it.w / 2, dy = Math.abs(hd.y - it.y) - it.h / 2;
+      if (dx < hr * .7 && dy < hr * .7){
+        const team = G.teams === 2 ? (hd.x < W / 2 ? 0 : 1) : 0;
+        it.dead = true; catchItem(it, team); break;
+      }
+    }
+  }
+  G.items = G.items.filter(it => !it.dead && it.y - it.h / 2 < H);
+}
+
+/* ---------- gambar ---------- */
+function rrect(x, y, w, h, r){
+  ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r);
+  ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath();
+}
+function drawChip(it){
+  ctx.save(); ctx.translate(it.x, it.y); ctx.rotate(it.rot);
+  ctx.shadowColor = 'rgba(0,0,0,.35)'; ctx.shadowBlur = 14; ctx.shadowOffsetY = 6;
+  rrect(-it.w / 2, -it.h / 2, it.w, it.h, it.h * .28);
+  ctx.fillStyle = C.chalk; ctx.fill();
+  ctx.shadowColor = 'transparent';
+  ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(12,28,24,.25)'; ctx.stroke();
+  ctx.fillStyle = C.ink; ctx.textBaseline = 'middle';
+  const P = parts(it.t);
+  let tw = 0;
+  const ws = P.map(p => { ctx.font = `${p.it ? 'italic ' : ''}600 ${it.size}px ${MATHFONT}`; const w = ctx.measureText(p.s).width; tw += w; return w; });
+  let x = -tw / 2;
+  P.forEach((p, i) => { ctx.font = `${p.it ? 'italic ' : ''}600 ${it.size}px ${MATHFONT}`; ctx.fillText(p.s, x, it.size * .04); x += ws[i]; });
+  ctx.restore();
+}
+function drawHands(){
+  const hands = G.input === 'mouse' ? [...pointers.values()] : G.hands;
+  const hr = Math.max(26, H * .045);
+  for (const hd of hands){
+    const col = G.teams === 2 ? (hd.x < W / 2 ? C.yellow : C.sky) : C.yellow;
+    ctx.beginPath(); ctx.arc(hd.x, hd.y, hr, 0, Math.PI * 2);
+    ctx.fillStyle = col + '33'; ctx.fill();
+    ctx.lineWidth = 5; ctx.strokeStyle = col; ctx.stroke();
+    ctx.beginPath(); ctx.arc(hd.x, hd.y, 6, 0, Math.PI * 2); ctx.fillStyle = col; ctx.fill();
+  }
+}
+function draw(){
+  ctx.clearRect(0, 0, W, H);
+  if (G.state === 'play') G.items.forEach(drawChip);
+  for (const f of G.fx){
+    const a = Math.max(0, f.life / f.max);
+    ctx.globalAlpha = a;
+    if (f.k === 'p'){ ctx.fillStyle = f.col; ctx.fillRect(f.x - 4, f.y - 4, 8, 8); }
+    else { ctx.font = `800 ${Math.max(28, H * .055)}px 'Bricolage Grotesque',system-ui,sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = f.col; ctx.fillText(f.label, f.x, f.y); ctx.textAlign = 'start'; }
+    ctx.globalAlpha = 1;
+  }
+  if (G.state !== 'menu') drawHands();
+}
+
+let last = performance.now();
+function frame(now){
+  const dt = Math.min(.05, (now - last) / 1000); last = now;
+  if (G.input === 'cam') detect(now);
+  update(dt); draw();
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+
+/* ---------- tombol & keyboard ---------- */
+$('#btnCam').addEventListener('click', async () => {
+  readSettings();
+  const b1 = $('#btnCam'), b2 = $('#btnMouse');
+  b1.disabled = b2.disabled = true;
+  try {
+    await startCamera();
+    G.input = 'cam'; stage.classList.add('cam');
+    newGame();
+  } catch (e) {
+    const st = $('#status'); st.className = 'status err';
+    const msg = e && e.name === 'NotAllowedError' ? 'Izin kamera ditolak. Izinkan kamera di pengaturan browser, lalu coba lagi.'
+      : e && e.name === 'NotFoundError' ? 'Kamera tidak ditemukan. Sambungkan webcam lalu coba lagi.'
+      : 'Kamera belum bisa dipakai: ' + (e && e.message ? e.message : e) + ' Buka halaman lewat https atau localhost, dan pastikan ada internet.';
+    st.textContent = msg + ' Sementara itu, pakai mode mouse.';
+  } finally { b1.disabled = b2.disabled = false; }
+});
+$('#btnMouse').addEventListener('click', () => {
+  readSettings(); G.input = 'mouse'; stage.classList.remove('cam');
+  newGame();
+});
+$('#btnNext').addEventListener('click', nextRound);
+$('#btnMenu1').addEventListener('click', toMenu);
+$('#btnMenu2').addEventListener('click', toMenu);
+$('#btnAgain').addEventListener('click', newGame);
+$('#btnPause').addEventListener('click', togglePause);
+$('#btnQuit').addEventListener('click', () => { if (G.state === 'play' || G.state === 'intro') finish(); else toMenu(); });
+$('#btnReveal').addEventListener('click', () => { $('#fAns').hidden = false; $('#btnReveal').hidden = true; });
+$('#intro').addEventListener('click', () => { if (G.state === 'intro') startPlay(); });
+addEventListener('keydown', e => {
+  if (e.target.closest && e.target.closest('input,select') && e.key !== 'Escape') return;
+  if (e.code === 'Space'){ if (G.state === 'play'){ e.preventDefault(); togglePause(); } }
+  else if (e.key === 'Enter'){
+    if (G.state === 'intro'){ e.preventDefault(); startPlay(); }
+    else if (G.state === 'recap'){ e.preventDefault(); nextRound(); }
+  }
+  else if (e.key === 'Escape' && G.state !== 'menu') toMenu();
+});
+setLayer('menu');
+</script>
+</body>
+</html>

@@ -3,213 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Worksheet 4 - Chapter 5 Evaluation</title>
-    <!-- MathJax Configuration -->
-    <script>
-        MathJax = {
-            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
-        };
-    </script>
-    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <meta name="robots" content="noindex, nofollow">
+    <title>🔒 Chapter 5 Test — Fractions, Percentages & Standard Form</title>
     <style>
-        :root {
-            --primary: #1a365d;
-            --secondary: #2b6cb0;
-            --cut-line: #718096;
-            --engage: #d69e2e;
-            --explore: #38a169;
-            --explain: #3182ce;
-            --elaborate: #805ad5;
-            --evaluate: #e53e3e;
-        }
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --danger: #e53e3e; }
         * { box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
-            line-height: 1.3; font-size: 10.5pt;
-            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; min-height: 100vh;
+            display: flex; align-items: center; justify-content: center; padding: 16px;
+            background: linear-gradient(135deg, #1a365d 0%, #2b6cb0 100%); color: #2d3748;
         }
-        mjx-container { font-size: 1.05em !important; }
-        p { margin: 0.8mm 0; }
-
-        /* Print Button */
-        .print-btn {
-            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
-            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
-            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
-        }
-        .print-btn:hover { background-color: var(--primary); }
-
-        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
-        @page { size: A4; margin: 0; }
-        .page {
-            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
-            background: #fff; display: flex; flex-direction: column; gap: 2mm;
-            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
-        }
-        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
-        @media print {
-            body { background: none; padding: 0; }
-            .print-btn { display: none !important; }
-            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
-            .page:last-child { break-after: auto; page-break-after: auto; }
-        }
-
-        /* Layout helpers */
-        .grow { flex: 1 1 0; min-height: 0; }
-        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
-        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
-        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
-        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
-        .qn { font-weight: bold; color: var(--primary); }
-        .work {
-            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
-            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
-        }
-        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
-        .line { border-bottom: 1px solid #555; height: 6.5mm; }
-
-        /* Headers */
-        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
-        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
-        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
-        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
-        .student-info div { border-bottom: 1px dotted #718096; }
-        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
-        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
-        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
-        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
-        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
-
-        /* 5E phase banners */
-        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
-        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
-        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
-
-        /* Boxes */
-        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
-        .guide { background: #fffff0; border-color: #ecc94b; }
-        .action { background: #f0fff4; border-color: #38a169; }
-        .box-title { font-weight: bold; color: #276749; }
-        .guide .box-title { color: #b7791f; }
-
-        /* Tables */
-        .tbl { width: 100%; border-collapse: collapse; }
-        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
-        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
-        .tbl td.l, .tbl th.l { text-align: left; }
-        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
-        .check table { width: 100%; border-collapse: collapse; }
-        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
-        .check td:last-child { text-align: right; white-space: nowrap; }
-
-        /* Fraction bars */
-        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
-        .bar div { flex: 1; border-right: 1px solid #2d3748; }
-        .bar div:last-child { border-right: none; }
-        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
-        .bar-row span { width: 18mm; font-weight: bold; }
-
-        /* Cut-out cards */
-        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
-        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
-        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
-        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
-
-        /* Digit strips */
-        .digits { display: flex; }
-        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
-        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+        .lock-card { background: #fff; border-radius: 12px; padding: 32px 28px; width: 100%; max-width: 380px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+        .lock-icon { font-size: 3em; }
+        h1 { color: var(--primary); font-size: 1.3em; margin: 10px 0 4px; }
+        p { color: #4a5568; margin: 0 0 18px; font-size: 0.95em; }
+        input { width: 100%; padding: 12px; font-size: 1.1em; border: 2px solid #cbd5e0; border-radius: 6px; text-align: center; letter-spacing: 2px; }
+        input:focus { outline: none; border-color: var(--secondary); }
+        button { width: 100%; margin-top: 12px; padding: 12px; font-size: 1.05em; font-weight: bold; color: #fff; background: var(--secondary); border: none; border-radius: 6px; cursor: pointer; }
+        button:hover { background: var(--primary); }
+        button:disabled { background: #a0aec0; cursor: wait; }
+        .msg { min-height: 22px; margin-top: 12px; font-weight: bold; font-size: 0.95em; }
+        .msg.err { color: var(--danger); }
+        .note { margin-top: 14px; font-size: 0.8em; color: #718096; }
     </style>
 </head>
 <body>
-
-    <button class="print-btn" onclick="window.print()">🖨️ Print Test</button>
-
-    <!-- ===================== PAGE 1 ===================== -->
-    <div class="page">
-        <div class="ws-header">
-            <div class="ws-title">Chapter 5 Evaluation: Fractions, Percentages &amp; Standard Form<small>Grade 9 · Topic 5 · Meeting 4 — Summative Test · 55 minutes · Calculator allowed only in Section C</small></div>
-            <div class="student-info">
-                <div>Name:</div>
-                <div>Class:</div>
-                <div>Score: &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; / 50</div>
-            </div>
-        </div>
-        <div class="teacher-note"><strong>Instructions:</strong> Answer all questions in the boxes. Show all your working — marks are given for method. Give fractions in their simplest form and mixed numbers where appropriate.</div>
-        <div class="phase explain"><span>Section A · Fractions</span><span>18 marks</span></div>
-        <div class="grid22 grow" style="grid-template-rows: 1fr 1fr 1fr;">
-            <div class="q"><div><span class="qn">A1.</span> a) Write $2\frac{3}{5}$ as an improper fraction. &nbsp; b) Write $\frac{29}{4}$ as a mixed number. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">A2.</span> Calculate $1\frac{2}{3} + 2\frac{3}{4}$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">A3.</span> Calculate $4\frac{1}{2} - 2\frac{5}{6}$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">A4.</span> Calculate $2\frac{1}{4} \times 1\frac{1}{3}$. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">A5.</span> A recipe for 6 people uses $2\frac{1}{4}$ cups of brown rice. How much is needed for 4 people? <span style="float: right; color: #718096; font-size: 9pt;">[4]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">A6.</span> How many full $\frac{2}{3}$ L glasses can be poured from a $7\frac{1}{2}$ L jug of water? <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-        </div>
-        <div class="phase elaborate"><span>Section B · Percentages</span><span>16 marks</span></div>
-        <div class="row" style="height: 42mm;">
-            <div class="q"><div><span class="qn">B1.</span> Find 35% of 2400 kcal. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">B2.</span> Express 450 ml as a percentage of 1.8 L. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-        </div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 5 Evaluation · Page 1 of 3</div>
-    </div>
-
-    <!-- ===================== PAGE 2 ===================== -->
-    <div class="page">
-        <div class="phase elaborate"><span>Section B · Percentages (continued)</span><span></span></div>
-        <div class="grid22 grow">
-            <div class="q"><div><span class="qn">B3.</span> A child's mass of 40 kg increases by 12%. Find the new mass. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">B4.</span> A juice has 48 g of sugar. The new recipe has 25% less sugar. How much sugar is in the new recipe? <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">B5.</span> Daily steps rise from 6 400 to 8 000. Calculate the percentage increase. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">B6.</span> A cholesterol level falls from 240 to 204. Calculate the percentage decrease. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-        </div>
-        <div class="phase evaluate"><span>Section C · Standard Form</span><span>16 marks</span></div>
-        <div class="grid22 grow" style="grid-template-rows: 1fr 1fr 1fr;">
-            <div class="q"><div><span class="qn">C1.</span> Write in standard form: &nbsp; a) 52 000 000 &nbsp; b) 0.000 34 <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">C2.</span> Write as ordinary numbers: &nbsp; a) $6.05 \times 10^4$ &nbsp; b) $7 \times 10^{-6}$ <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">C3.</span> Calculate $(4 \times 10^6) \times (2 \times 10^3)$. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">C4.</span> Calculate $(8 \times 10^9) \div (4 \times 10^{-3})$. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">C5.</span> Calculate $(6 \times 10^5) \times (7 \times 10^4)$. Give your answer in standard form. <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">C6.</span> A bacterium is $2 \times 10^{-6}$ m long. How many laid end to end make 1 cm ($10^{-2}$ m)? <span style="float: right; color: #718096; font-size: 9pt;">[3]</span></div><div class="work"></div></div>
-        </div>
-        <div class="row" style="height: 30mm;">
-            <div class="q"><div><span class="qn">C7.</span> <em>(Challenge)</em> Calculate $(4.2 \times 10^5) + (3 \times 10^4)$ in standard form. <span style="float: right; color: #718096; font-size: 9pt;">[2]</span></div><div class="work"></div></div>
-            <div class="q"><div><span class="qn">✍️ Reflection:</span> Which topic in this chapter do I need to practise more, and how will I do it?</div><div class="line"></div><div class="line"></div></div>
-        </div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 5 Evaluation · Page 2 of 3</div>
-    </div>
-
-    <!-- ===================== PAGE 3 ===================== -->
-    <div class="page">
-        <div class="media-header">
-            <h1>🔑 Teacher Answer Key — Chapter 5 Evaluation</h1>
-            <p>Print separately · M = method mark, A = accuracy mark</p>
-        </div>
-        <table class="tbl grow" style="font-size: 9.5pt;">
-            <tr><th style="width: 9%;">Q</th><th class="l">Working</th><th style="width: 22%;">Answer</th><th style="width: 9%;">Marks</th></tr>
-            <tr><td>A1</td><td class="l">a) $\frac{2 \times 5 + 3}{5}$ &nbsp; b) $29 \div 4 = 7$ rem 1</td><td>a) $\frac{13}{5}$ &nbsp; b) $7\frac{1}{4}$</td><td>1 + 1</td></tr>
-            <tr><td>A2</td><td class="l">$\frac{5}{3} + \frac{11}{4} = \frac{20}{12} + \frac{33}{12} = \frac{53}{12}$</td><td>$4\frac{5}{12}$</td><td>M2 A1</td></tr>
-            <tr><td>A3</td><td class="l">$\frac{27}{6} - \frac{17}{6} = \frac{10}{6}$</td><td>$1\frac{2}{3}$</td><td>M2 A1</td></tr>
-            <tr><td>A4</td><td class="l">$\frac{9}{4} \times \frac{4}{3} = \frac{36}{12}$</td><td>$3$</td><td>M2 A1</td></tr>
-            <tr><td>A5</td><td class="l">Scale factor $\frac{4}{6} = \frac{2}{3}$; &nbsp; $\frac{9}{4} \times \frac{2}{3} = \frac{18}{12}$</td><td>$1\frac{1}{2}$ cups</td><td>M1 M2 A1</td></tr>
-            <tr><td>A6</td><td class="l">$\frac{15}{2} \div \frac{2}{3} = \frac{15}{2} \times \frac{3}{2} = \frac{45}{4} = 11\frac{1}{4}$</td><td>11 full glasses</td><td>M2 A1</td></tr>
-            <tr><td>B1</td><td class="l">$0.35 \times 2400$</td><td>840 kcal</td><td>M1 A1</td></tr>
-            <tr><td>B2</td><td class="l">$\frac{450}{1800} \times 100\%$</td><td>25%</td><td>M1 A1</td></tr>
-            <tr><td>B3</td><td class="l">$1.12 \times 40$</td><td>44.8 kg</td><td>M2 A1</td></tr>
-            <tr><td>B4</td><td class="l">$0.75 \times 48$</td><td>36 g</td><td>M2 A1</td></tr>
-            <tr><td>B5</td><td class="l">$\frac{8000 - 6400}{6400} \times 100\% = \frac{1600}{6400} \times 100\%$</td><td>25% increase</td><td>M2 A1</td></tr>
-            <tr><td>B6</td><td class="l">$\frac{240 - 204}{240} \times 100\% = \frac{36}{240} \times 100\%$</td><td>15% decrease</td><td>M2 A1</td></tr>
-            <tr><td>C1</td><td class="l">8 hops left; 4 hops right</td><td>a) $5.2 \times 10^7$ &nbsp; b) $3.4 \times 10^{-4}$</td><td>1 + 1</td></tr>
-            <tr><td>C2</td><td class="l">—</td><td>a) 60 500 &nbsp; b) 0.000 007</td><td>1 + 1</td></tr>
-            <tr><td>C3</td><td class="l">$(4 \times 2) \times 10^{6+3}$</td><td>$8 \times 10^9$</td><td>M1 A1</td></tr>
-            <tr><td>C4</td><td class="l">$(8 \div 4) \times 10^{9-(-3)}$</td><td>$2 \times 10^{12}$</td><td>M1 A1</td></tr>
-            <tr><td>C5</td><td class="l">$42 \times 10^9 = 4.2 \times 10^1 \times 10^9$</td><td>$4.2 \times 10^{10}$</td><td>M2 A1</td></tr>
-            <tr><td>C6</td><td class="l">$\frac{10^{-2}}{2 \times 10^{-6}} = 0.5 \times 10^4$</td><td>$5 \times 10^3$ (5 000)</td><td>M2 A1</td></tr>
-            <tr><td>C7</td><td class="l">$4.2 \times 10^5 + 0.3 \times 10^5$</td><td>$4.5 \times 10^5$</td><td>M1 A1</td></tr>
-        </table>
-        <div class="teacher-note"><strong>Grade boundaries (suggested):</strong> 45–50 Excellent · 38–44 Good · 30–37 Satisfactory · below 30 Needs remedial (re-use Worksheets 1–3 and the Web Lab).</div>
-        <div class="page-footer">Made with ❤️ by Mr Ghozi · Chapter 5 Evaluation · Page 3 of 3</div>
-    </div>
-
+    <form class="lock-card" id="lockForm" autocomplete="off">
+        <div class="lock-icon">🔒</div>
+        <h1>Chapter 5 Test — Fractions, Percentages & Standard Form</h1>
+        <p>This assessment is locked. Enter the teacher password to open it.</p>
+        <input type="password" id="pw" placeholder="Password" aria-label="Password" autofocus>
+        <button type="submit" id="unlockBtn">Unlock</button>
+        <div class="msg" id="msg"></div>
+        <div class="note">For teachers only · Made with ❤️ by Mr Ghozi</div>
+    </form>
+    <script>
+        const DATA = { salt: 'ZtWxaO5s8HCyK2VFj7es8w==', iv: 'CibGxItNeSIcnblG', iter: 600000, ct: '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' };
+        const fromB64 = s => Uint8Array.from(atob(s), c => c.charCodeAt(0));
+        async function unlock(password) {
+            const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+            const key = await crypto.subtle.deriveKey({ name: 'PBKDF2', salt: fromB64(DATA.salt), iterations: DATA.iter, hash: 'SHA-256' }, base, { name: 'AES-GCM', length: 256 }, false, ['decrypt']);
+            const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: fromB64(DATA.iv) }, key, fromB64(DATA.ct));
+            return new TextDecoder().decode(plain);
+        }
+        function show(html) { document.open(); document.write(html); document.close(); }
+        const form = document.getElementById('lockForm'), msg = document.getElementById('msg'), btn = document.getElementById('unlockBtn');
+        if (!window.crypto || !crypto.subtle) {
+            msg.className = 'msg err'; msg.textContent = 'This browser cannot unlock the file. Please open it via https:// or from a local file in Chrome/Edge/Firefox.';
+            btn.disabled = true;
+        }
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            const pw = document.getElementById('pw').value;
+            if (!pw) return;
+            btn.disabled = true; msg.className = 'msg'; msg.textContent = 'Unlocking…';
+            try {
+                const html = await unlock(pw);
+                try { sessionStorage.setItem('lk-pw', pw); } catch (_) {}
+                show(html);
+            } catch (_) {
+                msg.className = 'msg err'; msg.textContent = '❌ Wrong password. Try again.';
+                btn.disabled = false; document.getElementById('pw').select();
+            }
+        });
+        // Teacher convenience: stay unlocked for this browser tab session (e.g. after a refresh).
+        (async () => {
+            let saved = null;
+            try { saved = sessionStorage.getItem('lk-pw'); } catch (_) {}
+            if (saved && window.crypto && crypto.subtle) { try { show(await unlock(saved)); } catch (_) {} }
+        })();
+    </script>
 </body>
 </html>

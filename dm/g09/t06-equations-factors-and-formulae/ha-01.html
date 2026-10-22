@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 1 - Balance Mat and Guess My Number</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 1 · Meeting 1: Timbangan Balance Mat</h1>
+            <p>Grade 9 · Topic 6 · ENGAGE &amp; EXPLORE — one set per student · cut out the boxes ($x$) and the 1 kg weights</p>
+        </div>
+        <svg viewBox="0 0 186 110" style="width: 186mm; height: 110mm; align-self: center;">
+            <polygon points="88,104 98,104 93,30" fill="#a0aec0"/><rect x="68" y="102" width="50" height="6" rx="2" fill="#718096"/>
+            <line x1="8" y1="30" x2="178" y2="30" stroke="#4a5568" stroke-width="3"/><circle cx="93" cy="30" r="4" fill="#2d3748"/>
+            <line x1="48" y1="30" x2="10" y2="62" stroke="#718096"/><line x1="48" y1="30" x2="86" y2="62" stroke="#718096"/>
+            <line x1="138" y1="30" x2="100" y2="62" stroke="#718096"/><line x1="138" y1="30" x2="176" y2="62" stroke="#718096"/>
+            <rect x="6" y="62" width="84" height="38" rx="3" fill="#ebf8ff" stroke="#2b6cb0" stroke-width="1.2"/>
+            <rect x="96" y="62" width="84" height="38" rx="3" fill="#fffaf0" stroke="#dd6b20" stroke-width="1.2"/>
+            <text x="48" y="58" font-size="6" text-anchor="middle" font-weight="bold" fill="#2b6cb0">LEFT side (LHS)</text>
+            <text x="138" y="58" font-size="6" text-anchor="middle" font-weight="bold" fill="#dd6b20">RIGHT side (RHS)</text>
+            <text x="93" y="12" font-size="7" text-anchor="middle" font-weight="bold" fill="#1a365d">⚖️ Timbangan — keep it balanced!</text>
+            <text x="93" y="20" font-size="4.5" text-anchor="middle" fill="#4a5568">Whatever you do to one pan, do the same to the other pan.</text>
+        </svg>
+        <div class="grow" style="display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(4, 1fr); gap: 2.5mm;"><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;"><span class="sc">✂️</span>🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #f6ad55; display: flex; align-items: center; justify-content: center; font-size: 18pt; font-weight: bold; font-style: italic;">🍎 x</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div><div class="card" style="background: #4a5568; color: white; display: flex; align-items: center; justify-content: center; font-size: 12pt; font-weight: bold; border-radius: 4px 4px 1px 1px;">1 kg</div></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 1 · Meeting 1 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 1 · Meeting 1: "Guess My Number" Function Machines</h1>
+            <p>EXPLORE phase — fill the forward machine, then reverse it: undo the <strong>last</strong> operation first</p>
+        </div>
+        <div class="grow" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(4, 1fr); gap: 3.5mm;"><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><span class="sc">✂️</span><div><strong style="color: var(--primary);">🎲 Card 1:</strong> "I think of a number, then × 3, then + 4. I get <strong>19</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">19</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">19</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 2:</strong> "I think of a number, then × 2, then + 5. I get <strong>17</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">17</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">17</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 3:</strong> "I think of a number, then × 4, then − 3. I get <strong>25</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">25</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">25</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 4:</strong> "I think of a number, then + 6, then × 2. I get <strong>30</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">30</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">30</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 5:</strong> "I think of a number, then ÷ 2, then + 7. I get <strong>12</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">12</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">12</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 6:</strong> "I think of a number, then × 5, then − 7. I get <strong>38</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">38</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">38</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 7:</strong> "I think of a number, then − 3, then × 4. I get <strong>28</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">28</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">28</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div><div class="card" style="padding: 2mm 3mm; display: flex; flex-direction: column; justify-content: space-around;"><div><strong style="color: var(--primary);">🎲 Card 8:</strong> "I think of a number, then × 6, then + 1. I get <strong>43</strong>."</div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Forward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">43</span></div><div style="display: flex; align-items: center; gap: 1.5mm; font-size: 10pt;"><strong style="width: 18mm;">Backward</strong><span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">43</span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;"></span> → <span style="flex: 1; border: 1.5px solid #2b6cb0; border-radius: 3px; height: 8mm; display: flex; align-items: center; justify-content: center;">?</span></div><div style="font-size: 10pt;">My number = ______ &nbsp; Check: ______________</div></div></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 1 · Meeting 1 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Lab - Equations, Factors and Formulae</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169;
+            --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-color); color: #2d3748;
+            margin: 0; padding: 0; display: flex; flex-direction: column; height: 100vh;
+        }
+        header {
+            background-color: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between;
+            align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10;
+        }
+        header h1 { margin: 0; font-size: 1.5em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background-color: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn {
+            background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold;
+            transition: 0.3s; border-bottom: 4px solid transparent; white-space: nowrap;
+        }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 20px; margin-top: 15px; }
+        .controls-row { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        select, .num-input, .text-input { padding: 8px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .num-input { width: 80px; }
+        .text-input { width: 200px; }
+        button.action-btn {
+            background-color: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px;
+            font-size: 1em; font-weight: bold; cursor: pointer; transition: 0.2s;
+        }
+        button.action-btn:hover { background-color: var(--primary); }
+        button.action-btn.alt { background-color: var(--warn); }
+        button.action-btn.ghost { background-color: #718096; }
+        button.action-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        canvas.scale { width: 100%; height: 300px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; }
+        .eq-display { font-size: 1.6em; text-align: center; margin: 12px 0; color: var(--primary); min-height: 40px; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        .history { font-family: 'Courier New', monospace; background: #fff; border: 1px solid #cbd5e0; border-radius: 5px; padding: 10px; min-height: 40px; font-size: 0.95em; }
+        .machine { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; margin: 10px 0; }
+        .mbox { min-width: 70px; padding: 10px 12px; border: 2px solid var(--secondary); border-radius: 6px; background: #fff; text-align: center; font-weight: bold; font-size: 1.1em; }
+        .mbox.io { background: var(--accent); }
+        .area-wrap { display: flex; align-items: stretch; justify-content: center; gap: 0; margin: 15px auto; max-width: 600px; }
+        .area-w { display: flex; align-items: center; padding: 0 12px; font-size: 1.4em; font-weight: bold; color: var(--danger); }
+        .area-part { flex: 1; border: 2px solid #2d3748; padding: 30px 10px; text-align: center; font-size: 1.4em; position: relative; }
+        .area-part .len { position: absolute; top: -28px; left: 0; right: 0; text-align: center; font-size: 0.8em; color: var(--secondary); font-weight: bold; }
+        .quiz-opt { display: block; width: 100%; text-align: left; margin: 6px 0; padding: 10px 14px; border: 2px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 1.05em; cursor: pointer; }
+        .quiz-opt:hover { border-color: var(--secondary); }
+        .quiz-opt.right { border-color: var(--success); background: #f0fff4; }
+        .quiz-opt.wrong { border-color: var(--danger); background: #fff5f5; }
+        .op-btn { margin: 4px; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 170px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        .ex-row { margin-top: 16px; }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>🔬 Web Lab: Equations, Factors &amp; Formulae</h1>
+        <span class="badge">Grade 9 · Topic 6 · 5E · 🧺 Pasar Tradisional</span>
+    </header>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('sec1', this)">1. Balance Solver</button>
+        <button class="tab-btn" onclick="openTab('sec2', this)">2. Guess My Number</button>
+        <button class="tab-btn" onclick="openTab('sec3', this)">3. Area Model Factoriser</button>
+        <button class="tab-btn" onclick="openTab('sec4', this)">4. Fully Factorised?</button>
+        <button class="tab-btn" onclick="openTab('sec5', this)">5. Formula Rearranger</button>
+    </div>
+
+    <div class="main-content">
+
+        <!-- ================= TAB 1 ================= -->
+        <div id="sec1" class="section-container active">
+            <div class="module">
+                <h2>⚖️ Simulation: The Timbangan Balance Solver</h2>
+                <p>Choose an equation, then pick an operation and press <strong>Both sides</strong>. Keep going until $x$ is on its own. Try <strong>Left side only</strong> to see what happens when you break the Golden Rule!</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Equation:</label>
+                        <select id="eqSel" onchange="loadEq()"></select>
+                    </div>
+                    <canvas class="scale" id="cvBal"></canvas>
+                    <div class="eq-display" id="eqShow"></div>
+                    <div class="controls-row" style="justify-content: center;">
+                        <select id="opSel">
+                            <option value="sub">subtract</option>
+                            <option value="add">add</option>
+                            <option value="div">divide by</option>
+                            <option value="mul">multiply by</option>
+                        </select>
+                        <input type="number" id="opVal" class="num-input" value="2">
+                        <select id="opKind"><option value="n">(a number)</option><option value="x">x (an x-term)</option></select>
+                        <button class="action-btn" onclick="applyOp(true)">Both sides ✔️</button>
+                        <button class="action-btn alt" onclick="applyOp(false)">Left side only ⚠️</button>
+                        <button class="action-btn ghost" onclick="undo()">Undo</button>
+                    </div>
+                    <div class="sim-text" id="balMsg"></div>
+                    <div class="history" id="hist"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">a) Solve $3(2x - 1) = 4x + 7$: &nbsp; $x =$
+                    <input type="text" id="e1a" class="exercise-input"><button class="action-btn" onclick="checkNum('e1a', 5, 'f1a', '6x − 3 = 4x + 7 → 2x = 10 → x = 5')">Check</button><div class="feedback" id="f1a"></div></div>
+                <div class="ex-row">b) Solve $\dfrac{x + 5}{3} = 9$: &nbsp; $x =$
+                    <input type="text" id="e1b" class="exercise-input"><button class="action-btn" onclick="checkNum('e1b', 22, 'f1b', 'multiply by 3 first: x + 5 = 27 → x = 22')">Check</button><div class="feedback" id="f1b"></div></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2 ================= -->
+        <div id="sec2" class="section-container">
+            <div class="module">
+                <h2>🎲 Game: Guess My Number</h2>
+                <p>Read the forward machine. Work <strong>backwards</strong> (undo the last step first) to find my number.</p>
+                <div class="sim-area">
+                    <div class="eq-display" id="gmnText"></div>
+                    <div class="machine" id="gmnFwd"></div>
+                    <div class="machine" id="gmnBack" style="display: none;"></div>
+                    <div class="controls-row" style="justify-content: center;">
+                        <label>My number is</label>
+                        <input type="text" id="gmnAns" class="exercise-input">
+                        <button class="action-btn" onclick="checkGMN()">Check</button>
+                        <button class="action-btn ghost" onclick="showBack()">Show backward machine</button>
+                        <button class="action-btn alt" onclick="newGMN()">New number 🎲</button>
+                    </div>
+                    <div class="sim-text" id="gmnMsg"></div>
+                    <div class="sim-text" style="color: #4a5568;">Score: <span id="gmnScore">0</span> / <span id="gmnTries">0</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3 ================= -->
+        <div id="sec3" class="section-container">
+            <div class="module">
+                <h2>📐 Simulation: The Reverse Area Model</h2>
+                <p>The two parts of the rectangle have these areas. Type the <strong>biggest width</strong> (the HCF) that fits both parts, e.g. <code>3x</code> or <code>5ab</code>.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Expression:</label><select id="arSel" onchange="loadArea()"></select>
+                    </div>
+                    <div class="area-wrap">
+                        <div class="area-w" id="arW">?</div>
+                        <div class="area-part" style="background: #bee3f8;"><div class="len" id="arL1">?</div><span id="arP1"></span></div>
+                        <div class="area-part" style="background: #c6f6d5;"><div class="len" id="arL2">?</div><span id="arP2"></span></div>
+                    </div>
+                    <div class="controls-row" style="justify-content: center;">
+                        <label>Width (HCF) =</label>
+                        <input type="text" id="arIn" class="exercise-input" placeholder="e.g. 3x">
+                        <button class="action-btn" onclick="checkArea()">Check</button>
+                        <button class="action-btn ghost" onclick="revealArea()">Reveal</button>
+                    </div>
+                    <div class="eq-display" id="arRes"></div>
+                    <div class="sim-text" id="arMsg"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4 ================= -->
+        <div id="sec4" class="section-container">
+            <div class="module">
+                <h2>🃏 Quiz: Which One is FULLY Factorised?</h2>
+                <p>Every option might look right — expand each one in your head. Only one is correct <strong>and</strong> fully factorised.</p>
+                <div class="sim-area">
+                    <div class="eq-display" id="qzQ"></div>
+                    <div id="qzOpts"></div>
+                    <div class="sim-text" id="qzMsg"></div>
+                    <div class="controls-row" style="justify-content: center;">
+                        <button class="action-btn" id="qzNext" onclick="nextQ()">Next question ▶</button>
+                        <span style="font-weight: bold;">Question <span id="qzNum">1</span> of <span id="qzTot"></span> · Score <span id="qzScore">0</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5 ================= -->
+        <div id="sec5" class="section-container">
+            <div class="module">
+                <h2>⚙️ Simulation: Formula Rearranger</h2>
+                <p>The forward machine builds the formula. Click the <strong>inverse operations in the right order</strong> to build the backward machine and make the target letter the subject.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>Formula:</label><select id="fSel" onchange="loadFormula()"></select>
+                    </div>
+                    <div class="eq-display" id="fShow"></div>
+                    <div><strong>Forward machine:</strong></div>
+                    <div class="machine" id="fFwd"></div>
+                    <div><strong>Backward machine (click below):</strong></div>
+                    <div class="machine" id="fBack"></div>
+                    <div class="controls-row" style="justify-content: center;" id="fBtns"></div>
+                    <div class="controls-row" style="justify-content: center;"><button class="action-btn ghost" onclick="loadFormula()">Reset</button></div>
+                    <div class="eq-display" id="fRes"></div>
+                    <div class="sim-text" id="fMsg"></div>
+                    <div id="fTest"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <p class="hint">Use your rearranged formula, then check with the original.</p>
+                <div class="ex-row">a) 🚕 $C = 7000 + 4000k$. How many km ($k$) for a fare of Rp 47 000?
+                    <input type="text" id="e5a" class="exercise-input"><button class="action-btn" onclick="checkNum('e5a', 10, 'f5a', 'k = (C − 7000) ÷ 4000 = 40 000 ÷ 4000 = 10 km')">Check</button><div class="feedback" id="f5a"></div></div>
+                <div class="ex-row">b) 🌡️ $F = \dfrac{9C}{5} + 32$. Find $C$ when $F = 104$.
+                    <input type="text" id="e5b" class="exercise-input"><button class="action-btn" onclick="checkNum('e5b', 40, 'f5b', 'C = 5(F − 32) ÷ 9 = 5 × 72 ÷ 9 = 40')">Check</button><div class="feedback" id="f5b"></div></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ---------- Shared ----------
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            btn.classList.add('active');
+            if (id === 'sec1') drawBalance();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.').replace(/^x\s*=\s*/i, ''));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) < 1e-6) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check by substitution and try again.'; }
+        }
+        const nice = v => { const r = Math.round(v * 100) / 100; return Object.is(r, -0) ? 0 : r; };
+
+        // ---------- Tab 1: Balance solver ----------
+        // Each side is a*x + b
+        const EQS = [
+            { t: 'x + 2 = 5', L: [1, 2], R: [0, 5] },
+            { t: '2x + 7 = 15', L: [2, 7], R: [0, 15] },
+            { t: '3x + 4 = 19', L: [3, 4], R: [0, 19] },
+            { t: '5x + 2 = 3x + 10', L: [5, 2], R: [3, 10] },
+            { t: '3x + 5 = x + 13', L: [3, 5], R: [1, 13] },
+            { t: '6x − 1 = 2x + 11', L: [6, -1], R: [2, 11] },
+            { t: '3x + 4 = x + 20 (mangoes)', L: [3, 4], R: [1, 20] },
+        ];
+        let bal = null, hist = [];
+        (function () { const s = document.getElementById('eqSel'); EQS.forEach((e, i) => { const o = document.createElement('option'); o.value = i; o.textContent = e.t; s.appendChild(o); }); })();
+        function sideTex(a, b) {
+            a = nice(a); b = nice(b);
+            let s = '';
+            if (a !== 0) s = (a === 1 ? '' : a === -1 ? '-' : a) + 'x';
+            if (b !== 0 || s === '') s += (s && b > 0 ? ' + ' : (s && b < 0 ? ' - ' : (b < 0 ? '-' : ''))) + Math.abs(b);
+            return s;
+        }
+        function loadEq() {
+            const e = EQS[+document.getElementById('eqSel').value];
+            bal = { L: e.L.slice(), R: e.R.slice(), sol: (e.R[1] - e.L[1]) / (e.L[0] - e.R[0]) };
+            hist = [];
+            render('Start: make $x$ the subject. Remove the smaller $x$-term first!');
+        }
+        function render(msg, cls) {
+            document.getElementById('eqShow').innerHTML = '$' + sideTex(...bal.L) + ' = ' + sideTex(...bal.R) + '$';
+            const m = document.getElementById('balMsg'); m.className = 'sim-text ' + (cls || ''); m.innerHTML = msg || '';
+            document.getElementById('hist').innerHTML = hist.length ? hist.map(h => h.txt).join('<br>') : 'Steps will appear here.';
+            typeset(document.getElementById('eqShow')); typeset(m);
+            drawBalance();
+        }
+        function applyOp(both) {
+            const op = document.getElementById('opSel').value, kind = document.getElementById('opKind').value;
+            const v = parseFloat(document.getElementById('opVal').value);
+            if (isNaN(v)) return;
+            if ((op === 'mul' || op === 'div') && kind === 'x') { render('Multiplying or dividing by $x$ is not allowed here — use a number.', 'bad'); return; }
+            if (op === 'div' && v === 0) { render('You can never divide by zero!', 'bad'); return; }
+            const prev = { L: bal.L.slice(), R: bal.R.slice() };
+            const f = s => {
+                if (op === 'add') return kind === 'x' ? [s[0] + v, s[1]] : [s[0], s[1] + v];
+                if (op === 'sub') return kind === 'x' ? [s[0] - v, s[1]] : [s[0], s[1] - v];
+                if (op === 'mul') return [s[0] * v, s[1] * v];
+                return [s[0] / v, s[1] / v];
+            };
+            bal.L = f(bal.L); if (both) bal.R = f(bal.R);
+            const word = { add: 'add', sub: 'subtract', mul: 'multiply by', div: 'divide by' }[op];
+            const what = kind === 'x' ? (v === 1 ? 'x' : v + 'x') : v;
+            hist.push({ prev, txt: (both ? '✔️ ' : '⚠️ ') + word + ' ' + what + (both ? ' (both sides)' : ' (LEFT ONLY)') + ' → ' + sideTex(...bal.L) + ' = ' + sideTex(...bal.R) });
+            const balanced = Math.abs((bal.L[0] - bal.R[0]) * bal.sol + bal.L[1] - bal.R[1]) < 1e-9 && Math.abs(bal.L[0] * bal.sol + bal.L[1] - (bal.R[0] * bal.sol + bal.R[1])) < 1e-9;
+            if (!balanced) { render('😱 The scale tipped! You broke the Golden Rule. Press <strong>Undo</strong>.', 'bad'); return; }
+            const done = (nice(bal.L[0]) === 1 && nice(bal.L[1]) === 0 && nice(bal.R[0]) === 0) || (nice(bal.R[0]) === 1 && nice(bal.R[1]) === 0 && nice(bal.L[0]) === 0);
+            if (done) render('🎉 Solved! $x = ' + nice(bal.sol) + '$. Check by substitution in the original equation.', 'good');
+            else render('Still balanced ✔️ — keep going.', 'good');
+        }
+        function undo() { const h = hist.pop(); if (h) { bal.L = h.prev.L; bal.R = h.prev.R; } render('Undone.'); }
+        function drawBalance() {
+            const cv = document.getElementById('cvBal'); if (!bal || !cv.clientWidth) return;
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            const xs = bal.sol, lv = bal.L[0] * xs + bal.L[1], rv = bal.R[0] * xs + bal.R[1];
+            const diff = lv - rv, ang = Math.max(-0.25, Math.min(0.25, diff === 0 ? 0 : Math.sign(diff) * (0.08 + Math.min(0.17, Math.abs(diff) / 40))));
+            const cx = W / 2, cy = 70, arm = Math.min(W * 0.38, 320);
+            ctx.fillStyle = '#a0aec0'; ctx.beginPath(); ctx.moveTo(cx - 14, H - 20); ctx.lineTo(cx + 14, H - 20); ctx.lineTo(cx, cy); ctx.fill();
+            ctx.fillStyle = '#718096'; ctx.fillRect(cx - 50, H - 22, 100, 10);
+            const lx = cx - arm * Math.cos(ang), ly = cy + arm * Math.sin(ang), rx = cx + arm * Math.cos(ang), ry = cy - arm * Math.sin(ang);
+            ctx.strokeStyle = '#4a5568'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(lx, ly); ctx.lineTo(rx, ry); ctx.stroke();
+            ctx.fillStyle = '#2d3748'; ctx.beginPath(); ctx.arc(cx, cy, 8, 0, 2 * Math.PI); ctx.fill();
+            const pan = (px, py, side, color) => {
+                const pw = Math.min(arm * 0.95, 260), top = py + 70;
+                ctx.strokeStyle = '#718096'; ctx.lineWidth = 1.5;
+                ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px - pw / 2, top); ctx.moveTo(px, py); ctx.lineTo(px + pw / 2, top); ctx.stroke();
+                ctx.fillStyle = color; ctx.fillRect(px - pw / 2, top, pw, 10);
+                const a = nice(side[0]), b = nice(side[1]);
+                const drawable = Number.isInteger(a) && Number.isInteger(b) && a >= 0 && b >= 0 && a <= 8 && b <= 24;
+                ctx.textAlign = 'center';
+                if (drawable) {
+                    const items = []; for (let i = 0; i < a; i++) items.push('x');
+                    let rem = b; while (rem >= 5 && items.length < 14) { items.push(5); rem -= 5; } for (let i = 0; i < rem; i++) items.push(1);
+                    const sz = Math.min(26, (pw - 10) / Math.max(items.length, 1) - 2);
+                    let x0 = px - (items.length * (sz + 2)) / 2;
+                    items.forEach(it => {
+                        if (it === 'x') { ctx.fillStyle = '#f6ad55'; ctx.fillRect(x0, top - sz * 1.2, sz, sz * 1.2); ctx.fillStyle = '#1a202c'; ctx.font = 'italic bold ' + Math.round(sz * 0.6) + 'px Segoe UI'; ctx.fillText('x', x0 + sz / 2, top - sz * 0.35); }
+                        else { const h = it === 5 ? sz * 1.1 : sz * 0.7; ctx.fillStyle = it === 5 ? '#2d3748' : '#4a5568'; ctx.fillRect(x0, top - h, sz, h); ctx.fillStyle = '#fff'; ctx.font = 'bold ' + Math.round(sz * 0.42) + 'px Segoe UI'; ctx.fillText(it, x0 + sz / 2, top - h / 2 + 4); }
+                        x0 += sz + 2;
+                    });
+                } else {
+                    ctx.fillStyle = '#1a365d'; ctx.font = 'bold 20px Segoe UI'; ctx.fillText(sideTex(a, b), px, top - 12);
+                }
+            };
+            pan(lx, ly, bal.L, '#90cdf4'); pan(rx, ry, bal.R, '#fbd38d');
+            ctx.fillStyle = '#4a5568'; ctx.font = 'bold 14px Segoe UI'; ctx.textAlign = 'center';
+            ctx.fillText('LEFT', lx, 22); ctx.fillText('RIGHT', rx, 22);
+        }
+
+        // ---------- Tab 2: Guess my number ----------
+        let gmn = null, gScore = 0, gTries = 0, gDone = false;
+        const OPS = [
+            { f: (n, k) => n + k, inv: '−', fw: '+' }, { f: (n, k) => n - k, inv: '+', fw: '−' },
+            { f: (n, k) => n * k, inv: '÷', fw: '×' },
+        ];
+        function newGMN() {
+            const n = 2 + Math.floor(Math.random() * 12);
+            const pick = () => OPS[Math.floor(Math.random() * OPS.length)];
+            let o1 = pick(), o2 = pick(); if (o1.fw !== '×' && o2.fw !== '×') o1 = OPS[2];
+            const k1 = o1.fw === '×' ? 2 + Math.floor(Math.random() * 5) : 1 + Math.floor(Math.random() * 9);
+            const k2 = o2.fw === '×' ? 2 + Math.floor(Math.random() * 5) : 1 + Math.floor(Math.random() * 9);
+            const mid = o1.f(n, k1), res = o2.f(mid, k2);
+            gmn = { n, steps: [[o1, k1], [o2, k2]], res };
+            gDone = false;
+            document.getElementById('gmnText').textContent = `"I think of a number, ${o1.fw} ${k1}, then ${o2.fw} ${k2}. I get ${res}."`;
+            document.getElementById('gmnFwd').innerHTML = `<span class="mbox io">?</span>→<span class="mbox">${o1.fw} ${k1}</span>→<span class="mbox">${o2.fw} ${k2}</span>→<span class="mbox io">${res}</span>`;
+            document.getElementById('gmnBack').style.display = 'none';
+            document.getElementById('gmnMsg').textContent = ''; document.getElementById('gmnAns').value = '';
+        }
+        function showBack() {
+            const [[o1, k1], [o2, k2]] = gmn.steps;
+            const el = document.getElementById('gmnBack');
+            el.innerHTML = `<span class="mbox io">${gmn.res}</span>→<span class="mbox">${o2.inv} ${k2}</span>→<span class="mbox">${o1.inv} ${k1}</span>→<span class="mbox io">?</span>`;
+            el.style.display = 'flex';
+        }
+        function checkGMN() {
+            const v = parseFloat(document.getElementById('gmnAns').value), m = document.getElementById('gmnMsg');
+            if (isNaN(v)) { m.className = 'sim-text bad'; m.textContent = 'Type a number.'; return; }
+            if (!gDone) gTries++;
+            if (v === gmn.n) { if (!gDone) gScore++; gDone = true; m.className = 'sim-text good'; m.textContent = `🎉 Yes! My number was ${gmn.n}. You undid the LAST step first.`; showBack(); }
+            else { m.className = 'sim-text bad'; m.textContent = '❌ Not my number — try the backward machine.'; }
+            document.getElementById('gmnScore').textContent = gScore; document.getElementById('gmnTries').textContent = gTries;
+        }
+
+        // ---------- Tab 3: Area model ----------
+        const AREAS = [
+            { e: '4x + 20', p: ['4x', '20'], w: '4', l: ['x', '5'] },
+            { e: '6x + 15', p: ['6x', '15'], w: '3', l: ['2x', '5'] },
+            { e: 'x² + 7x', p: ['x^2', '7x'], w: 'x', l: ['x', '7'] },
+            { e: '10x² + 15x', p: ['10x^2', '15x'], w: '5x', l: ['2x', '3'] },
+            { e: '6x² + 9x', p: ['6x^2', '9x'], w: '3x', l: ['2x', '3'] },
+            { e: '12y + 8', p: ['12y', '8'], w: '4', l: ['3y', '2'] },
+            { e: '9a + 6ab', p: ['9a', '6ab'], w: '3a', l: ['3', '2b'] },
+            { e: '15a²b + 20ab²', p: ['15a^2b', '20ab^2'], w: '5ab', l: ['3a', '4b'] },
+        ];
+        (function () { const s = document.getElementById('arSel'); AREAS.forEach((a, i) => { const o = document.createElement('option'); o.value = i; o.textContent = a.e; s.appendChild(o); }); })();
+        const norm = s => s.toLowerCase().replace(/\s|\*|×/g, '').replace(/²/g, '^2').split('').sort().join('');
+        function loadArea() {
+            const a = AREAS[+document.getElementById('arSel').value];
+            document.getElementById('arP1').innerHTML = '$' + a.p[0] + '$'; document.getElementById('arP2').innerHTML = '$' + a.p[1] + '$';
+            ['arW', 'arL1', 'arL2'].forEach(id => document.getElementById(id).textContent = '?');
+            document.getElementById('arRes').innerHTML = ''; document.getElementById('arMsg').textContent = ''; document.getElementById('arIn').value = '';
+            typeset(document.querySelector('#sec3 .area-wrap'));
+        }
+        function revealArea(ok) {
+            const a = AREAS[+document.getElementById('arSel').value];
+            document.getElementById('arW').innerHTML = '$' + a.w + '$'; document.getElementById('arL1').innerHTML = '$' + a.l[0] + '$'; document.getElementById('arL2').innerHTML = '$' + a.l[1] + '$';
+            const r = document.getElementById('arRes');
+            r.innerHTML = '$' + a.p[0] + ' + ' + a.p[1] + ' = ' + a.w + '(' + a.l[0] + ' + ' + a.l[1] + ')$';
+            typeset(document.querySelector('#sec3 .area-wrap')); typeset(r);
+        }
+        function checkArea() {
+            const a = AREAS[+document.getElementById('arSel').value], v = document.getElementById('arIn').value, m = document.getElementById('arMsg');
+            if (norm(v) === norm(a.w)) { m.className = 'sim-text good'; m.textContent = '✅ Yes — that is the biggest width (the HCF)!'; revealArea(); }
+            else { m.className = 'sim-text bad'; m.textContent = '❌ Not the biggest width. Check: does it divide BOTH areas? Is there a bigger one?'; }
+        }
+
+        // ---------- Tab 4: Quiz ----------
+        const QUIZ = [
+            { q: '12x + 16', o: ['2(6x + 8)', '4(3x + 4)', '4(3x + 16)', '12(x + 4)'], a: 1, why: '4 is the HCF of 12 and 16; 2(6x + 8) is not fully factorised.' },
+            { q: '6x^2 + 9x', o: ['3(2x^2 + 3x)', 'x(6x + 9)', '3x(2x + 3)', '3x(2x + 9)'], a: 2, why: 'HCF of 6 and 9 is 3, lowest power of x is x.' },
+            { q: '15a^2b - 20ab^2', o: ['5a(3ab - 4b^2)', '5ab(3a - 4b)', '5ab(3a - 20b)', '5b(3a^2 - 4ab)'], a: 1, why: 'Take out 5, a AND b.' },
+            { q: '-4x - 12', o: ['-4(x - 3)', '4(-x + 3)', '-4(x + 3)', '-4(-x - 3)'], a: 2, why: 'Taking out −4 flips both signs: −4x ÷ −4 = x, −12 ÷ −4 = +3.' },
+            { q: '8a^3 - 12a^2', o: ['4a(2a^2 - 3)', '4a^2(2a - 3)', '2a^2(4a - 6)', 'a^2(8a - 12)'], a: 1, why: '4a(2a² − 3) expands to 8a³ − 12a — wrong. HCF is 4a².' },
+            { q: '14x^2y - 21xy^3', o: ['7xy(2x - 3y^2)', '7x(2xy - 3y^3)', '7xy(2x - 3y^3)', 'xy(14x - 21y^2)'], a: 0, why: 'HCF: 7, x (lowest power 1), y (lowest power 1).' },
+            { q: '10p^2q - 15pq^2 + 5pq', o: ['5pq(2p - 3q)', '5pq(2p - 3q + 1)', '5p(2pq - 3q^2 + q)', '5pq(2p - 3q + 5)'], a: 1, why: "Don't forget the 1: 5pq ÷ 5pq = 1." },
+            { q: '\\pi r^2 + 2\\pi rh', o: ['\\pi(r^2 + 2rh)', 'r(\\pi r + 2\\pi h)', '\\pi r(r + 2h)', '2\\pi r(r + h)'], a: 2, why: 'HCF is πr.' },
+        ];
+        let qi = 0, qScore = 0, qAnswered = false;
+        document.getElementById('qzTot').textContent = QUIZ.length;
+        function showQ() {
+            const Q = QUIZ[qi]; qAnswered = false;
+            document.getElementById('qzQ').innerHTML = 'Factorise: $' + Q.q + '$';
+            document.getElementById('qzOpts').innerHTML = Q.o.map((o, i) => `<button class="quiz-opt" onclick="answerQ(${i}, this)">${'ABCD'[i]}. $${o}$</button>`).join('');
+            document.getElementById('qzMsg').textContent = ''; document.getElementById('qzNum').textContent = qi + 1;
+            typeset(document.getElementById('sec4'));
+        }
+        function answerQ(i, btn) {
+            if (qAnswered) return; qAnswered = true;
+            const Q = QUIZ[qi], m = document.getElementById('qzMsg'), opts = document.querySelectorAll('#qzOpts .quiz-opt');
+            opts[Q.a].classList.add('right');
+            if (i === Q.a) { qScore++; m.className = 'sim-text good'; m.textContent = '✅ Correct! ' + Q.why; }
+            else { btn.classList.add('wrong'); m.className = 'sim-text bad'; m.textContent = '❌ ' + Q.why; }
+            document.getElementById('qzScore').textContent = qScore;
+        }
+        function nextQ() { qi = (qi + 1) % QUIZ.length; if (qi === 0) qScore = 0; document.getElementById('qzScore').textContent = qScore; showQ(); }
+
+        // ---------- Tab 5: Formula rearranger ----------
+        // fwd: list of [label, inverseLabel] in forward order; ans: TeX of the new formula; f/g for numeric testing
+        const FORMS = [
+            { t: 'y = 3x − 4  (make x)', tex: 'y = 3x - 4', start: 'x', end: 'y', fwd: [['× 3', '÷ 3'], ['− 4', '+ 4']], ans: 'x = \\dfrac{y + 4}{3}', inV: 'x', outV: 'y', f: x => 3 * x - 4, g: y => (y + 4) / 3 },
+            { t: 'v = d ÷ t  (make t)', tex: 'v = \\dfrac{d}{t}', start: 't', end: 'v', fwd: [['d ÷ (·)', 'd ÷ (·)']], ans: 't = \\dfrac{d}{v}', inV: 't', outV: 'v', f: t => 150 / t, g: v => 150 / v, note: 'with d = 150 km' },
+            { t: 'C = 7000 + 4000k  (make k)', tex: 'C = 7000 + 4000k', start: 'k', end: 'C', fwd: [['× 4000', '÷ 4000'], ['+ 7000', '− 7000']], ans: 'k = \\dfrac{C - 7000}{4000}', inV: 'k', outV: 'C', f: k => 7000 + 4000 * k, g: C => (C - 7000) / 4000 },
+            { t: 'F = 9C ÷ 5 + 32  (make C)', tex: 'F = \\dfrac{9C}{5} + 32', start: 'C', end: 'F', fwd: [['× 9', '÷ 9'], ['÷ 5', '× 5'], ['+ 32', '− 32']], ans: 'C = \\dfrac{5(F - 32)}{9}', inV: 'C', outV: 'F', f: C => 9 * C / 5 + 32, g: F => 5 * (F - 32) / 9 },
+            { t: 'P = 2(l + w)  (make w)', tex: 'P = 2(l + w)', start: 'w', end: 'P', fwd: [['+ l', '− l'], ['× 2', '÷ 2']], ans: 'w = \\dfrac{P}{2} - l', inV: 'w', outV: 'P', f: w => 2 * (6 + w), g: P => P / 2 - 6, note: 'with l = 6' },
+            { t: 'y = (x + 5) ÷ 3  (make x)', tex: 'y = \\dfrac{x + 5}{3}', start: 'x', end: 'y', fwd: [['+ 5', '− 5'], ['÷ 3', '× 3']], ans: 'x = 3y - 5', inV: 'x', outV: 'y', f: x => (x + 5) / 3, g: y => 3 * y - 5 },
+        ];
+        let fIdx = 0, fStep = 0;
+        (function () { const s = document.getElementById('fSel'); FORMS.forEach((f, i) => { const o = document.createElement('option'); o.value = i; o.textContent = f.t; s.appendChild(o); }); })();
+        function loadFormula() {
+            fIdx = +document.getElementById('fSel').value; fStep = 0;
+            const F = FORMS[fIdx];
+            document.getElementById('fShow').innerHTML = '$' + F.tex + '$';
+            document.getElementById('fFwd').innerHTML = `<span class="mbox io">${F.start}</span>→` + F.fwd.map(o => `<span class="mbox">${o[0]}</span>`).join('→') + `→<span class="mbox io">${F.end}</span>`;
+            const invs = F.fwd.map(o => o[1]);
+            const decoys = ['+ 4', '× 3', '− 5', '÷ 2', '+ 32', '× 4000'].filter(d => !invs.includes(d)).slice(0, 2);
+            const all = invs.concat(decoys).sort(() => Math.random() - 0.5);
+            document.getElementById('fBtns').innerHTML = all.map(b => `<button class="action-btn op-btn" onclick="pickOp('${b}', this)">${b}</button>`).join('');
+            renderBack(); document.getElementById('fRes').innerHTML = ''; document.getElementById('fMsg').textContent = ''; document.getElementById('fTest').innerHTML = '';
+            typeset(document.getElementById('fShow'));
+        }
+        function renderBack() {
+            const F = FORMS[fIdx], need = F.fwd.slice().reverse();
+            document.getElementById('fBack').innerHTML = `<span class="mbox io">${F.end}</span>→` + need.map((o, i) => `<span class="mbox">${i < fStep ? o[1] : '?'}</span>`).join('→') + `→<span class="mbox io">${F.start}</span>`;
+        }
+        function pickOp(lab, btn) {
+            const F = FORMS[fIdx], need = F.fwd.slice().reverse(), m = document.getElementById('fMsg');
+            if (fStep >= need.length) return;
+            if (lab === need[fStep][1]) {
+                fStep++; btn.disabled = true; renderBack();
+                m.className = 'sim-text good'; m.textContent = fStep < need.length ? '✔️ Correct — what comes next?' : '🎉 Backward machine complete!';
+                if (fStep === need.length) {
+                    const r = document.getElementById('fRes'); r.innerHTML = '$' + F.ans + '$'; typeset(r);
+                    const xin = 4, out = F.f(xin);
+                    document.getElementById('fTest').innerHTML = `<table class="vals"><tr><th>Test ${F.note || ''}</th><th>Original: ${F.inV} = ${xin} → ${F.outV}</th><th>New formula: ${F.outV} = ${nice(out)} → ${F.inV}</th></tr><tr><td>Match?</td><td>${nice(out)}</td><td>${nice(F.g(out))} ${Math.abs(F.g(out) - xin) < 1e-9 ? '✅' : '❌'}</td></tr></table>`;
+                }
+            } else { m.className = 'sim-text bad'; m.textContent = '❌ Not that one. Undo the LAST forward step first!'; }
+        }
+
+        // ---------- Init ----------
+        window.addEventListener('load', () => { loadEq(); newGMN(); loadArea(); showQ(); loadFormula(); });
+        window.addEventListener('resize', drawBalance);
+    </script>
+</body>
+</html>

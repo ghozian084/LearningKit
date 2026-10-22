@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 5 - Rearranging Formulae</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 5: Formula Sandbox<small>Grade 9 · Topic 6 · Meeting 5 — Rearrangement of a formula (6.3) · 5E Model</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+        <div class="walt"><strong>WALT:</strong> change the subject of a formula using the same inverse operations we use to solve equations.</div>
+        <div class="phase engage"><span>🔥 ENGAGE · Jakarta → Bandung</span><span>10 min</span></div>
+        <div class="box action">
+            <p>🚗 $v = \dfrac{d}{t}$ (speed = distance ÷ time). Jakarta to Bandung is about 150 km. Driving at 60 km/h, how long does the trip take?</p>
+            <p><span class="qn">1.</span> Time = <span class="blank"></span> hours. &nbsp; Which formula did you really use? $t =$ <span class="blank" style="min-width: 20mm;"></span></p>
+            <p>Why is a formula with $t$ on its own useful when you plan many trips? <span class="blank" style="min-width: 50mm;"></span></p>
+        </div>
+        <div class="phase explore"><span>🔍 EXPLORE · Forward &amp; Backward Machines</span><span>15 min</span></div>
+        <div class="box action"><span class="box-title">⚙️ Hands-On 5:</span> Write the forward machine for each formula, then the backward machine to get the target letter on its own.</div>
+        <table class="tbl">
+            <tr><th class="l">Formula (target)</th><th>Forward machine</th><th>Backward machine</th><th>New formula</th></tr>
+            <tr style="height: 12mm;"><td class="l">$A = L \times W$ &nbsp; ($L$)</td><td>$L \to \times W \to A$</td><td>$A \to \div W \to L$</td><td>$L = \dfrac{A}{W}$</td></tr>
+            <tr style="height: 12mm;"><td class="l">$y = 3x - 4$ &nbsp; ($x$)</td><td></td><td></td><td></td></tr>
+            <tr style="height: 12mm;"><td class="l">$y = \dfrac{x + 5}{3}$ &nbsp; ($x$)</td><td></td><td></td><td></td></tr>
+            <tr style="height: 12mm;"><td class="l">🚕 $C = 7000 + 4000k$ &nbsp; ($k$)</td><td></td><td></td><td></td></tr>
+        </table>
+        <div class="phase explain"><span>💡 EXPLAIN · Changing the Subject</span><span>15 min</span></div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 The subject is the letter on its own on one side, e.g. $y$ in $y = 3x - 4$.</span>
+            <p>Rule: use the <strong>same inverse operations</strong> as in solving equations — on both sides.</p>
+            <p>Make $x$ the subject of $y = 3x - 4$:</p>
+            <p>➊ Add <span class="blank"></span> to both sides: &nbsp; $y + 4 =$ <span class="blank" style="min-width: 15mm;"></span></p>
+            <p>➋ Divide both sides by <span class="blank"></span>: &nbsp; $x =$ <span class="blank" style="min-width: 25mm;"></span></p>
+            <p>✔️ Test with numbers: if $x = 2$ then $y =$ <span class="blank"></span>; put that $y$ into your new formula → $x =$ <span class="blank"></span> ✓</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 5 · Meeting 5 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="phase explain"><span>💡 EXPLAIN · Guided Practice</span><span>highlight the target letter</span></div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(2, 1fr); "><div class="q"><div><span class="qn">2.</span> Make $s$ the subject of $P = 4s$.</div><div class="work"></div></div><div class="q"><div><span class="qn">3.</span> Make $a$ the subject of $v = u + at$.</div><div class="work"></div></div><div class="q"><div><span class="qn">4.</span> Make $x$ the subject of $y = mx + c$.</div><div class="work"></div></div><div class="q"><div><span class="qn">5.</span> Make $h$ the subject of $A = \frac12 bh$.</div><div class="work"></div></div></div>
+        <div class="phase elaborate"><span>🚀 ELABORATE · Real Formulas</span><span>20 min</span></div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(2, 1fr); flex: 1.2 1 0;"><div class="q"><div><span class="qn">6.</span> 🌡️ $F = \dfrac{9C}{5} + 32$. Make $C$ the subject. Check: water boils at $F = 212$, so $C = $ ?</div><div class="work"></div></div><div class="q"><div><span class="qn">7.</span> 🏸 A badminton court has perimeter $P = 2(l + w)$. Make $w$ the subject.</div><div class="work"></div></div><div class="q"><div><span class="qn">8.</span> 🚕 Taxi fare: $C = 7000 + 4000k$ rupiah for $k$ km. Make $k$ the subject, then find $k$ when $C = 47\,000$.</div><div class="work"></div></div><div class="q"><div><span class="qn">9.</span> Make $x$ the subject of $y = \dfrac{x + 5}{3}$.</div><div class="work"></div></div></div>
+        <div class="phase evaluate"><span>✅ EVALUATE · Exit Ticket</span><span>10 min</span></div>
+        <div class="row" style="height: 32mm;">
+            <div class="q"><div><span class="qn">10.</span> Make $x$ the subject of $y = 5x + 2$.</div><div class="work"></div></div>
+<div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can say what the subject of a formula is.</td><td>😀 😐 😟</td></tr><tr><td>I can rearrange using inverse operations.</td><td>😀 😐 😟</td></tr><tr><td>I can test my new formula with numbers.</td><td>😀 😐 😟</td></tr></table></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 5 · Meeting 5 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

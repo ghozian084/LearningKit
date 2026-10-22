@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 4 - Complex Factorisation</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 4: Factor Detectives<small>Grade 9 · Topic 6 · Meeting 4 — Complex factorisation (6.2) · 5E Model</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+        <div class="walt"><strong>WALT:</strong> factorise expressions with several variables, three terms or a negative common factor — completely.</div>
+        <div class="phase engage"><span>🔥 ENGAGE · Two Letters at Once</span><span>5 min</span></div>
+        <div class="box action">
+            <p><span class="qn">1.</span> Try it before we learn it: &nbsp; factorise $15a^2b - 20ab^2$.</p>
+            <div class="line"></div>
+        </div>
+        <div class="phase explore"><span>🔍 EXPLORE · "Fully or Not?" Card Sort</span><span>15 min</span></div>
+        <div class="box action"><span class="box-title">🃏 Hands-On 4:</span> Expand each card to check it, then sort it: ✅ fully factorised, 🟡 correct but <strong>not fully</strong> factorised, ❌ wrong.</div>
+        <table class="tbl">
+            <tr><th>✅ Fully factorised (card numbers)</th><th>🟡 Not fully (card numbers)</th><th>❌ Wrong (card numbers)</th></tr>
+            <tr style="height: 14mm;"><td></td><td></td><td></td></tr>
+        </table>
+        <div><span class="qn">2.</span> How can you tell a factorisation is <strong>not fully</strong> finished? <span class="blank" style="min-width: 80mm;"></span></div>
+        <div class="phase explain"><span>💡 EXPLAIN · Multiple Variables &amp; Negatives</span><span>20 min</span></div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 Complete the worked examples</span>
+            <p><strong>Two letters:</strong> $15a^2b - 20ab^2$ &nbsp; numbers: HCF(15, 20) = <span class="blank"></span>; &nbsp; $a$: lowest power <span class="blank"></span>; &nbsp; $b$: lowest power <span class="blank"></span></p>
+            <p>$\Rightarrow 15a^2b - 20ab^2 =$ <span class="blank" style="min-width: 15mm;"></span>$($<span class="blank" style="min-width: 25mm;"></span>$)$ &nbsp;&nbsp; Check: expand → <span class="blank" style="min-width: 35mm;"></span></p>
+            <p><strong>Three terms:</strong> $6x^3 + 9x^2 - 12x = 3x($<span class="blank" style="min-width: 35mm;"></span>$)$</p>
+            <p><strong>Negative factor:</strong> $-4x - 12 = -4($<span class="blank" style="min-width: 20mm;"></span>$)$ &nbsp;&nbsp; $-6y + 9 = -3($<span class="blank" style="min-width: 20mm;"></span>$)$</p>
+            <p>⚠️ Taking out a negative <span class="blank" style="min-width: 30mm;"></span> every sign inside the bracket.</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 4 · Meeting 4 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="phase explain"><span>💡 EXPLAIN · Guided Practice</span><span>show the expansion check</span></div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(2, 1fr); "><div class="q"><div><span class="qn">3.</span> $10x^2y + 15xy$</div><div class="work"></div></div><div class="q"><div><span class="qn">4.</span> $9a^3 - 6a^2$</div><div class="work"></div></div><div class="q"><div><span class="qn">5.</span> $-7x - 21$</div><div class="work"></div></div><div class="q"><div><span class="qn">6.</span> $6x^2y^2 + 9xy$</div><div class="work"></div></div></div>
+        <div class="phase elaborate"><span>🚀 ELABORATE · Mastery Practice</span><span>25 min</span></div>
+        <div class="grid22 grow" style="grid-template-rows: repeat(2, 1fr); flex: 1.2 1 0;"><div class="q"><div><span class="qn">7.</span> $10p^2q - 15pq^2 + 5pq$</div><div class="work">Careful: what is left when you divide 5pq by 5pq?</div></div><div class="q"><div><span class="qn">8.</span> $-12m^2n - 18mn$</div><div class="work"></div></div><div class="q"><div><span class="qn">9.</span> Factorise $\pi r^2 + 2\pi rh$ (the area formula of a cylinder).</div><div class="work"></div></div><div class="q"><div><span class="qn">10.</span> Write an expression with <strong>three</strong> terms whose HCF is $4xy$, then factorise it.</div><div class="work"></div></div></div>
+        <div class="phase evaluate"><span>✅ EVALUATE · Exit Ticket</span><span>10 min</span></div>
+        <div class="row" style="height: 32mm;">
+            <div class="q"><div><span class="qn">11.</span> Factorise completely: $14x^2y - 21xy^3$.</div><div class="work"></div></div>
+<div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can factorise with two or more letters.</td><td>😀 😐 😟</td></tr><tr><td>I can take out a negative common factor.</td><td>😀 😐 😟</td></tr><tr><td>I check every answer by expanding.</td><td>😀 😐 😟</td></tr></table></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 4 · Meeting 4 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

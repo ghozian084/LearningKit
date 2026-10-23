@@ -91,9 +91,10 @@
     <div class="tabs">
         <button class="tab-btn active" onclick="openTab('sec1', this)">1. Reciprocal Graphs</button>
         <button class="tab-btn" onclick="openTab('sec2', this)">2. Compound Angles</button>
-        <button class="tab-btn" onclick="openTab('sec3', this)">3. Double Angle Kick</button>
-        <button class="tab-btn" onclick="openTab('sec4', this)">4. Identity Checker</button>
-        <button class="tab-btn" onclick="openTab('sec5', this)">5. Wave Combiner &amp; Tide</button>
+        <button class="tab-btn" onclick="openTab('secP', this)">3. Proof Kit ✂️</button>
+        <button class="tab-btn" onclick="openTab('sec3', this)">4. Double Angle Kick</button>
+        <button class="tab-btn" onclick="openTab('sec4', this)">5. Identity Checker</button>
+        <button class="tab-btn" onclick="openTab('sec5', this)">6. Wave Combiner &amp; Tide</button>
     </div>
 
     <div class="main-content">
@@ -153,6 +154,60 @@
                     <input type="text" id="e2a" class="exercise-input"><button class="action-btn" onclick="checkNum('e2a', 0.2588, 0.0006, 'f2a', '(√6 − √2)/4 ≈ 0.2588')">Check</button><div class="feedback" id="f2a"></div></div>
                 <div class="ex-row">b) Smallest solution of $\tan(x + 45^\circ) = 2$, $0^\circ \le x \le 360^\circ$ (1 d.p.):
                     <input type="text" id="e2b" class="exercise-input"><button class="action-btn" onclick="checkNum('e2b', 18.4, 0.15, 'f2b', '(t + 1)/(1 − t) = 2 → tan x = ⅓ → 18.4°, 198.4°')">Check</button><div class="feedback" id="f2b"></div></div>
+            </div>
+        </div>
+
+        <!-- ================= TAB: PROOF KIT (drag & drop) ================= -->
+        <div id="secP" class="section-container">
+            <div class="module">
+                <h2>✂️ Drag &amp; Drop: The Three-Triangle Proof of $\sin(A + B)$</h2>
+                <p>This is the digital version of <strong>Hands-on 2</strong> — no printing or cutting needed. Drag the three triangles from the tray onto the assembly mat. Each one snaps into place when it is close to its spot. The big hypotenuse $OP = 1$.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>$A$:</label><input type="range" id="pkA" min="10" max="50" value="30" oninput="pkSetAngles()"><span class="big-value" id="pkAv">30°</span>
+                        <label>$B$:</label><input type="range" id="pkB" min="10" max="50" value="40" oninput="pkSetAngles()"><span class="big-value" id="pkBv">40°</span>
+                        <label><input type="checkbox" id="pkHide" onchange="pkRender()"> hide outlines (challenge)</label>
+                        <button class="action-btn" onclick="pkReset()">Shuffle back to tray</button>
+                        <button class="action-btn" style="background: #805ad5;" onclick="pkAuto()">Teacher demo ▶</button>
+                    </div>
+                    <svg id="pkSvg" viewBox="0 0 1000 520" style="width: 100%; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; touch-action: none; user-select: none; display: block;"></svg>
+                    <div class="sim-text" id="pkMsg">Drag triangle ① first — it sits on top of ②.</div>
+                </div>
+            </div>
+
+            <div class="module">
+                <h2>🔎 Read the Height of $P$</h2>
+                <p>When all three pieces are in place, the height of $P$ is made of two vertical pieces. Which ones?</p>
+                <div class="controls-row">
+                    <span>$\sin(A + B) =$</span>
+                    <select id="pkS1"><option value="">choose…</option><option>cos B cos A</option><option>cos B sin A</option><option>sin B cos A</option><option>sin B sin A</option></select>
+                    <span>+</span>
+                    <select id="pkS2"><option value="">choose…</option><option>cos B cos A</option><option>cos B sin A</option><option>sin B cos A</option><option>sin B sin A</option></select>
+                    <button class="action-btn" onclick="pkCheckHeight()">Check</button>
+                </div>
+                <div class="feedback" id="pkF1"></div>
+                <div class="controls-row" style="margin-top: 14px;">
+                    <span>$\cos(A + B) = OR - TQ =$</span>
+                    <select id="pkC1"><option value="">choose…</option><option>cos B cos A</option><option>cos B sin A</option><option>sin B cos A</option><option>sin B sin A</option></select>
+                    <span>−</span>
+                    <select id="pkC2"><option value="">choose…</option><option>cos B cos A</option><option>cos B sin A</option><option>sin B cos A</option><option>sin B sin A</option></select>
+                    <button class="action-btn" onclick="pkCheckWidth()">Check</button>
+                </div>
+                <div class="feedback" id="pkF2"></div>
+                <table class="vals" id="pkVals"></table>
+            </div>
+
+            <div class="module">
+                <h2>📝 Step-by-Step Proof</h2>
+                <div class="step-box">
+                    <button class="action-btn" id="btn-pf" onclick="nextStep('pf', 6)">Show Next Step</button>
+                    <div class="step pf-1"><strong>Step 1 (triangle ①):</strong> $OP = 1$ and $\angle QOP = B$, so $OQ = \cos B$ and $QP = \sin B$.</div>
+                    <div class="step pf-2"><strong>Step 2 (triangle ②):</strong> $OQ = \cos B$ and $\angle ROQ = A$, so $RQ = \cos B\sin A$ and $OR = \cos B\cos A$.</div>
+                    <div class="step pf-3"><strong>Step 3 (triangle ③):</strong> $QP = \sin B$ and $\angle TPQ = A$ (it equals $\angle ROQ$ because the sides are perpendicular), so $TP = \sin B\cos A$ and $TQ = \sin B\sin A$.</div>
+                    <div class="step pf-4"><strong>Step 4:</strong> $P$ is at angle $A + B$ on a circle of radius 1, so its height is $\sin(A + B)$ and its horizontal distance is $\cos(A + B)$.</div>
+                    <div class="step pf-5"><strong>Step 5 (height):</strong> $\sin(A + B) = RQ + TP = \sin A\cos B + \cos A\sin B$</div>
+                    <div class="step pf-6"><strong>Step 6 (width):</strong> $\cos(A + B) = OR - TQ = \cos A\cos B - \sin A\sin B$ $\blacksquare$</div>
+                </div>
             </div>
         </div>
 
@@ -477,6 +532,181 @@
                 ? 'Safe docking: ' + wins.map(w => hhmm(w[0]) + '–' + hhmm(w[1])).join(' and ')
                 : 'No safe time between 00:00 and 12:00 — the tide never gets that high!';
         }
+
+        // ---------- Proof Kit: drag & drop three-triangle proof ----------
+        const PK = { U: 250, O: [620, 490], snap: 28, pieces: [], drag: null };
+        const SVGNS = 'http://www.w3.org/2000/svg';
+        function pkGeom() {
+            const A = +document.getElementById('pkA').value * D, B = +document.getElementById('pkB').value * D, U = PK.U;
+            // maths coordinates (y up), unit = U
+            const Q = [Math.cos(B) * Math.cos(A), Math.cos(B) * Math.sin(A)], R = [Q[0], 0];
+            const P = [Math.cos(A + B), Math.sin(A + B)], T = [P[0], Q[1]];
+            const toMat = p => [PK.O[0] + p[0] * U, PK.O[1] - p[1] * U];
+            return { A, B, Q, R, P, T, O: [0, 0], toMat };
+        }
+        function pkBuild() {
+            const g = pkGeom();
+            const defs = [
+                { id: 1, name: '①', fill: '#bee3f8', stroke: '#2b6cb0', pts: [g.O, g.Q, g.P], labels: ['O', 'Q', 'P'],
+                  sides: [[0, 1, 'cos B'], [1, 2, 'sin B'], [0, 2, '1']], angle: [0, 'B'] },
+                { id: 2, name: '②', fill: '#c6f6d5', stroke: '#38a169', pts: [g.O, g.R, g.Q], labels: ['O', 'R', 'Q'],
+                  sides: [[0, 1, 'cos B cos A'], [1, 2, 'cos B sin A'], [0, 2, 'cos B']], angle: [0, 'A'] },
+                { id: 3, name: '③', fill: '#fed7d7', stroke: '#e53e3e', pts: [g.P, g.T, g.Q], labels: ['P', 'T', 'Q'],
+                  sides: [[0, 1, 'sin B cos A'], [1, 2, 'sin B sin A'], [0, 2, 'sin B']], angle: [0, 'A'] },
+            ];
+            PK.pieces = defs.map(d => {
+                const m = d.pts.map(g.toMat);
+                const minX = Math.min(...m.map(p => p[0])), minY = Math.min(...m.map(p => p[1]));
+                const local = m.map(p => [p[0] - minX, p[1] - minY]);
+                const w = Math.max(...local.map(p => p[0])), h = Math.max(...local.map(p => p[1]));
+                return Object.assign({}, d, { local, w, h, target: [minX, minY], pos: [0, 0], placed: false });
+            });
+            pkTray();
+        }
+        function pkTray() {
+            // ① bottom-left, ② bottom-middle, ③ top-middle of the tray (x < 560)
+            const [p1, p2, p3] = PK.pieces;
+            p1.pos = [20, 500 - p1.h];
+            p2.pos = [Math.min(300, 560 - p2.w - 10), 500 - p2.h];
+            p3.pos = [Math.min(330, 560 - p3.w - 10), 30];
+            PK.pieces.forEach(p => p.placed = false);
+        }
+        function pkCentroid(pts) { return [pts.reduce((s, p) => s + p[0], 0) / 3, pts.reduce((s, p) => s + p[1], 0) / 3]; }
+        function pkPieceSVG(p, x, y, ghost, seen) {
+            const pts = p.local.map(q => [x + q[0], y + q[1]]);
+            const c = pkCentroid(pts);
+            let s = `<polygon points="${pts.map(q => q.join(',')).join(' ')}" fill="${ghost ? 'none' : p.fill}" fill-opacity="${ghost ? 0 : 0.92}" stroke="${ghost ? '#a0aec0' : p.stroke}" stroke-width="${ghost ? 1.5 : 2.5}" ${ghost ? 'stroke-dasharray="7,5"' : ''}/>`;
+            if (ghost) return s + `<text x="${c[0]}" y="${c[1] + 6}" font-size="20" text-anchor="middle" fill="#a0aec0">${p.name}</text>`;
+            p.sides.forEach(([i, j, t]) => {
+                const key = [p.labels[i], p.labels[j]].sort().join('');
+                if (seen) { if (seen.s.has(key)) return; seen.s.add(key); }
+                const m = [(pts[i][0] + pts[j][0]) / 2, (pts[i][1] + pts[j][1]) / 2];
+                const dx = m[0] - c[0], dy = m[1] - c[1], L = Math.hypot(dx, dy) || 1;
+                s += `<text x="${m[0] + dx / L * 16}" y="${m[1] + dy / L * 16 + 5}" font-size="14" font-weight="bold" text-anchor="middle" fill="${p.stroke}">${t}</text>`;
+            });
+            p.labels.forEach((lab, i) => {
+                if (seen) { if (seen.v.has(lab)) return; seen.v.add(lab); }
+                const dx = pts[i][0] - c[0], dy = pts[i][1] - c[1], L = Math.hypot(dx, dy) || 1;
+                s += `<text x="${pts[i][0] + dx / L * 14}" y="${pts[i][1] + dy / L * 14 + 5}" font-size="15" font-weight="bold" text-anchor="middle" fill="#1a202c">${lab}</text>`;
+            });
+            const [ai, al] = p.angle, av = pts[ai];
+            s += `<text x="${av[0] + (c[0] - av[0]) * 0.35}" y="${av[1] + (c[1] - av[1]) * 0.35 + 5}" font-size="15" font-style="italic" font-weight="bold" text-anchor="middle" fill="#c53030">${al}</text>`;
+            s += `<text x="${c[0]}" y="${c[1] + 7}" font-size="22" text-anchor="middle" fill="${p.stroke}" opacity="0.6">${p.name}</text>`;
+            return s;
+        }
+        function pkRender() {
+            const svg = document.getElementById('pkSvg'), g = pkGeom(), hide = document.getElementById('pkHide').checked;
+            const [ox, oy] = PK.O;
+            let s = '';
+            // tray + mat backgrounds
+            s += '<rect x="5" y="5" width="560" height="510" rx="8" fill="#f7fafc" stroke="#e2e8f0"/><text x="18" y="26" font-size="15" font-weight="bold" fill="#718096">TRAY — drag the pieces</text>';
+            s += '<rect x="575" y="5" width="420" height="510" rx="8" fill="#fffff0" stroke="#ecc94b"/><text x="590" y="26" font-size="15" font-weight="bold" fill="#b7791f">ASSEMBLY MAT</text>';
+            // axes + unit circle arc
+            s += `<line x1="${ox - 20}" y1="${oy}" x2="985" y2="${oy}" stroke="#2d3748" stroke-width="1.5"/><line x1="${ox}" y1="${oy + 10}" x2="${ox}" y2="40" stroke="#2d3748" stroke-width="1.5"/>`;
+            s += `<path d="M${ox + PK.U},${oy} A${PK.U},${PK.U} 0 0 0 ${ox},${oy - PK.U}" fill="none" stroke="#cbd5e0" stroke-dasharray="4,4"/>`;
+            if (!hide) PK.pieces.forEach(p => { if (!p.placed) s += pkPieceSVG(p, p.target[0], p.target[1], true); });
+            const allPlaced = PK.pieces.every(p => p.placed);
+            // placed pieces share sides and vertices: label each one only once
+            const seen = { v: new Set(), s: new Set() };
+            if (allPlaced) { seen.s.add('QR'); seen.s.add('PT'); }   // shown on the coloured height bars instead
+            PK.pieces.filter(p => p.placed).concat(PK.pieces.filter(p => !p.placed)).forEach(p => {
+                s += `<g data-id="${p.id}" style="cursor: ${p.placed ? 'default' : 'grab'};">${pkPieceSVG(p, p.pos[0], p.pos[1], false, p.placed ? seen : null)}</g>`;
+            });
+            if (allPlaced) {
+                const P = g.toMat(g.P), Q = g.toMat(g.Q), R = g.toMat(g.R);
+                s += `<line x1="${P[0]}" y1="${P[1]}" x2="${P[0]}" y2="${oy}" stroke="#c53030" stroke-width="3" stroke-dasharray="8,5"/>`;
+                const bx = R[0] + 22;
+                s += `<line x1="${bx}" y1="${oy}" x2="${bx}" y2="${Q[1]}" stroke="#38a169" stroke-width="5"/><line x1="${bx}" y1="${Q[1]}" x2="${bx}" y2="${P[1]}" stroke="#e53e3e" stroke-width="5"/>`;
+                s += `<line x1="${P[0]}" y1="${P[1]}" x2="${bx}" y2="${P[1]}" stroke="#c53030" stroke-width="1" stroke-dasharray="3,3"/>`;
+                s += `<text x="${bx + 8}" y="${(oy + Q[1]) / 2 + 5}" font-size="13" font-weight="bold" fill="#38a169">RQ = cos B sin A</text>`;
+                s += `<text x="${bx + 8}" y="${(Q[1] + P[1]) / 2 + 5}" font-size="13" font-weight="bold" fill="#e53e3e">TP = sin B cos A</text>`;
+                s += `<text x="${bx + 8}" y="${P[1] - 6}" font-size="13" font-weight="bold" fill="#c53030">height of P = sin(A + B)</text>`;
+                s += `<text x="590" y="52" font-size="15" font-weight="bold" fill="#c53030">∠ROP = A + B = ${Math.round((g.A + g.B) / D)}°</text>`;
+            }
+            svg.innerHTML = s;
+            svg.querySelectorAll('g[data-id]').forEach(el => el.addEventListener('pointerdown', pkDown));
+            pkTable();
+        }
+        function pkPoint(evt) {
+            const svg = document.getElementById('pkSvg'), pt = svg.createSVGPoint();
+            pt.x = evt.clientX; pt.y = evt.clientY;
+            return pt.matrixTransform(svg.getScreenCTM().inverse());
+        }
+        function pkDown(evt) {
+            const id = +evt.currentTarget.dataset.id, p = PK.pieces.find(q => q.id === id);
+            if (p.placed) return;
+            evt.preventDefault();
+            const m = pkPoint(evt);
+            PK.drag = { p, dx: m.x - p.pos[0], dy: m.y - p.pos[1], el: evt.currentTarget };
+            evt.currentTarget.parentNode.appendChild(evt.currentTarget);   // bring to front
+            evt.currentTarget.style.cursor = 'grabbing';
+        }
+        function pkMove(evt) {
+            if (!PK.drag) return;
+            const m = pkPoint(evt), d = PK.drag;
+            d.p.pos = [Math.max(0, Math.min(1000 - d.p.w, m.x - d.dx)), Math.max(0, Math.min(520 - d.p.h, m.y - d.dy))];
+            d.el.innerHTML = pkPieceSVG(d.p, d.p.pos[0], d.p.pos[1], false);
+        }
+        function pkUp() {
+            if (!PK.drag) return;
+            const p = PK.drag.p; PK.drag = null;
+            const msg = document.getElementById('pkMsg');
+            if (Math.hypot(p.pos[0] - p.target[0], p.pos[1] - p.target[1]) < PK.snap) {
+                p.pos = p.target.slice(); p.placed = true;
+                const left = PK.pieces.filter(q => !q.placed).length;
+                msg.className = 'sim-text good';
+                msg.textContent = left ? `✔️ Triangle ${p.name} snapped into place! ${left} to go.` : '🎉 All three pieces fit! The red line is the height of P = sin(A + B). Now read it from two pieces below.';
+            } else {
+                msg.className = 'sim-text';
+                msg.textContent = 'Not quite — move it closer to its matching outline.';
+            }
+            pkRender();
+        }
+        function pkSetAngles() {
+            let A = +document.getElementById('pkA').value, B = +document.getElementById('pkB').value;
+            if (A + B > 80) { B = 80 - A; document.getElementById('pkB').value = B; }
+            document.getElementById('pkAv').textContent = A + '°'; document.getElementById('pkBv').textContent = B + '°';
+            pkBuild(); pkRender();
+            document.getElementById('pkMsg').className = 'sim-text';
+            document.getElementById('pkMsg').textContent = 'New angles — drag the pieces onto the mat again.';
+        }
+        function pkReset() { pkTray(); pkRender(); document.getElementById('pkMsg').className = 'sim-text'; document.getElementById('pkMsg').textContent = 'Pieces back in the tray. Drag triangle ① first.'; }
+        function pkAuto() {
+            pkTray();
+            const start = PK.pieces.map(p => p.pos.slice()), t0 = performance.now(), dur = 1400;
+            const step = now => {
+                const k = Math.min(1, (now - t0) / dur), e = k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+                PK.pieces.forEach((p, i) => { p.pos = [start[i][0] + (p.target[0] - start[i][0]) * e, start[i][1] + (p.target[1] - start[i][1]) * e]; });
+                if (k < 1) { pkRender(); requestAnimationFrame(step); }
+                else { PK.pieces.forEach(p => { p.pos = p.target.slice(); p.placed = true; }); pkRender();
+                    document.getElementById('pkMsg').className = 'sim-text good'; document.getElementById('pkMsg').textContent = '🎬 Demo complete — the height of P splits into a green piece and a red piece.'; }
+            };
+            requestAnimationFrame(step);
+        }
+        function pkTable() {
+            const g = pkGeom(), r = v => (Math.round(v * 10000) / 10000).toFixed(4);
+            const sA = Math.sin(g.A), cA = Math.cos(g.A), sB = Math.sin(g.B), cB = Math.cos(g.B);
+            document.getElementById('pkVals').innerHTML =
+                '<tr><th>A</th><th>B</th><th>sin(A + B)</th><th>cos B sin A + sin B cos A</th><th>cos(A + B)</th><th>cos B cos A − sin B sin A</th></tr>' +
+                `<tr><td>${Math.round(g.A / D)}°</td><td>${Math.round(g.B / D)}°</td><td>${r(Math.sin(g.A + g.B))}</td><td class="match">${r(cB * sA + sB * cA)}</td><td>${r(Math.cos(g.A + g.B))}</td><td class="match">${r(cB * cA - sB * sA)}</td></tr>`;
+        }
+        function pkPair(id1, id2, want, fb, okText) {
+            const a = document.getElementById(id1).value, b = document.getElementById(id2).value, f = document.getElementById(fb);
+            const got = [a, b].sort().join('|'), need = want.slice().sort().join('|');
+            if (!a || !b) { f.className = 'feedback wrong'; f.textContent = 'Choose both pieces.'; return; }
+            if (got === need) { f.className = 'feedback correct'; f.textContent = '✅ ' + okText; }
+            else { f.className = 'feedback wrong'; f.textContent = '❌ Not quite — look at the coloured bars on the mat after assembling.'; }
+        }
+        function pkCheckHeight() { pkPair('pkS1', 'pkS2', ['cos B sin A', 'sin B cos A'], 'pkF1', 'RQ (green, from ②) + TP (red, from ③): sin(A + B) = sin A cos B + cos A sin B'); }
+        function pkCheckWidth() {
+            const a = document.getElementById('pkC1').value, b = document.getElementById('pkC2').value, f = document.getElementById('pkF2');
+            if (a === 'cos B cos A' && b === 'sin B sin A') { f.className = 'feedback correct'; f.textContent = '✅ OR (from ②) − TQ (from ③): cos(A + B) = cos A cos B − sin A sin B'; }
+            else { f.className = 'feedback wrong'; f.textContent = '❌ Order matters here: the longer length OR minus the overlap TQ.'; }
+        }
+        window.addEventListener('pointermove', pkMove);
+        window.addEventListener('pointerup', pkUp);
+        window.addEventListener('pointercancel', pkUp);
+        window.addEventListener('load', () => { pkBuild(); pkRender(); });
 
         function redrawAll() { drawTab1(); drawTab2(); drawTab3(); drawTab4(); drawTab5(); drawTide(); }
         window.addEventListener('load', redrawAll);

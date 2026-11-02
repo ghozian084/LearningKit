@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 1 - Cut and Slide</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>✂️ Digital Lab 1: Cut &amp; Slide</h1>
+        <span class="badge">Grade 9 · Topic 7 · Meeting 1 · Digital twin of Hands-on 1</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Parallelogram</button><button class="tab-btn" onclick="openTab('s2', this)">2. Two Triangles</button><button class="tab-btn" onclick="openTab('s3', this)">3. Sawah: Fence vs Area</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>✂️ Parallelogram → Rectangle: One Cut, Then Slide</h2>
+                <div class="twin">💡 No printer? This is the on-screen version of <strong>Hands-on 1, page 1</strong>.</div>
+                <p>Move the <strong>cut</strong> (it is always perpendicular to the base), press <strong>Cut</strong>, then slide the piece across. The area does not change!</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>base $b$</label><input type="range" id="pb" min="3" max="10" value="6" oninput="resetPar()"><span class="big-value" id="pbv">6</span>
+                        <label>height $h$</label><input type="range" id="ph" min="2" max="6" value="4" oninput="resetPar()"><span class="big-value" id="phv">4</span>
+                        <label>lean</label><input type="range" id="po" min="0" max="5" value="2" oninput="resetPar()"><span class="big-value" id="pov">2</span>
+                    </div>
+                    <div class="controls-row">
+                        <label>cut position</label><input type="range" id="pc" min="0" max="100" value="20" oninput="drawPar()">
+                        <button class="action-btn" onclick="slidePar()">✂️ Cut &amp; slide</button>
+                        <button class="action-btn ghost" onclick="resetPar()">Reset</button>
+                    </div>
+                    <canvas class="plot" id="cv1"></canvas>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">Parallelogram: base 10 cm, height 6 cm, slant side 7 cm. Area (cm²) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 60, 0.01, 'fe1', '10 × 6 = 60 cm² (the slant side 7 cm is not used for area)')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Perimeter of the same parallelogram (cm) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 34, 0.01, 'fe2', '2 × (10 + 7) = 34 cm')">Check</button><div class="feedback" id="fe2"></div></div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>🔺 Two Identical Triangles</h2>
+                <div class="twin">💡 On-screen version of <strong>Hands-on 1, page 2</strong>.</div>
+                <p>Rotate a copy of the triangle by 180° and join it to the original. Two triangles always make a parallelogram — so one triangle is <strong>half</strong> of it.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>base $b$</label><input type="range" id="tb" min="3" max="9" value="6" oninput="drawTri()"><span class="big-value" id="tbv">6</span>
+                        <label>height $h$</label><input type="range" id="th" min="2" max="6" value="4" oninput="drawTri()"><span class="big-value" id="thv">4</span>
+                        <label>top point</label><input type="range" id="tx" min="-2" max="10" value="2" oninput="drawTri()"><span class="big-value" id="txv">2</span>
+                        <label>join</label><input type="range" id="tt" min="0" max="100" value="0" oninput="drawTri()">
+                        <button class="action-btn" onclick="animTri()">Join ▶</button>
+                    </div>
+                    <canvas class="plot" id="cv2"></canvas>
+                    <div class="sim-text" id="t2"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">Triangle: base 9 cm, perpendicular height 8 cm. Area (cm²) = <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 36, 0.01, 'fe3', '½ × 9 × 8 = 36 cm²')">Check</button><div class="feedback" id="fe3"></div></div><div class="ex-row">A triangle has area 54 cm² and base 12 cm. Height (cm) = <input type="text" id="e4" class="exercise-input"><button class="action-btn" onclick="checkNum('e4', 9, 0.01, 'fe4', '½ × 12 × h = 54 → h = 9 cm')">Check</button><div class="feedback" id="fe4"></div></div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>🌾 Fence or Fertiliser? The Sawah</h2>
+                <p>Change the size of the rice field. The <strong>fence</strong> is the perimeter (m); the <strong>fertiliser</strong> covers the area (m²).</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>length</label><input type="range" id="sl" min="5" max="60" value="40" oninput="drawSawah()"><span class="big-value" id="slv">40 m</span>
+                        <label>width</label><input type="range" id="sw" min="5" max="40" value="25" oninput="drawSawah()"><span class="big-value" id="swv">25 m</span>
+                        <label>fence price</label><select id="sp" onchange="drawSawah()"><option value="25000">Rp 25 000 / m</option><option value="20000">Rp 20 000 / m</option></select>
+                    </div>
+                    <canvas class="plot" id="cv3" style="height: 300px;"></canvas>
+                    <div class="sim-text" id="t3"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">A sawah is 45 m × 30 m and fencing costs Rp 25 000 per metre. Total cost (Rp) = <input type="text" id="e5" class="exercise-input"><button class="action-btn" onclick="checkNum('e5', 3750000, 1, 'fe5', 'P = 150 m → 150 × 25 000 = Rp 3 750 000')">Check</button><div class="feedback" id="fe5"></div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        // ---------- Tab 1: parallelogram ----------
+        let parSlide = 0, parAnim = null;
+        function resetPar() { parSlide = 0; if (parAnim) cancelAnimationFrame(parAnim); drawPar(); }
+        function drawPar() {
+            po.max = +pb.value - 1; if (+po.value > +po.max) po.value = po.max;
+            const b = +pb.value, h = +ph.value, o = +po.value; pbv.textContent = b; phv.textContent = h; pov.textContent = o;
+            const c = setupCanvas(cv1); if (!c) return; const { ctx, W, H } = c;
+            const k = Math.min(36, (W - 80) / (b + o + b + 1), (H - 80) / (h + 1)), ox = 40, oy = H - 40;
+            gridBg(ctx, W, H, k, ox, oy);
+            const X = x => ox + x * k, Y = y => oy - y * k;
+            // cut position along the top-left region: x in [o, b+o] at the top; vertical cut at x = cx (must cross the base region)
+            const cut = o + (+pc.value / 100) * Math.max(0, b - o);   // vertical cut from top edge to base, inside the shape
+            const s = parSlide * b;
+            if (parSlide === 0) {
+                poly(ctx, [[X(0), Y(0)], [X(b), Y(0)], [X(b + o), Y(h)], [X(o), Y(h)]], 'rgba(144,205,244,0.6)', '#2b6cb0');
+                ctx.strokeStyle = '#e53e3e'; ctx.lineWidth = 3; ctx.setLineDash([8, 5]); ctx.beginPath(); ctx.moveTo(X(cut), Y(h)); ctx.lineTo(X(cut), Y(0)); ctx.stroke(); ctx.setLineDash([]);
+                label(ctx, X(cut) + 4, Y(h) - 8, '✂️ cut', '#e53e3e', 14, 'left');
+            } else {
+                // left piece: (0,0),(cut,0),(cut,h),(o,h)  -> slides right by b
+                poly(ctx, [[X(cut), Y(0)], [X(b), Y(0)], [X(b + o), Y(h)], [X(cut), Y(h)]], 'rgba(144,205,244,0.6)', '#2b6cb0');
+                poly(ctx, [[X(s), Y(0)], [X(cut + s), Y(0)], [X(cut + s), Y(h)], [X(o + s), Y(h)]], 'rgba(246,173,85,0.65)', '#dd6b20');
+            }
+            label(ctx, X(b / 2), Y(0) + 22, 'b = ' + b, '#1a365d');
+            ctx.strokeStyle = '#38a169'; ctx.setLineDash([4, 4]); ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(X(b + o) + 14, Y(h)); ctx.lineTo(X(b + o) + 14, Y(0)); ctx.stroke(); ctx.setLineDash([]);
+            label(ctx, X(b + o) + 20, Y(h / 2), 'h = ' + h, '#38a169', 14, 'left');
+            t1.innerHTML = parSlide >= 1 ? `🎉 A rectangle! ${b} × ${h} = <strong>${b * h} square units</strong> — the same area as the parallelogram. Area = base × perpendicular height.`
+                : `Squares inside: ${b * h}. Slant side = ${r2(Math.hypot(o, h))} — notice it is NOT used for the area.`;
+        }
+        function slidePar() {
+            if (parAnim) cancelAnimationFrame(parAnim); parSlide = 0.001; const t0 = performance.now();
+            const step = now => { parSlide = Math.min(1, (now - t0) / 1200); drawPar(); if (parSlide < 1) parAnim = requestAnimationFrame(step); };
+            parAnim = requestAnimationFrame(step);
+        }
+        // ---------- Tab 2: triangles ----------
+        let triAnim = null;
+        function drawTri() {
+            const b = +tb.value, h = +th.value, x = +tx.value, t = +tt.value / 100; tbv.textContent = b; thv.textContent = h; txv.textContent = x;
+            const c = setupCanvas(cv2); if (!c) return; const { ctx, W, H } = c;
+            const minx = Math.min(0, x), maxx = Math.max(b, x) + b;
+            const k = Math.min(36, (W - 80) / (maxx - minx + 1), (H - 80) / (h + 1)), ox = 40 - minx * k, oy = H - 40;
+            gridBg(ctx, W, H, k, ox, oy);
+            const X = v => ox + v * k, Y = v => oy - v * k;
+            const T1 = [[0, 0], [b, 0], [x, h]];
+            // copy rotated 180° about the midpoint of edge (b,0)-(x,h), animated with t
+            const mx = (b + x) / 2, my = h / 2, ang = Math.PI * t;
+            const offx = (1 - t) * (maxx - b + 1);
+            const T2 = T1.map(([px, py]) => { const dx = px - mx, dy = py - my; return [mx + dx * Math.cos(ang) - dy * Math.sin(ang) + offx, my + dx * Math.sin(ang) + dy * Math.cos(ang)]; });
+            poly(ctx, T1.map(p => [X(p[0]), Y(p[1])]), 'rgba(104,211,145,0.6)', '#38a169');
+            poly(ctx, T2.map(p => [X(p[0]), Y(p[1])]), 'rgba(252,129,129,0.55)', '#e53e3e');
+            ctx.strokeStyle = '#2b6cb0'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(X(x), Y(h)); ctx.lineTo(X(x), Y(0)); ctx.stroke();
+            if (x < 0 || x > b) { ctx.beginPath(); ctx.moveTo(X(x), Y(0)); ctx.lineTo(X(x < 0 ? 0 : b), Y(0)); ctx.stroke(); }
+            ctx.setLineDash([]);
+            label(ctx, X(b / 2), Y(0) + 22, 'b = ' + b); label(ctx, X(x) + 6, Y(h / 2), 'h = ' + h, '#2b6cb0', 14, 'left');
+            t2.innerHTML = t >= 0.99 ? `Two triangles = parallelogram ${b} × ${h} = ${b * h}. One triangle = <strong>½ × ${b} × ${h} = ${b * h / 2}</strong>.` + (x < 0 || x > b ? ' (Obtuse triangle: the height falls OUTSIDE the triangle!)' : '')
+                : 'Press <strong>Join ▶</strong> or move the "join" slider.';
+        }
+        function animTri() { if (triAnim) cancelAnimationFrame(triAnim); const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / 1400); tt.value = k * 100; drawTri(); if (k < 1) triAnim = requestAnimationFrame(step); }; triAnim = requestAnimationFrame(step); }
+        // ---------- Tab 3: sawah ----------
+        function drawSawah() {
+            const L = +sl.value, Wd = +sw.value, price = +sp.value; slv.textContent = L + ' m'; swv.textContent = Wd + ' m';
+            const c = setupCanvas(cv3); if (!c) return; const { ctx, W, H } = c;
+            const k = Math.min((W - 120) / 60, (H - 70) / 40), ox = 60, oy = 30;
+            ctx.fillStyle = '#c6f6d5'; ctx.fillRect(ox, oy, L * k, Wd * k);
+            for (let i = 1; i < 6; i++) { ctx.strokeStyle = 'rgba(56,161,105,0.35)'; ctx.beginPath(); ctx.moveTo(ox, oy + Wd * k * i / 6); ctx.lineTo(ox + L * k, oy + Wd * k * i / 6); ctx.stroke(); }
+            ctx.strokeStyle = '#744210'; ctx.lineWidth = 5; ctx.setLineDash([10, 6]); ctx.strokeRect(ox, oy, L * k, Wd * k); ctx.setLineDash([]);
+            label(ctx, ox + L * k / 2, oy + Wd * k + 22, L + ' m'); label(ctx, ox - 8, oy + Wd * k / 2, Wd + ' m', '#1a365d', 14, 'right');
+            const P = 2 * (L + Wd), A = L * Wd;
+            t3.innerHTML = `🪵 Fence (perimeter) = 2(${L} + ${Wd}) = <strong>${P} m</strong> → cost Rp ${(P * price).toLocaleString('id-ID')} &nbsp;|&nbsp; 🌱 Fertiliser (area) = ${L} × ${Wd} = <strong>${A} m²</strong>`;
+        }
+        function redraw() { drawPar(); drawTri(); drawSawah(); }
+        window.addEventListener('load', redraw);
+
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

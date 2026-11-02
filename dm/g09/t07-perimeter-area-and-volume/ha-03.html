@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 3 - Nets to Cut and Fold</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 3 · Meeting 3: Nets to Cut &amp; Fold (1)</h1>
+            <p>Grade 9 · Topic 7 · Phase 3–4 · print at 100% ("actual size") · <em>digital twin: Interactive Media 3</em></p>
+        </div>
+        <div class="teacher-note"><strong>How to use:</strong> Cut along the solid outline, fold along every edge between faces, then glue the grey dashed tabs. Use these if you do not have a real cardboard box to unfold.</div>
+        <svg viewBox="0 0 186 150" style="width: 186mm; height: 150mm; align-self: center;"><polygon points="26.0,4.0 76.0,4.0 76.0,34.0 26.0,34.0" fill="#fefcbf" stroke="#2d3748" stroke-width="0.6"/><text x="51.0" y="20.2" font-size="3.6" text-anchor="middle" fill="#4a5568">lid 5×3</text><polygon points="26.0,34.0 21.0,29.0 21.0,9.0 26.0,4.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="26.0,4.0 31.0,-1.0 71.0,-1.0 76.0,4.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="76.0,4.0 81.0,9.0 81.0,29.0 76.0,34.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="26.0,34.0 76.0,34.0 76.0,54.0 26.0,54.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><text x="51.0" y="45.2" font-size="3.6" text-anchor="middle" fill="#4a5568">back 5×2</text><polygon points="26.0,54.0 76.0,54.0 76.0,84.0 26.0,84.0" fill="#c6f6d5" stroke="#2d3748" stroke-width="0.6"/><text x="51.0" y="70.2" font-size="3.6" text-anchor="middle" fill="#4a5568">base 5×3</text><polygon points="26.0,84.0 76.0,84.0 76.0,104.0 26.0,104.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><text x="51.0" y="95.2" font-size="3.6" text-anchor="middle" fill="#4a5568">front 5×2</text><polygon points="6.0,54.0 26.0,54.0 26.0,84.0 6.0,84.0" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><text x="16.0" y="70.2" font-size="3.6" text-anchor="middle" fill="#4a5568">side</text><polygon points="76.0,54.0 96.0,54.0 96.0,84.0 76.0,84.0" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><text x="86.0" y="70.2" font-size="3.6" text-anchor="middle" fill="#4a5568">side</text><polygon points="6.0,54.0 11.0,49.0 21.0,49.0 26.0,54.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="96.0,84.0 91.0,89.0 81.0,89.0 76.0,84.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="76.0,54.0 81.0,49.0 91.0,49.0 96.0,54.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="26.0,84.0 21.0,89.0 11.0,89.0 6.0,84.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><text x="10" y="3" font-size="4" font-weight="bold">① Cuboid 5 × 3 × 2 cm</text><polygon points="100.0,34.2 128.0,34.2 128.0,94.2 100.0,94.2" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><text x="114.0" y="65.4" font-size="3.6" text-anchor="middle" fill="#4a5568">rectangle</text><polygon points="128.0,34.2 156.0,34.2 156.0,94.2 128.0,94.2" fill="#c6f6d5" stroke="#2d3748" stroke-width="0.6"/><text x="142.0" y="65.4" font-size="3.6" text-anchor="middle" fill="#4a5568">rectangle</text><polygon points="156.0,34.2 184.0,34.2 184.0,94.2 156.0,94.2" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><text x="170.0" y="65.4" font-size="3.6" text-anchor="middle" fill="#4a5568">rectangle</text><polygon points="128.0,34.2 156.0,34.2 142.0,10.0" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><polygon points="128.0,94.2 156.0,94.2 142.0,118.5" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><polygon points="184.0,34.2 189.0,39.2 189.0,89.2 184.0,94.2" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="156.0,34.2 161.0,29.2 179.0,29.2 184.0,34.2" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="184.0,94.2 179.0,99.2 161.0,99.2 156.0,94.2" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="100.0,34.2 105.0,29.2 123.0,29.2 128.0,34.2" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><text x="100" y="5" font-size="4" font-weight="bold">② Triangular prism (side 2.8, length 6 cm)</text></svg>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around; font-size: 10.5pt;">
+            <span class="box-title">✏️ Record</span>
+            <p>Solid: __________________ &nbsp; Faces: ____ &nbsp; Edges: ____ &nbsp; Vertices: ____</p>
+            <p>Measured dimensions: ____________________________________________</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 3 · Meeting 3 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="media-header">
+            <h1>Hands-on 3 · Meeting 3: Nets to Cut &amp; Fold (2)</h1>
+            <p>The cylinder rectangle is exactly 2πr = 2π × 1.4 ≈ 8.8 cm long — measure it!</p>
+        </div>
+        <div class="teacher-note"><strong>Think:</strong> why is the long side of the cylinder's rectangle equal to the circumference of the circle? Why does the pyramid have only ONE square?</div>
+        <svg viewBox="0 0 186 150" style="width: 186mm; height: 150mm; align-self: center;"><polygon points="6.0,36.0 94.0,36.0 94.0,96.0 6.0,96.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><text x="50.0" y="67.2" font-size="3.6" text-anchor="middle" fill="#4a5568">curved surface: 2πr × h</text><circle cx="50.0" cy="22.0" r="14.0" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><circle cx="50.0" cy="110.0" r="14.0" fill="#fed7d7" stroke="#2d3748" stroke-width="0.6"/><polygon points="94.0,36.0 99.0,41.0 99.0,91.0 94.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="6.0,36.0 9.0,33.0 14.0,33.0 17.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="17.0,96.0 14.0,99.0 9.0,99.0 6.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="17.0,36.0 20.0,33.0 25.0,33.0 28.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="28.0,96.0 25.0,99.0 20.0,99.0 17.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="28.0,36.0 31.0,33.0 36.0,33.0 39.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="39.0,96.0 36.0,99.0 31.0,99.0 28.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="39.0,36.0 42.0,33.0 47.0,33.0 50.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="50.0,96.0 47.0,99.0 42.0,99.0 39.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="50.0,36.0 53.0,33.0 58.0,33.0 61.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="61.0,96.0 58.0,99.0 53.0,99.0 50.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="61.0,36.0 64.0,33.0 69.0,33.0 72.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="72.0,96.0 69.0,99.0 64.0,99.0 61.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="72.0,36.0 75.0,33.0 80.0,33.0 83.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="83.0,96.0 80.0,99.0 75.0,99.0 72.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="83.0,36.0 86.0,33.0 91.0,33.0 94.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="94.0,96.0 91.0,99.0 86.0,99.0 83.0,96.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><text x="6" y="5" font-size="4" font-weight="bold">③ Cylinder (r = 1.4 cm, h = 6 cm)</text><polygon points="126.0,36.0 154.0,36.0 154.0,64.0 126.0,64.0" fill="#c6f6d5" stroke="#2d3748" stroke-width="0.6"/><text x="140.0" y="51.2" font-size="3.6" text-anchor="middle" fill="#4a5568">base</text><polygon points="126.0,36.0 154.0,36.0 140.0,8.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><polygon points="154.0,36.0 154.0,64.0 182.0,50.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><polygon points="126.0,64.0 154.0,64.0 140.0,92.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><polygon points="126.0,36.0 126.0,64.0 98.0,50.0" fill="#bee3f8" stroke="#2d3748" stroke-width="0.6"/><polygon points="140.0,8.0 146.7,10.2 156.2,29.3 154.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="182.0,50.0 179.8,56.7 160.7,66.2 154.0,64.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="140.0,92.0 133.3,89.8 123.8,70.7 126.0,64.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><polygon points="98.0,50.0 100.2,43.3 119.3,33.8 126.0,36.0" fill="#edf2f7" stroke="#718096" stroke-width="0.4" stroke-dasharray="1.5,1"/><text x="98" y="5" font-size="4" font-weight="bold">④ Square pyramid (base 2.8 cm)</text></svg>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around; font-size: 10.5pt;">
+            <span class="box-title">✏️ Record</span>
+            <p>Solid: __________________ &nbsp; Faces: ____ &nbsp; Edges: ____ &nbsp; Vertices: ____</p>
+            <p>Measured dimensions: ____________________________________________</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 3 · Meeting 3 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

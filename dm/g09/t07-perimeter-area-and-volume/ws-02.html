@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2 - Trapeziums and Composite Shapes</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 2: Carpets &amp; Trapeziums<small>Grade 9 · Topic 7 · Meeting 2 — Trapeziums &amp; composite shapes (7.1) · Discovery Learning</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+        <div class="walt"><strong>WALT:</strong> discover the trapezium formula and find the area of composite shapes by splitting or subtracting.</div>
+        <div class="phase engage"><span>🔎 PHASE 1–2 · Stimulation &amp; Problem Statement · The L-Shaped Room</span><span>20 min</span></div>
+        <div class="box action" style="display: flex; gap: 4mm; align-items: center;"><svg viewBox="0 0 132.7 104.0" style="width: 33.2mm; height: 26.0mm;"><polygon points="9.0,95.0 123.7,95.0 123.7,66.3 80.7,66.3 80.7,9.0 9.0,9.0" fill="#fefcbf" stroke="#2d3748" stroke-width="1.2"/><text x="65.3" y="105.9" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">8 m</text><text x="130.9" y="87.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">2 m</text><text x="84.2" y="33.5" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">4 m</text><text x="1.0" y="54.4" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">6 m</text><text x="41.0" y="5.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">5 m</text><text x="109.8" y="71.7" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">3 m</text></svg>
+            <div style="flex: 1;">
+                <p><span class="qn">1.</span> 🏠 We want to buy carpet for this room. There is no single formula — what can we do?</p>
+                <p>Split method: <span class="blank" style="min-width: 15mm;"></span> × <span class="blank" style="min-width: 10mm;"></span> + <span class="blank" style="min-width: 15mm;"></span> × <span class="blank" style="min-width: 10mm;"></span> = <span class="blank"></span> m²</p>
+                <p>Subtract method: <span class="blank" style="min-width: 15mm;"></span> × <span class="blank" style="min-width: 10mm;"></span> − <span class="blank" style="min-width: 15mm;"></span> × <span class="blank" style="min-width: 10mm;"></span> = <span class="blank"></span> m²</p>
+                <p><span class="qn">2.</span> ❓ A trapezium has two parallel sides of <strong>different</strong> lengths. How do we find its area?</p>
+            </div>
+        </div>
+        <div class="phase explore"><span>✂️ PHASE 3–4 · Data Collection &amp; Processing · Cut the Trapezium with a Diagonal</span><span>25 min</span></div>
+        <div class="box action"><span class="box-title">📐 Hands-on 2 (or Interactive Media 2):</span> On the grid trapezium ($a = 4$ cm, $b = 8$ cm, $h = 5$ cm) draw ONE diagonal. You now have two triangles with the same height.</div>
+        <div class="row" style="align-items: center;">
+            <div style="display: flex; justify-content: center;"><svg viewBox="0 0 155.6 104.0" style="width: 38.9mm; height: 26.0mm;"><polygon points="9.0,95.0 146.6,95.0 95.0,9.0 26.2,9.0" fill="#ebf8ff" stroke="#2d3748" stroke-width="1.2"/><text x="79.4" y="105.8" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">b = 8</text><text x="59.0" y="4.2" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">a = 4</text><line x1="26.2" y1="9.0" x2="146.6" y2="95.0" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><line x1="26.2" y1="9.0" x2="26.2" y2="95.0" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><text x="28.2" y="55.0" font-size="9" fill="#c53030" font-weight="bold">h = 5</text></svg></div>
+            <div>
+                <p>Triangle 1 (base $a$): area $= \frac12 \times$ <span class="blank"></span> $\times$ <span class="blank"></span> $=$ <span class="blank"></span></p>
+                <p>Triangle 2 (base $b$): area $= \frac12 \times$ <span class="blank"></span> $\times$ <span class="blank"></span> $=$ <span class="blank"></span></p>
+                <p>Trapezium $=$ <span class="blank"></span> $+$ <span class="blank"></span> $=$ <span class="blank"></span> cm²</p>
+            </div>
+        </div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 Process your data — general formula</span>
+            <p>$\frac{1}{2}ah + \frac{1}{2}bh =$ <span class="blank" style="min-width: 30mm;"></span> &nbsp; (take out the common factor $\frac12 h$)</p>
+            <p>Area of a trapezium $= \frac{1}{2}(\,$<span class="blank"></span>$ + $<span class="blank"></span>$\,) \times$ <span class="blank"></span> &nbsp; — "half the sum of the parallel sides × the height"</p>
+            <p>Check with the grid: count the squares in the Hands-on trapezium. Do you get 30 cm²? <span class="blank"></span></p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 2 · Meeting 2 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+        <div class="phase explain"><span>✔️ PHASE 5 · Verification · Practice</span><span>show the split</span></div>
+        <div class="grow" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 3mm; min-height: 0; "><div class="q"><div><span class="qn">3.</span> Trapezium: parallel sides 6 cm and 10 cm, height 4 cm.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div><div style="flex-shrink: 0; display: flex; align-items: center;"><svg viewBox="0 0 104.0 52.4" style="width: 26.0mm; height: 13.1mm;"><polygon points="9.0,43.4 95.0,43.4 77.8,9.0 26.2,9.0" fill="#ebf8ff" stroke="#2d3748" stroke-width="1.2"/><text x="52.0" y="54.4" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">10</text><text x="52.0" y="4.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">6</text><line x1="26.2" y1="9.0" x2="26.2" y2="43.4" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><text x="28.2" y="29.2" font-size="9" fill="#c53030" font-weight="bold">4</text><polyline points="30.2,43.4 30.2,39.4 26.2,39.4" fill="none" stroke="#c53030" stroke-width="0.8"/></svg></div></div></div><div class="q"><div><span class="qn">4.</span> Trapezium: parallel sides 7.5 cm and 12.5 cm, height 8 cm.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div><div style="flex-shrink: 0; display: flex; align-items: center;"><svg viewBox="0 0 89.9 64.0" style="width: 22.5mm; height: 16.0mm;"><polygon points="9.0,55.0 80.9,55.0 69.4,9.0 26.2,9.0" fill="#ebf8ff" stroke="#2d3748" stroke-width="1.2"/><text x="44.4" y="66.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">12.5</text><text x="48.3" y="4.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">7.5</text><line x1="26.2" y1="9.0" x2="26.2" y2="55.0" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><text x="28.2" y="35.0" font-size="9" fill="#c53030" font-weight="bold">8</text><polyline points="30.2,55.0 30.2,51.0 26.2,51.0" fill="none" stroke="#c53030" stroke-width="0.8"/></svg></div></div></div><div class="q"><div><span class="qn">5.</span> A 10 cm by 8 cm rectangle has a triangle (base 4 cm, height 3 cm) cut out of it. Find the remaining area.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div><div style="flex-shrink: 0; display: flex; align-items: center;"><svg viewBox="0 0 85.5 72.0" style="width: 21.4mm; height: 18.0mm;"><polygon points="9.0,63.0 76.5,63.0 76.5,9.0 9.0,9.0" fill="#ebf8ff" stroke="#2d3748" stroke-width="1.2"/><polygon points="29.2,63.0 56.2,63.0 42.8,42.8" fill="#ffffff" stroke="#2d3748" stroke-width="1.2"/><text x="1.0" y="39.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">8</text><text x="42.8" y="4.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">10</text><line x1="42.8" y1="42.8" x2="42.8" y2="63.0" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><text x="44.8" y="55.9" font-size="9" fill="#c53030" font-weight="bold">3</text></svg></div></div></div><div class="q"><div><span class="qn">6.</span> 🏠 A house wall is a rectangle 8 m by 5 m with a triangular top (base 8 m, height 3 m). The door is 1 m by 2 m. Find the area to paint.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div><div style="flex-shrink: 0; display: flex; align-items: center;"><svg viewBox="0 0 80.0 80.0" style="width: 20.0mm; height: 20.0mm;"><polygon points="9.0,71.0 71.0,71.0 71.0,32.2 40.0,9.0 9.0,32.2" fill="#fefcbf" stroke="#2d3748" stroke-width="1.2"/><polygon points="36.1,71.0 43.9,71.0 43.9,55.5 36.1,55.5" fill="#ffffff" stroke="#2d3748" stroke-width="1.2"/><text x="40.0" y="82.0" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">8</text><text x="78.7" y="56.7" font-size="9" text-anchor="middle" fill="#1a365d" font-weight="bold">5</text><line x1="40.0" y1="9.0" x2="40.0" y2="32.2" stroke="#c53030" stroke-width="1" stroke-dasharray="3,2"/><text x="42.0" y="23.6" font-size="9" fill="#c53030" font-weight="bold">3</text></svg></div></div></div></div>
+        <div class="phase evaluate"><span>🎯 PHASE 6 · Generalization · Working Backwards &amp; Exit Ticket</span><span></span></div>
+        <div class="grow" style="display: grid; grid-template-columns: repeat(1, 1fr); grid-template-rows: repeat(1, 1fr); gap: 3mm; min-height: 0; flex: 0.5 1 0;"><div class="q"><div><span class="qn">7.</span> A trapezium has area 45 cm² and parallel sides 7 cm and 8 cm. Find its height.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div></div>
+        <div class="row" style="height: 32mm;">
+            <div class="q"><div><span class="qn">8.</span> Find the area of a trapezium with parallel sides 5 cm and 9 cm and height 6 cm.</div><div class="work"></div></div>
+<div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can explain the trapezium formula.</td><td>😀 😐 😟</td></tr><tr><td>I can split a composite shape.</td><td>😀 😐 😟</td></tr><tr><td>I can subtract areas that are cut out.</td><td>😀 😐 😟</td></tr></table></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 2 · Meeting 2 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

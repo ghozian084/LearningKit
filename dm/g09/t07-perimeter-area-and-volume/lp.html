@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan - Perimeter, Area and Volume - SMP Semesta</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent-bg: #ebf8ff;
+            --mindful: #2980b9;
+            --meaningful: #27ae60;
+            --joyful: #d35400;
+            --rme: #8e44ad;
+            --char: #c0392b;
+
+            /* WALT & WILT Colors */
+            --walt-header: #1e3a8a;
+            --walt-bg: #e0f2fe;
+            --wilt-header: #831843;
+            --wilt-bg: #fce7f3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 50px;
+            background-color: #fff;
+        }
+        mjx-container { font-size: 1.15em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Print Styles */
+        @page { size: A4; margin: 12mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 9.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            h1, h2, h3 { page-break-after: avoid; margin-top: 15px; margin-bottom: 5px;}
+            .header, .info-grid { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-style: italic; color: #555; }
+
+        /* Header Elements */
+        .header { display: flex; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .header img { width: 90px; margin-right: 20px; }
+        .header-text h1 { margin: 0; font-size: 1.5em; color: var(--primary); }
+        .header-text p { margin: 2px 0; font-size: 0.95em; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 12px; border: 1px solid #dee2e6; margin-bottom: 15px; }
+        .info-grid p { margin: 3px 0; }
+
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 1.2em;}
+
+        .char-dev, .rme, .joyful, .mindful, .meaningful { font-weight: bold; }
+        .char-dev { color: var(--char); } .rme { color: var(--rme); } .joyful { color: var(--joyful); } .mindful { color: var(--mindful); } .meaningful { color: var(--meaningful); }
+
+        /* WALT & WILT Section */
+        .ww-container {
+            display: flex; width: 100%; margin-bottom: 20px; border: 1px solid #cbd5e0; page-break-inside: avoid;
+        }
+        .ww-col { flex: 1; display: flex; flex-direction: column; }
+        .ww-header { color: white; font-weight: bold; text-align: center; padding: 8px; font-size: 1.1em; }
+        .ww-body { padding: 15px; flex: 1; font-size: 0.95em; }
+        .walt-col .ww-header { background-color: var(--walt-header); }
+        .walt-col .ww-body { background-color: var(--walt-bg); color: #1e3a8a;}
+        .wilt-col .ww-header { background-color: var(--wilt-header); }
+        .wilt-col .ww-body { background-color: var(--wilt-bg); color: #831843;}
+        .ww-body h4 { margin-top: 0; margin-bottom: 5px; font-size: 1em;}
+        .ww-body ul, .ww-body ol { margin-top: 5px; padding-left: 20px; margin-bottom: 10px;}
+        .ww-body li { margin-bottom: 5px; }
+
+        /* Discovery Learning Phase Detailed Table Design */
+        .phase-container {
+            border: 1px solid var(--secondary); margin-bottom: 10px; page-break-inside: avoid; display: flex; flex-direction: column;
+        }
+        .phase-header {
+            background-color: var(--secondary); color: white; padding: 5px 12px;
+            font-weight: bold; display: flex; justify-content: space-between; font-size: 0.95em;
+        }
+        .phase-body { display: flex; width: 100%; }
+        .phase-left {
+            width: 22%; background-color: var(--accent-bg); padding: 10px;
+            font-style: italic; color: var(--primary); font-weight: bold;
+            border-right: 1px solid #cbd5e0; font-size: 0.85em;
+        }
+        .phase-right {
+            width: 78%; padding: 10px; background-color: white; font-size: 0.9em;
+        }
+        .phase-right h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 1em; }
+        .phase-right ul { margin: 0 0 5px 0; padding-left: 20px; }
+        .phase-right li { margin-bottom: 3px; }
+        .scaffold-text {
+            color: var(--secondary); font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #f0f4f8; padding: 4px 8px; border-left: 3px solid var(--secondary);
+        }
+        .media-text {
+            color: #6b46c1; font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #faf5ff; padding: 4px 8px; border-left: 3px solid #805ad5;
+        }
+
+        /* Differentiation Table Styles */
+        .diff-header {
+            display: flex; align-items: center; color: var(--primary); font-size: 1.2em; font-weight: bold;
+            margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; page-break-after: avoid;
+        }
+        .diff-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: avoid; font-size: 0.9em;}
+        .diff-table th, .diff-table td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; vertical-align: top; }
+        .diff-table th { background-color: #f8f9fa; color: #2d3748; font-weight: bold; }
+        .diff-table td:first-child { font-weight: bold; color: #2c3e50; width: 25%; }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; page-break-inside: avoid; font-size: 0.9em;}
+        .signature-block { width: 45%; text-align: left; }
+        .signature-title { margin-bottom: 50px; line-height: 1.2; }
+        .signature-name { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Lesson Plan</button>
+
+    <div class="header">
+        <img src="https://semesta.sch.id/wp-content/uploads/2025/09/cropped-Logo-Semesta-2017-200x200-1-1-300x300.png" alt="SMP Semesta Logo">
+        <div class="header-text">
+            <h1>Lesson Plan: Perimeter, Area and Volume</h1>
+            <p><strong>School:</strong> SMP Semesta 2026/2025 | <strong>Grade:</strong> 9</p>
+            <p><strong>Time Allocation:</strong> 6 Meetings (2 x 40 minutes = 80 mins per meeting)</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div>
+            <p><strong>📌 Topic:</strong> 7. Perimeter, area and volume</p>
+            <p><strong>Reference:</strong> Cambridge IGCSE® Math Core & Extended</p>
+            <p><strong>Method:</strong> Discovery Learning</p>
+        </div>
+        <div>
+            <p><strong>Approach:</strong> Deep Learning & Hands-on Activity</p>
+            <p><strong>Character Focus:</strong> <span class="char-dev">Self-Regulated, Creativity, Critical Thinking</span></p>
+            <p><strong>Differentiation:</strong> Extension, Scaffolding, EAL, SEN</p>
+        </div>
+    </div>
+
+    <h2>🎯 Objectives</h2>
+    <ul style="font-size: 0.9em;">
+        <li><strong>C5.2, E5.2:</strong> Carry out calculations involving the perimeter and area of a rectangle, triangle, parallelogram and trapezium.</li>
+        <li><strong>C5.4, E5.4:</strong> Carry out calculations involving the surface area and volume of a cuboid, prism, cylinder, sphere, pyramid, cone.</li>
+    </ul>
+
+    <!-- WALT & WILT SECTION -->
+    <div class="ww-container">
+        <div class="ww-col walt-col">
+            <div class="ww-header">WALT — We Are Learning To...</div>
+            <div class="ww-body">
+                <h4>Learning Objective:</h4>
+                <p>Discover the mathematical formulas for 2D areas and 3D volumes/surface areas through physical manipulation, and apply these formulas to solve complex, real-world geometric problems.</p>
+                <br>
+                <h4>Bloom's Level:</h4>
+                <p>Apply, Analyse & Evaluate (Levels 3–5)</p>
+            </div>
+        </div>
+        <div class="ww-col wilt-col">
+            <div class="ww-header">WILT — What I'm Looking For...</div>
+            <div class="ww-body">
+                <h4>Success Criteria (self-assessable):</h4>
+                <ol>
+                    <li>I can differentiate between 1D (perimeter), 2D (area), and 3D (volume).</li>
+                    <li>I can calculate the area of composite shapes by breaking them down into rectangles, triangles, or trapeziums.</li>
+                    <li>I can visualize and draw 2D nets for 3D solids to calculate surface area.</li>
+                    <li>I can calculate the volume of prisms and cylinders ($V = A \times h$) and pyramids/cones ($V = \frac{1}{3} A \times h$).</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color: #f0fdf4; border-left: 5px solid #38a169; padding: 10px; margin-bottom: 15px; font-size: 0.95em;">
+        <strong>🧰 Materials for every meeting</strong><br>
+        Each meeting has a <strong>Worksheet</strong> and a <strong>Hands-on Activity</strong> (full A4 pages), plus an <strong>Interactive Media</strong> file that is the digital twin of that Hands-on Activity — use it on the projector or student devices when there is no time to print. Students work <strong>individually</strong> throughout.
+    </div>
+
+    <!-- ==========================================
+         MEETING 1
+    =========================================== -->
+    <h2>📅 Meeting 1: Perimeter and Basic 2D Area (Subtopic 7.1)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 & 2 | Stimulation & Problem Statement</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Teacher-led & Class Discussion</div>
+            <div class="phase-right">
+                <h4>Stimulation (10 min):</h4>
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> Display an image of a rice paddy (Sawah). "A farmer wants to put a fence <em>around</em> the Sawah to keep animals out, and buy fertilizer to cover the <em>inside</em> soil. What is the difference between these two mathematical measurements?"</li>
+                </ul>
+                <h4>Problem Statement (10 min):</h4>
+                <ul>
+                    <li>How can we prove the area formula for a Parallelogram and Triangle if we only know the formula for a Rectangle ($L \times W$)?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Data Collection & Processing</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Hands-On Activity</div>
+            <div class="phase-right">
+                <h4>Paper Cutting Discovery (30 min):</h4>
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Give each student the paper parallelograms and triangles on 1 cm grids (Hands-on 1).</li>
+                    <li>Instruct them to make exactly ONE cut with scissors to transform the parallelogram into a perfect rectangle. (They will cut off a right triangle and move it to the other side).</li>
+                    <li><span class="char-dev">Critical Thinking:</span> Students deduce that Area of Parallelogram = Base $\times$ Perpendicular Height.</li>
+                    <li>Repeat for triangles (two identical triangles form a parallelogram/rectangle, hence Area = $\frac{1}{2} b \times h$).</li>
+                    <li><span class="media-text">No time to print? Interactive Media 1 "Cut &amp; Slide" lets students make the cut and slide the pieces on screen.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 5 & 6 | Verification & Generalization</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Independent Practice</div>
+            <div class="phase-right">
+                <h4>Verification & Practice (30 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 1, practicing perimeter and area of basic shapes.</li>
+                    <li><strong>Generalization/Exit Ticket:</strong> Why must we use the <em>perpendicular</em> height, and not the slant length, for area?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 2
+    =========================================== -->
+    <h2>📅 Meeting 2: Trapeziums and Composite Shapes (Subtopic 7.1)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 & 2 | Stimulation & Problem Statement</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Visual Concept Building</div>
+            <div class="phase-right">
+                <h4>Stimulation (10 min):</h4>
+                <ul>
+                    <li>Show an irregular, L-shaped room. "If we want to buy carpet for this room, there is no single formula. What can we do?" (Break it down!).</li>
+                </ul>
+                <h4>Problem Statement (10 min):</h4>
+                <ul>
+                    <li>"What about a Trapezium? It has two parallel sides, but they are different lengths. How do we find its area?"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Data Collection & Processing</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Guided Discovery (Individual)</div>
+            <div class="phase-right">
+                <h4>Discovering the Trapezium Formula (25 min):</h4>
+                <ul>
+                    <li>Each student uses the trapezium on grid paper (Hands-on 2) and draws a diagonal line cutting it into TWO triangles.</li>
+                    <li><span class="char-dev">Self-Regulated:</span> Students realize one triangle's base is '$a$' and the other's base is '$b$'. Both share height '$h$'.</li>
+                    <li>They process the formula: $\frac{1}{2}ah + \frac{1}{2}bh = \frac{1}{2}(a+b)h$.</li>
+                    <li><span class="media-text">No time to print? Interactive Media 2 "Trapezium &amp; Composite Lab" shows the diagonal split and the split-or-subtract methods for L-shaped rooms.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 5 & 6 | Verification & Generalization</span><span>[35 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Independent Practice</div>
+            <div class="phase-right">
+                <h4>Verification & Practice (35 min):</h4>
+                <ul>
+                    <li>Worksheet 2: Calculating area of trapeziums and complex composite shapes (adding and subtracting areas).</li>
+                    <li><span class="scaffold-text">Scaffold: Provide EAL/SEN students with dotted lines showing exactly where to split composite shapes into simpler rectangles.</span></li>
+                    <li><strong>Generalization/Exit Ticket:</strong> Find the area of a trapezium with parallel sides 5 cm and 9 cm and height 6 cm.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 3
+    =========================================== -->
+    <h2>📅 Meeting 3: 3D Objects and Nets (Subtopic 7.2)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 & 2 | Stimulation & Problem Statement</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Hands-On Investigation</div>
+            <div class="phase-right">
+                <h4>Stimulation (10 min):</h4>
+                <ul>
+                    <li>Hold up an empty cereal box (Cuboid) and a Toblerone box (Triangular Prism). </li>
+                    <li>"A 3D object takes up space. But its outside 'skin' is completely flat. How can we flatten these objects?"</li>
+                </ul>
+                <h4>Problem Statement (10 min):</h4>
+                <ul>
+                    <li>How do we accurately draw a 2D map (a 'net') that can fold perfectly into a 3D solid?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Data Collection & Processing</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Motoric Activity (Individual)</div>
+            <div class="phase-right">
+                <h4>Deconstructing Solids (30 min):</h4>
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Each student is given a small cardboard packaging box. They must physically cut along the edges to unfold it into a single, flat 2D net.</li>
+                    <li>Students trace their nets onto A3 paper and label the dimensions (Length, Width, Height) on the corresponding 2D flaps. Printed nets to cut and fold (Hands-on 3) are provided for anyone without a box.</li>
+                    <li><span class="media-text">No time to print? Interactive Media 3 "Net Folder" folds and unfolds the nets of a cuboid, triangular prism, cylinder and square pyramid in 3D.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 5 & 6 | Verification & Generalization</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction & Practice</div>
+            <div class="phase-right">
+                <h4>Generalization (30 min):</h4>
+                <ul>
+                    <li>Teacher formalizes the definition of Prisms (uniform cross-section).</li>
+                    <li>Worksheet 3: Visualizing and drawing nets for cylinders (a rectangle wrapping around two circles) and pyramids.</li>
+                    <li><strong>Exit Ticket:</strong> If a cylinder has height $h$ and radius $r$, what is the length of the rectangular part of its net? (Answer: $2\pi r$).</li>
+                    <li><em>Teacher key — Worksheet 3 "nets of a cube":</em> A ✅, B ❌, C ✅, D ❌, E ✅, F ❌ (students can check by folding them in Interactive Media 3, Tab 2).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 4
+    =========================================== -->
+    <h2>📅 Meeting 4: Surface Area of Solids (Subtopic 7.3)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 & 2 | Stimulation & Problem Statement</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Contextual Application</div>
+            <div class="phase-right">
+                <h4>Stimulation (15 min):</h4>
+                <ul>
+                    <li><span class="meaningful">Meaningful:</span> "You are hired to wrap a gift box. Wrapping paper costs Rp 5,000 per square meter. How do you calculate exactly how much paper you need without wasting any?"</li>
+                    <li>Problem: How do we translate our 2D nets into a total Surface Area calculation?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Data Collection & Processing</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Individual Calculation</div>
+            <div class="phase-right">
+                <h4>Calculating the Nets (30 min):</h4>
+                <ul>
+                    <li>Students return to the nets they traced in Meeting 3 (or the measured nets in Hands-on 4). They measure the exact dimensions with rulers.</li>
+                    <li><span class="char-dev">Critical Thinking:</span> Students calculate the area of each individual polygon on their net, then sum them up to find the Total Surface Area (TSA).</li>
+                    <li>Teacher derives the cylinder TSA formula on the board: $2\pi r^2 + 2\pi rh$.</li>
+                    <li><span class="media-text">No time to print? Interactive Media 4 "Gift Wrap Calculator" unfolds each solid and adds up its face areas live.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 5 & 6 | Verification & Generalization</span><span>[35 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Independent Practice</div>
+            <div class="phase-right">
+                <h4>Elaborate (35 min):</h4>
+                <ul>
+                    <li>Worksheet 4: Calculating Surface Area of cuboids, triangular prisms, and cylinders.</li>
+                    <li><span class="scaffold-text">Scaffold: Students list every face in a table (shape, dimensions, area, how many) before adding up.</span></li>
+                    <li><span class="scaffold-text">Extension: Students calculate the surface area of a composite solid (e.g., a cylinder glued on top of a cuboid - remembering to subtract the hidden overlapping area!).</span></li>
+                    <li><strong>Generalization/Exit Ticket:</strong> Find the total surface area of a cylinder with radius 5 cm and height 10 cm.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 5
+    =========================================== -->
+    <h2>📅 Meeting 5: Volume of Solids (Subtopic 7.3)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 & 2 | Stimulation & Problem Statement</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Teacher-led Exploration</div>
+            <div class="phase-right">
+                <h4>Stimulation (15 min):</h4>
+                <ul>
+                    <li>"Surface area is the 'skin'. Volume is the 'meat'. How much space is inside?"</li>
+                    <li>Show a prism. Explain that a prism is just its base shape stacked repeatedly to a certain height. Hence, $V = \text{Area of Base} \times \text{Height}$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Data Collection & Processing</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Hands-On Discovery (Individual)</div>
+            <div class="phase-right">
+                <h4>The "Rice Pouring" Experiment (30 min):</h4>
+                <ul>
+                    <li><span class="joyful">Joyful:</span> Each student builds a hollow square prism and a hollow square pyramid with the <strong>exact same base and height</strong> from the nets in Hands-on 5 (base 5 cm, height 6 cm).</li>
+                    <li>Task: Fill the pyramid with rice (or water) and pour it into the prism. How many pyramids does it take to fill the prism perfectly?</li>
+                    <li>Students discover the relationship: It takes exactly 3! Therefore, Volume of a Pyramid/Cone = $\frac{1}{3} \times \text{Base Area} \times \text{Height}$.</li>
+                    <li><span class="media-text">No time to print? Interactive Media 5 "Rice Pouring Lab" pours virtual rice from pyramids and cones into prisms and cylinders.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 5 & 6 | Verification & Generalization</span><span>[35 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Independent Practice</div>
+            <div class="phase-right">
+                <h4>Elaborate (35 min):</h4>
+                <ul>
+                    <li>Worksheet 5: Calculating volumes of cylinders, prisms, cones, and pyramids.</li>
+                    <li><strong>Exit Ticket:</strong> A cone and a cylinder have the same radius and height. The cylinder's volume is 300 cm³. What is the cone's volume?</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 6
+    =========================================== -->
+    <h2>📅 Meeting 6: Spheres & Chapter Evaluation (Subtopic 7.3)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1-3 | Spheres & Final Synthesis</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Concept & Demonstration</div>
+            <div class="phase-right">
+                <h4>Hook — Peeling the Orange (15 min):</h4>
+                <ul>
+                    <li>Show a sphere (an orange). Draw 4 circles on paper using the orange's diameter (template in Hands-on 6).</li>
+                    <li>Peel the orange and show that the peel perfectly fills exactly 4 flat circles.</li>
+                    <li>Generalize: Surface Area of Sphere = $4 \pi r^2$. Volume = $\frac{4}{3} \pi r^3$.</li>
+                    <li><span class="media-text">No time to print or no oranges? Interactive Media 6 "Orange Peel &amp; Review" peels a virtual orange into 4 circles and runs the review games.</span></li>
+                </ul>
+                <h4>Synthesis (10 min):</h4>
+                <ul>
+                    <li>Quick whiteboard review distinguishing 1D (Perimeter), 2D (Area), and 3D (Volume) units, then the "I have… who has…?" review loop (Hands-on 6).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 4-6 | Summative Evaluation</span><span>[55 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Summative Test</div>
+            <div class="phase-right">
+                <h4>Chapter 7 Evaluation (45 min):</h4>
+                <ul>
+                    <li>Remove visual aids. Distribute the Chapter Test (Worksheet 6, password-protected) covering composite areas, working backwards from volume, and calculating surface areas from nets.</li>
+                    <li><span class="char-dev">Self-Regulated:</span> Students manage their time through complex multi-step geometry problems.</li>
+                </ul>
+                <h4>Closure & Reflection (10 min):</h4>
+                <ul>
+                    <li>Self-Reflection: "Which formula did you find most difficult to memorize? Did the physical experiments (rice/paper cutting) help you remember them?"</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-break"></div>
+
+    <!-- ==========================================
+         DIFFERENTIATION STRATEGIES
+    =========================================== -->
+    <div class="diff-header">
+        🌟 Differentiation Strategies
+    </div>
+    <table class="diff-table">
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Strategies & Actions in Class</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Extension (High Achievers)</td>
+                <td>Challenge with "working backwards" problems (e.g., given the volume of a cylinder is $500\pi$ and height is $20$, find the radius). Introduce calculating the volume and surface area of a Frustum (a cone with the top cut off) using similar triangles.</td>
+            </tr>
+            <tr>
+                <td>Scaffolding (Middle/Low)</td>
+                <td>Provide a physical "Formula Cheat Sheet" for them to refer to during exercises. Provide composite shapes with dotted lines already drawn in to show exactly where to split the shape into rectangles/triangles.</td>
+            </tr>
+            <tr>
+                <td>EAL (English Additional Language)</td>
+                <td>Provide a visual glossary: <em>Perimeter (Keliling), Area (Luas), Volume (Volume), Surface Area (Luas Permukaan), Prism (Prisma), Pyramid (Limas)</em>. Emphasize matching the English word to a 3D picture.</td>
+            </tr>
+            <tr>
+                <td>SEN (Special Educational Needs)</td>
+                <td>During the 3D Net activity, provide pre-cut nets with fold lines clearly marked so they only need to focus on folding and measuring, reducing fine-motor strain. The Interactive Media versions of each activity can replace cutting entirely.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-title">Acknowledged by,<br><strong>Principal</strong></div>
+            <div class="signature-name">Imas Walijah, S.Pd., M.Ed</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-title"><br><strong>Subject Teacher</strong></div>
+            <div class="signature-name">Muhammad Ghozian Kafi Ahsan, S.Pd., M.Pd., Gr.</div>
+        </div>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+    <script>document.getElementById('print-footer').style.display = 'block';</script>
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 3 - Net Folder</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <h1>📦 Digital Lab 3: Net Folder</h1>
+        <span class="badge">Grade 9 · Topic 7 · Meeting 3 · Digital twin of Hands-on 3</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Fold the Nets</button><button class="tab-btn" onclick="openTab('s2', this)">2. Cube Net Test</button><button class="tab-btn" onclick="openTab('s3', this)">3. Exercises</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>📦 Net Folder — Watch a Net Become a Solid</h2>
+                <div class="twin">💡 No printer and no boxes? On-screen version of <strong>Hands-on 3</strong>. Drag the picture to turn it around.</div>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>solid</label><select id="solid" onchange="loadSolid()">
+                            <option value="cuboid">① Cuboid 5 × 3 × 2</option><option value="tri">② Triangular prism (equilateral)</option>
+                            <option value="cyl">③ Cylinder</option><option value="pyr">④ Square pyramid</option></select>
+                        <label>fold</label><input type="range" id="fold" min="0" max="100" value="0" oninput="draw3()">
+                        <button class="action-btn" onclick="animFold(1)">Fold ▶</button>
+                        <button class="action-btn ghost" onclick="animFold(0)">Unfold ◀</button>
+                    </div>
+                    <canvas class="plot" id="cv1" style="height: 420px; cursor: grab;"></canvas>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>🧊 Is It a Net of a Cube?</h2>
+                <p>These are the six shapes from Worksheet 3, Question "Which ones are nets of a cube?". Predict first, then <strong>fold</strong> to test. A real net closes into a cube with no overlapping faces.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>shape</label><select id="cube" onchange="cubeT=0; fold2.value=0; draw4()"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select>
+                        <label>my prediction</label><select id="pred"><option value="">choose…</option><option value="1">Yes, it is a net</option><option value="0">No, it is not</option></select>
+                        <label>fold</label><input type="range" id="fold2" min="0" max="100" value="0" oninput="draw4()">
+                        <button class="action-btn" onclick="animFold2()">Fold ▶</button>
+                    </div>
+                    <canvas class="plot" id="cv2" style="height: 380px; cursor: grab;"></canvas>
+                    <div class="sim-text" id="t2"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>✍️ Faces, Edges, Vertices &amp; the Cylinder Net</h2>
+                <div class="ex-row">How many edges does a triangular prism have? <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 9, 0, 'fe1', 'a triangular prism has 5 faces, 9 edges, 6 vertices')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">How many vertices does a square-based pyramid have? <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 5, 0, 'fe2', '4 at the base + 1 apex = 5')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">Cylinder: radius 3 cm, height 10 cm. Length of the rectangle in its net (cm, 2 d.p.) = <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 18.85, 0.01, 'fe3', '2π × 3 ≈ 18.85 cm — it wraps once around the circle')">Check</button><div class="feedback" id="fe3"></div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        // ---------- Minimal net-folding 3D engine ----------
+        const M4 = {
+            mul(a, b) { const r = new Array(16).fill(0); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) for (let k = 0; k < 4; k++) r[i * 4 + j] += a[i * 4 + k] * b[k * 4 + j]; return r; },
+            id() { return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; },
+            ap(m, p) { return [m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[3], m[4] * p[0] + m[5] * p[1] + m[6] * p[2] + m[7], m[8] * p[0] + m[9] * p[1] + m[10] * p[2] + m[11]]; },
+            rot(P, u, th) {
+                const [x, y, z] = u, c = Math.cos(th), s = Math.sin(th), t = 1 - c;
+                const R = [t * x * x + c, t * x * y - s * z, t * x * z + s * y, 0, t * x * y + s * z, t * y * y + c, t * y * z - s * x, 0, t * x * z - s * y, t * y * z + s * x, t * z * z + c, 0, 0, 0, 0, 1];
+                return M4.mul([1, 0, 0, P[0], 0, 1, 0, P[1], 0, 0, 1, P[2], 0, 0, 0, 1], M4.mul(R, [1, 0, 0, -P[0], 0, 1, 0, -P[1], 0, 0, 1, -P[2], 0, 0, 0, 1]));
+            },
+        };
+        // face: { pts: [[x,y],...], parent: index|-1, hinge: [[x,y],[x,y]], angle: radians, color, label }
+        function foldFaces(faces, t) {
+            const mats = [];
+            const get = i => {
+                if (mats[i]) return mats[i];
+                const f = faces[i];
+                if (f.parent < 0) return (mats[i] = M4.id());
+                const [A, B] = f.hinge, L = Math.hypot(B[0] - A[0], B[1] - A[1]), u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L, 0];
+                const cx = f.pts.reduce((s, p) => s + p[0], 0) / f.pts.length, cy = f.pts.reduce((s, p) => s + p[1], 0) / f.pts.length;
+                const test = M4.ap(M4.rot([A[0], A[1], 0], u, 0.3), [cx, cy, 0]);
+                const sign = test[2] > 0 ? 1 : -1;
+                return (mats[i] = M4.mul(get(f.parent), M4.rot([A[0], A[1], 0], u, sign * f.angle * t)));
+            };
+            return faces.map((f, i) => f.pts.map(p => M4.ap(get(i), [p[0], p[1], 0])));
+        }
+        function render3D(cv, faces, t, view, opts) {
+            const c = setupCanvas(cv); if (!c) return; const { ctx, W, H } = c;
+            const world = foldFaces(faces, t);
+            const all = world.flat(), flat = faces.map(f => f.pts).flat();
+            const cx = all.reduce((s, p) => s + p[0], 0) / all.length, cy = all.reduce((s, p) => s + p[1], 0) / all.length, cz = all.reduce((s, p) => s + p[2], 0) / all.length;
+            const ext = Math.max(...flat.map(p => p[0])) - Math.min(...flat.map(p => p[0])), eyt = Math.max(...flat.map(p => p[1])) - Math.min(...flat.map(p => p[1]));
+            const k = Math.min(W, H) / (Math.hypot(ext, eyt) * 1.08);
+            const cyw = Math.cos(view.yaw), syw = Math.sin(view.yaw), cp = Math.cos(view.pitch), sp = Math.sin(view.pitch);
+            const proj = p => { const x = p[0] - cx, y = p[1] - cy, z = p[2] - cz; const x1 = x * cyw - y * syw, y1 = x * syw + y * cyw; const y2 = y1 * cp - z * sp, z2 = y1 * sp + z * cp; return [W / 2 + x1 * k, H / 2 - z2 * k, y2]; };
+            const items = world.map((pts, i) => { const pp = pts.map(proj); return { i, pp, depth: pp.reduce((s, p) => s + p[2], 0) / pp.length }; });
+            items.sort((a, b) => b.depth - a.depth);
+            items.forEach(({ i, pp }) => {
+                const f = faces[i];
+                poly(ctx, pp.map(p => [p[0], p[1]]), f.color, f.noStroke ? null : '#2d3748');
+                if (f.noStroke) { ctx.strokeStyle = 'rgba(45,55,72,0.25)'; ctx.lineWidth = 1; ctx.beginPath(); pp.forEach((p, j) => j ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.stroke(); }
+                if (f.label && (!opts || opts.labels !== false)) { const lx = pp.reduce((s, p) => s + p[0], 0) / pp.length, ly = pp.reduce((s, p) => s + p[1], 0) / pp.length; label(ctx, lx, ly + 5, f.label, '#1a202c', 13); }
+            });
+        }
+        function hookDrag(cv, view, redrawFn) {
+            let drag = null;
+            cv.addEventListener('pointerdown', e => { drag = [e.clientX, e.clientY]; cv.setPointerCapture(e.pointerId); });
+            cv.addEventListener('pointermove', e => { if (!drag) return; view.yaw += (e.clientX - drag[0]) * 0.01; view.pitch = Math.max(-0.3, Math.min(1.55, view.pitch + (e.clientY - drag[1]) * 0.01)); drag = [e.clientX, e.clientY]; redrawFn(); });
+            cv.addEventListener('pointerup', () => drag = null);
+        }
+        const rectPts = (x0, y0, x1, y1) => [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+        function cuboidNet(l, w, h) {
+            const P = Math.PI / 2;
+            return [
+                { pts: rectPts(0, 0, l, w), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'base', area: l * w, name: 'base', dims: l + ' × ' + w },
+                { pts: rectPts(0, -h, l, 0), parent: 0, hinge: [[0, 0], [l, 0]], angle: P, color: 'rgba(190,227,248,0.92)', label: 'front', area: l * h, name: 'front', dims: l + ' × ' + h },
+                { pts: rectPts(0, w, l, w + h), parent: 0, hinge: [[0, w], [l, w]], angle: P, color: 'rgba(190,227,248,0.92)', label: 'back', area: l * h, name: 'back', dims: l + ' × ' + h },
+                { pts: rectPts(0, w + h, l, 2 * w + h), parent: 2, hinge: [[0, w + h], [l, w + h]], angle: P, color: 'rgba(254,252,191,0.92)', label: 'lid', area: l * w, name: 'lid (top)', dims: l + ' × ' + w },
+                { pts: rectPts(-h, 0, 0, w), parent: 0, hinge: [[0, 0], [0, w]], angle: P, color: 'rgba(254,215,215,0.92)', label: 'side', area: h * w, name: 'left side', dims: h + ' × ' + w },
+                { pts: rectPts(l, 0, l + h, w), parent: 0, hinge: [[l, 0], [l, w]], angle: P, color: 'rgba(254,215,215,0.92)', label: 'side', area: h * w, name: 'right side', dims: h + ' × ' + w },
+            ];
+        }
+        function triPrismNet(a, p, q, L) {
+            // cross-section triangle: (0,0), (a,0), (p,q); root = bottom rectangle a × L
+            const lenL = Math.hypot(p, q), lenR = Math.hypot(a - p, q), angA = Math.atan2(q, p), angB = Math.atan2(q, a - p);
+            const r = v => Math.round(v * 100) / 100;
+            return [
+                { pts: rectPts(0, 0, a, L), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'rectangle', area: a * L, name: 'rectangle', dims: r(a) + ' × ' + L },
+                { pts: rectPts(-lenL, 0, 0, L), parent: 0, hinge: [[0, 0], [0, L]], angle: Math.PI - angA, color: 'rgba(190,227,248,0.92)', label: 'rectangle', area: lenL * L, name: 'rectangle', dims: r(lenL) + ' × ' + L },
+                { pts: rectPts(a, 0, a + lenR, L), parent: 0, hinge: [[a, 0], [a, L]], angle: Math.PI - angB, color: 'rgba(190,227,248,0.92)', label: 'rectangle', area: lenR * L, name: 'rectangle', dims: r(lenR) + ' × ' + L },
+                { pts: [[0, L], [a, L], [p, L + q]], parent: 0, hinge: [[0, L], [a, L]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.92)', label: '▲', area: a * q / 2, name: 'triangle', dims: '½ × ' + r(a) + ' × ' + r(q) },
+                { pts: [[0, 0], [a, 0], [p, -q]], parent: 0, hinge: [[0, 0], [a, 0]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.92)', label: '▲', area: a * q / 2, name: 'triangle', dims: '½ × ' + r(a) + ' × ' + r(q) },
+            ];
+        }
+        function cylinderNet(rad, h, N) {
+            N = N || 24; const s = 2 * Math.PI * rad / N, i0 = N / 2, faces = [], idx = {};
+            const order = [i0]; for (let d = 1; d < N; d++) { if (i0 + d < N) order.push(i0 + d); if (i0 - d >= 0) order.push(i0 - d); }
+            order.forEach(i => {
+                const parent = i === i0 ? -1 : idx[i > i0 ? i - 1 : i + 1], hx = (i > i0 ? i : i + 1) * s;
+                idx[i] = faces.length;
+                faces.push({ pts: rectPts(i * s, 0, (i + 1) * s, h), parent, hinge: parent < 0 ? null : [[hx, 0], [hx, h]], angle: 2 * Math.PI / N, color: 'rgba(190,227,248,0.95)', noStroke: true, label: i === i0 ? '' : '', strip: true });
+            });
+            const Rp = s / (2 * Math.sin(Math.PI / N));
+            const ngon = (y0, dir) => { const pts = [], cxp = (i0 + 0.5) * s, cyp = y0 + dir * Rp * Math.cos(Math.PI / N); for (let j = 0; j < N; j++) { const a = -Math.PI / 2 * dir + (j + 0.5) * 2 * Math.PI / N; pts.push([cxp + Rp * Math.cos(a), cyp + Rp * Math.sin(a) * 1]); } return pts; };
+            faces.push({ pts: ngon(h, 1), parent: 0, hinge: [[i0 * s, h], [(i0 + 1) * s, h]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.95)', label: 'circle', area: Math.PI * rad * rad, name: 'top circle', dims: 'r = ' + rad });
+            faces.push({ pts: ngon(0, -1), parent: 0, hinge: [[i0 * s, 0], [(i0 + 1) * s, 0]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.95)', label: 'circle', area: Math.PI * rad * rad, name: 'bottom circle', dims: 'r = ' + rad });
+            faces[0].label = 'curved'; faces[0].area = 2 * Math.PI * rad * h; faces[0].name = 'curved surface (rectangle)'; faces[0].dims = '2πr × h = ' + (Math.round(2 * Math.PI * rad * 100) / 100) + ' × ' + h;
+            return faces;
+        }
+        function pyramidNet(b, ap) {
+            const ang = Math.PI - Math.acos((b / 2) / ap);
+            return [
+                { pts: rectPts(0, 0, b, b), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'base' },
+                { pts: [[0, 0], [b, 0], [b / 2, -ap]], parent: 0, hinge: [[0, 0], [b, 0]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[b, 0], [b, b], [b + ap, b / 2]], parent: 0, hinge: [[b, 0], [b, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[0, b], [b, b], [b / 2, b + ap]], parent: 0, hinge: [[0, b], [b, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[0, 0], [0, b], [-ap, b / 2]], parent: 0, hinge: [[0, 0], [0, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+            ];
+        }
+        function cubeNetFromCells(cells) {
+            const key = c => c[0] + ',' + c[1], idx = {}, faces = [], cols = ['rgba(198,246,213,0.92)', 'rgba(190,227,248,0.92)', 'rgba(254,252,191,0.92)', 'rgba(254,215,215,0.92)', 'rgba(233,216,253,0.92)', 'rgba(178,245,234,0.92)'];
+            const queue = [[cells[0], -1, null]]; const seen = new Set([key(cells[0])]);
+            while (queue.length) {
+                const [c, parent, hinge] = queue.shift(); idx[key(c)] = faces.length;
+                faces.push({ pts: rectPts(c[0], -c[1] - 1, c[0] + 1, -c[1]), parent, hinge, angle: Math.PI / 2, color: cols[faces.length % 6], label: String(faces.length + 1) });
+                const me = faces.length - 1;
+                [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+                    const n = [c[0] + dx, c[1] + dy];
+                    if (cells.some(q => q[0] === n[0] && q[1] === n[1]) && !seen.has(key(n))) {
+                        seen.add(key(n));
+                        let h;
+                        if (dx === 1) h = [[c[0] + 1, -c[1] - 1], [c[0] + 1, -c[1]]];
+                        if (dx === -1) h = [[c[0], -c[1] - 1], [c[0], -c[1]]];
+                        if (dy === 1) h = [[c[0], -c[1] - 1], [c[0] + 1, -c[1] - 1]];
+                        if (dy === -1) h = [[c[0], -c[1]], [c[0] + 1, -c[1]]];
+                        queue.push([n, me, h]);
+                    }
+                });
+            }
+            return faces;
+        }
+
+        const view = { yaw: 0.6, pitch: 0.95 }, view2 = { yaw: 0.6, pitch: 0.95 };
+        let faces = [], foldAnim = null;
+        const INFO = { cuboid: ['Cuboid: 6 faces, 12 edges, 8 vertices', 'cuboid'], tri: ['Triangular prism: 5 faces, 9 edges, 6 vertices', 'prism'], cyl: ['Cylinder: 2 circles + 1 curved surface (a rectangle 2πr long)', 'not a polyhedron'], pyr: ['Square pyramid: 5 faces, 8 edges, 5 vertices', 'pyramid'] };
+        function loadSolid() {
+            const s = solid.value;
+            faces = s === 'cuboid' ? cuboidNet(5, 3, 2) : s === 'tri' ? triPrismNet(3, 1.5, 1.5 * Math.sqrt(3), 6) : s === 'cyl' ? cylinderNet(1.4, 6, 24) : pyramidNet(2.8, 2.8);
+            fold.value = 0; draw3();
+        }
+        function draw3() { render3D(cv1, faces, +fold.value / 100, view); t1.textContent = INFO[solid.value][0] + (+fold.value > 98 ? ' ✔️ folded!' : ''); }
+        function animFold(target) {
+            if (foldAnim) cancelAnimationFrame(foldAnim); const start = +fold.value / 100, t0 = performance.now();
+            const step = now => { const k = Math.min(1, (now - t0) / 1600); fold.value = (start + (target - start) * k) * 100; draw3(); if (k < 1) foldAnim = requestAnimationFrame(step); };
+            foldAnim = requestAnimationFrame(step);
+        }
+        const CUBES = {
+            A: [[[1, 1], [0, 1], [2, 1], [3, 1], [1, 0], [1, 2]], true], B: [[[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]], false],
+            C: [[[1, 1], [0, 0], [0, 1], [2, 1], [3, 1], [3, 2]], true], D: [[[2, 1], [0, 1], [1, 1], [3, 1], [4, 1], [2, 0]], false],
+            E: [[[2, 0], [0, 0], [1, 0], [2, 1], [3, 1], [4, 1]], true], F: [[[1, 1], [0, 1], [2, 1], [3, 1], [1, 0], [2, 0]], false],
+        };
+        let cubeT = 0, anim2 = null;
+        function draw4() {
+            const [cells, ok] = CUBES[cube.value], f = cubeNetFromCells(cells), t = +fold2.value / 100;
+            render3D(cv2, f, t, view2);
+            const p = pred.value;
+            t2.innerHTML = t < 0.98 ? 'Fold it to test your prediction.' :
+                (ok ? '✅ It closes into a cube — this IS a net of a cube.' : '❌ Faces overlap or a side stays open — this is NOT a net of a cube.') +
+                (p === '' ? '' : (String(+ok) === p ? ' <span class="good">Your prediction was right!</span>' : ' <span class="bad">Your prediction was wrong — look at which faces collide.</span>'));
+        }
+        function animFold2() { if (anim2) cancelAnimationFrame(anim2); const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / 1600); fold2.value = k * 100; draw4(); if (k < 1) anim2 = requestAnimationFrame(step); }; anim2 = requestAnimationFrame(step); }
+        hookDrag(cv1, view, draw3); hookDrag(cv2, view2, draw4);
+        function redraw() { draw3(); draw4(); }
+        window.addEventListener('load', () => { loadSolid(); draw4(); });
+
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

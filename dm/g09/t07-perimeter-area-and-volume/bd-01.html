@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Slides - Perimeter, Area and Volume</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Recipe Card */
+        .recipe-card { background: #fffaf0; border: 2px solid #dd6b20; border-radius: 10px; padding: 12px 18px; }
+        .recipe-card table { width: 100%; border-collapse: collapse; font-size: 1.1em; }
+        .recipe-card td { padding: 5px 8px; border-bottom: 1px dotted #f6ad55; }
+
+        /* Fraction circles (CSS conic) */
+        .circle-row { display: flex; gap: 25px; align-items: center; justify-content: center; margin: 8px 0; }
+        .frac-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #2d3748; }
+        .circle-caption { text-align: center; font-weight: bold; margin-top: 4px; }
+
+        /* Multiplier table */
+        .mult-table { border-collapse: collapse; width: 100%; font-size: 1.1em; }
+        .mult-table th, .mult-table td { border: 1px solid #cbd5e0; padding: 6px 10px; text-align: center; }
+        .mult-table th { background: #ebf8ff; color: var(--primary); }
+
+        /* Frog Jumps */
+        .jump-line { font-family: 'Courier New', monospace; font-size: 1.6em; letter-spacing: 6px; text-align: center; margin: 6px 0; }
+        .jump-line .a-digit { background: #fbd38d; border-radius: 4px; padding: 0 3px; }
+
+        /* Group mini cards */
+        .group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .group-card { border-left: 6px solid; background: #f7fafc; padding: 8px 12px; border-radius: 6px; font-size: 0.95em; }
+        .group-card strong { display: block; color: var(--primary); }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 20px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <div class="slide title-slide active">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Perimeter, Area &amp; Volume</h1>
+                <h2>Grade 9 Mathematics — Topic 7</h2>
+                <div class="five-e"><span class="b-engage">Stimulation</span><span class="b-engage">Problem</span><span class="b-explore">Data</span><span class="b-explore">Processing</span><span class="b-explain">Verification</span><span class="b-evaluate">Generalization</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">🔍 Discovery Learning — cut it, fold it, fill it!</p>
+                <p><em>Every Hands-on Activity has an Interactive Media twin — use it when there is no time to print.</em></p>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 1 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-engage tag">Stimulation</span> Fence or Fertiliser?</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Sawah</span> 🌾</h3>
+                            <p>A farmer wants to put a fence <em>around</em> the sawah, and buy fertiliser to cover the <em>inside</em> soil.</p>
+                            <p>What is the difference between these two measurements? Which units?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span></h3>
+                            <p>We only know Area of a rectangle $= L \times W$. How can we <strong>prove</strong> the area formulas of a parallelogram and a triangle?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">1D vs 2D</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explore tag">Data</span> One Cut, Then Slide</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 1</span> ✂️ (or Interactive Media 1)</h3>
+                            <ul>
+                                <li>Make exactly <strong>ONE</strong> cut to turn the parallelogram into a rectangle.</li>
+                                <li>Join two identical triangles. What shape appears?</li>
+                                <li>Count squares before and after.</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span></h3>
+                            <p>Parallelogram $= b \times h$ &nbsp;&nbsp; Triangle $= \frac12 b \times h$</p>
+                            <p>$h$ = <strong>perpendicular</strong> height, not the slant side!</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Draw the Cut</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 1</span></h3>
+                            <p>Parallelogram: base 10, slant side 7, height 6 → P = 2(10 + 7) = 34 cm, A = 10 × 6 = 60 cm²</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Why must we use the <em>perpendicular</em> height, and not the slant length, for area?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 2 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-engage tag">Stimulation</span> Carpet for an L-Shaped Room</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">No single formula!</span> 🏠</h3>
+                            <p>8 m × 6 m room with a 3 m × 4 m corner missing. What can we do?</p>
+                            <p><strong>Split</strong>: $5 \times 6 + 3 \times 2 = 36$ m² &nbsp; <strong>Subtract</strong>: $48 - 12 = 36$ m²</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span></h3>
+                            <p>A trapezium has two parallel sides of <strong>different</strong> lengths. How do we find its area?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Split or Subtract?</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explore tag">Data</span> The Diagonal Split</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 2</span> 📐 (or Interactive Media 2)</h3>
+                            <p>Draw ONE diagonal: two triangles with bases $a$ and $b$ and the same height $h$.</p>
+                            <p style="font-size: 1.3em;">$\frac12 ah + \frac12 bh = \frac12(a + b)h$</p>
+                        </div>
+                        <div class="content-box">
+                            <p>Check: $a = 4$, $b = 8$, $h = 5$ → $\frac12(12)(5) = 30$ cm² — count the squares!</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Your Trapezium</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 2</span></h3>
+                            <p>Composite shapes: <strong>add</strong> the pieces or <strong>subtract</strong> the holes.</p>
+                            <p><em>Scaffold: dotted lines show where to split.</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Trapezium with parallel sides 5 cm and 9 cm, height 6 cm. Area?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 3 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-engage tag">Stimulation</span> Flattening Solids</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Cereal box &amp; Toblerone box</span> 📦</h3>
+                            <p>A 3D object takes up space — but its outside "skin" is completely flat. How can we flatten it?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span></h3>
+                            <p>How do we draw a 2D map (a <strong>net</strong>) that folds perfectly into a 3D solid?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Faces · Edges · Vertices</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explore tag">Data</span> Unfold a Box</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 3</span> ✂️ (or Interactive Media 3: Net Folder)</h3>
+                            <ul>
+                                <li>Cut along the edges into ONE flat net.</li>
+                                <li>Trace it and label length, width, height.</li>
+                                <li>No box? Cut and fold the printed nets.</li>
+                            </ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Prism</span></h3>
+                            <p>Same cross-section all the way through. Cylinder net: 2 circles + a rectangle $2\pi r$ long.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Sketch Your Net</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 3</span></h3>
+                            <p>Which shapes are nets of a cube? Test them in the Net Folder (Interactive Media 3, Tab 2).</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>A cylinder has radius $r$ and height $h$. How long is the rectangle in its net?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 4 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-engage tag">Stimulation</span> Wrap the Gift Box</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Gift wrapping</span> 🎁</h3>
+                            <p>Paper costs Rp 5 000 per m². How much paper do we need — without wasting any?</p>
+                            <p>❓ How do we turn a net into a <strong>Total Surface Area</strong>?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Ideas</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explore tag">Data</span> Add Up the Net</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 4</span> 📏 (or Interactive Media 4)</h3>
+                            <p>Measure every face, find each area, add them up.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Formulas</span></h3>
+                            <p>Cuboid: TSA $= 2(lw + lh + wh)$</p>
+                            <p>Cylinder: TSA $= 2\pi r^2 + 2\pi rh$</p>
+                            <p>Prism: TSA $= 2 \times$ cross-section $+$ perimeter $\times$ length</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Derive Cylinder TSA</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 4</span></h3>
+                            <p><em>Scaffold: list every face in a table.</em></p>
+                            <p><em>Extension: a cylinder glued on a cube — subtract the hidden circle!</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>Total surface area of a cylinder: radius 5 cm, height 10 cm.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 5 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-engage tag">Stimulation</span> Skin or Meat?</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Volume</span></h3>
+                            <p>Surface area is the "skin". Volume is the "meat". A prism is its base shape <strong>stacked</strong> to a height:</p>
+                            <p style="font-size: 1.3em;">$V = \text{Area of base} \times \text{height}$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span></h3>
+                            <p>A pyramid has the same base and height as a prism. What fraction of the prism does it fill?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Predictions</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explore tag">Data</span> The Rice-Pouring Experiment</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 5</span> 🍚 (or Interactive Media 5)</h3>
+                            <p>Open prism and open pyramid: square base 5 cm, height 6 cm.</p>
+                            <p>Fill the pyramid, pour it into the prism. How many pours?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Discovery</span></h3>
+                            <p>It takes exactly <strong>3</strong>! → Pyramid / cone: $V = \frac13 \times \text{base area} \times h$</p>
+                            <p>Cylinder $V = \pi r^2 h$ &nbsp; Cone $V = \frac13 \pi r^2 h$</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Record the Pours</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 5</span></h3>
+                            <p>Volumes of cuboids, prisms, cylinders, cones and pyramids; working backwards from volume.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span></h3>
+                            <p>A cone and a cylinder have the same radius and height. The cylinder holds 300 cm³. The cone?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= MEETING 6 ================= -->
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="b-engage tag">Stimulation</span> Peeling the Orange 🍊</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 6</span> (or Interactive Media 6)</h3>
+                            <p>Draw 4 circles with the orange's diameter. Peel the orange — the peel fills exactly 4 circles!</p>
+                            <p style="font-size: 1.2em;">Sphere: SA $= 4\pi r^2$ &nbsp;&nbsp; $V = \frac43 \pi r^3$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Synthesis</span></h3>
+                            <p>1D: cm (perimeter) · 2D: cm² (area) · 3D: cm³ (volume) — then the "I have… who has…?" loop.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Units Check</div></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="b-evaluate tag">Evaluation</span> Chapter 7 Test</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Chapter 7 Test · 45 min</span></h3>
+                            <p>Visual aids away. Composite areas, nets &amp; surface area, volume and working backwards.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Reflection · 10 min</span></h3>
+                            <p><em>"Which formula was the hardest to memorise? Did the experiments (rice / paper cutting) help you remember it?"</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Reflections</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div class="progress-indicator" id="progress">Slide 1</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateNav() {
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateNav();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

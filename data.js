@@ -158,6 +158,48 @@ const LEARNING_KIT_DATA = {
             },
           },
         },
+        {
+          id: 7,
+          slug: "t07-perimeter-area-and-volume",
+          title: "Perimeter, Area and Volume",
+          sections: {
+            lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1" }] },
+            im: {
+              label: "Interactive Media",
+              files: [
+                { index: 1, file: "im-01.html", title: "Interactive Media 1 Cut & Slide (Meeting 1)" },
+                { index: 2, file: "im-02.html", title: "Interactive Media 2 Trapezium & Composite (Meeting 2)" },
+                { index: 3, file: "im-03.html", title: "Interactive Media 3 Net Folder 3D (Meeting 3)" },
+                { index: 4, file: "im-04.html", title: "Interactive Media 4 Gift Wrap Calculator (Meeting 4)" },
+                { index: 5, file: "im-05.html", title: "Interactive Media 5 Rice Pouring Lab (Meeting 5)" },
+                { index: 6, file: "im-06.html", title: "Interactive Media 6 Orange Peel & Review (Meeting 6)" },
+              ],
+            },
+            ws: {
+              label: "Worksheet",
+              files: [
+                { index: 1, file: "ws-01.html", title: "Worksheet 1 Perimeter & Area (Meeting 1)" },
+                { index: 2, file: "ws-02.html", title: "Worksheet 2 Trapezium & Composite (Meeting 2)" },
+                { index: 3, file: "ws-03.html", title: "Worksheet 3 3D Objects & Nets (Meeting 3)" },
+                { index: 4, file: "ws-04.html", title: "Worksheet 4 Surface Area (Meeting 4)" },
+                { index: 5, file: "ws-05.html", title: "Worksheet 5 Volume (Meeting 5)" },
+                { index: 6, file: "ws-06.html", title: "🔒 Worksheet 6 Chapter 7 Test (Meeting 6)" },
+              ],
+            },
+            ha: {
+              label: "Hands-on Activity",
+              files: [
+                { index: 1, file: "ha-01.html", title: "Hands-on 1 Cut & Slide (Meeting 1)" },
+                { index: 2, file: "ha-02.html", title: "Hands-on 2 Trapezium & Rooms (Meeting 2)" },
+                { index: 3, file: "ha-03.html", title: "Hands-on 3 Nets to Fold (Meeting 3)" },
+                { index: 4, file: "ha-04.html", title: "Hands-on 4 Measure the Net (Meeting 4)" },
+                { index: 5, file: "ha-05.html", title: "Hands-on 5 Rice Pouring (Meeting 5)" },
+                { index: 6, file: "ha-06.html", title: "Hands-on 6 Orange & Review Loop (Meeting 6)" },
+              ],
+            },
+          },
+        },
       ],
     },
     {

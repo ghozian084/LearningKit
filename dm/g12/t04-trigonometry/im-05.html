@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 5 - Proof Puzzles</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.05em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+        .match { color: var(--success); font-weight: bold; } .nomatch { color: var(--danger); font-weight: bold; }
+        .cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+        .mcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; min-height: 64px; display: flex; align-items: center; justify-content: center; font-size: 1.15em; cursor: pointer; user-select: none; padding: 6px; text-align: center; }
+        .mcard:hover { border-color: var(--secondary); }
+        .mcard.sel { border-color: var(--warn); background: #fffaf0; }
+        .mcard.done { cursor: default; opacity: 0.9; }
+        .mcard.shake { animation: shake 0.35s; border-color: var(--danger); }
+        @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
+        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; cursor: grab; user-select: none; font-size: 1.05em; }
+        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
+        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 160px; }
+        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 0.95em; text-align: center; }
+        .bin .slot { display: flex; flex-direction: column; gap: 6px; }
+        .strip { background: #fff; border: 2px solid #805ad5; border-radius: 6px; padding: 8px 12px; cursor: pointer; margin: 5px 0; display: flex; gap: 10px; align-items: center; user-select: none; }
+        .strip .lt { font-weight: bold; color: #805ad5; }
+        .strip.placed { border-color: var(--secondary); background: #ebf8ff; }
+        .strip.ok { border-color: var(--success); background: #f0fff4; } .strip.bad { border-color: var(--danger); background: #fff5f5; }
+        .proof-area { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 10px; min-height: 120px; }
+        .num-in { width: 70px; padding: 6px; border: 2px solid #cbd5e0; border-radius: 4px; font-size: 1em; text-align: center; }
+        .num-in.ok { border-color: var(--success); background: #f0fff4; } .num-in.bad { border-color: var(--danger); background: #fff5f5; }
+        .big-card { background: #fff; border: 3px solid var(--secondary); border-radius: 12px; padding: 25px; text-align: center; max-width: 560px; margin: 10px auto; }
+        .big-card .have { font-size: 2.2em; color: var(--primary); font-weight: bold; margin: 10px 0 18px; }
+        .big-card .who { font-size: 1.5em; border-top: 2px dotted #a0aec0; padding-top: 14px; }
+        .choice { display: block; width: 100%; text-align: left; margin: 6px 0; padding: 10px 14px; border: 2px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 1.1em; cursor: pointer; }
+        .choice.right { border-color: var(--success); background: #f0fff4; } .choice.wrong { border-color: var(--danger); background: #fff5f5; }
+        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🧩 Digital Hands-on 4: Proof Puzzles</h1>
+        <span class="badge">Grade 12 · Topic 3 Trigonometry · Meeting 4 · Digital twin of Hands-on 4</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Proof Puzzles ①–④</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>🧩 Proof Puzzles</h2>
+                <div class="twin">💡 No printer? This is the on-screen version of <strong>Hands-on 4</strong>.</div>
+                <p>Tap the strips in the right order to build the proof (tap a placed strip to send it back). One strip in every puzzle is a <strong>trap</strong> — it should be left over.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>puzzle</label><select id="pz" onchange="loadPuzzle()"><option value="0">①</option><option value="1">②</option><option value="2">③</option><option value="3">④</option></select>
+                        <button class="action-btn" onclick="checkPuzzle()">Check my proof</button>
+                        <button class="action-btn ghost" onclick="loadPuzzle()">Reset</button>
+                    </div>
+                    <div class="sim-text" id="ptitle" style="font-size: 1.2em;"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                        <div><strong>Strips</strong><div id="strips"></div></div>
+                        <div><strong>My proof</strong><div class="proof-area" id="proof"></div></div>
+                    </div>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        const stepCounters = {};
+        function nextStep(id, total) {
+            stepCounters[id] = (stepCounters[id] || 0) + 1;
+            const s = document.querySelector('.' + id + '-' + stepCounters[id]); if (s) s.classList.add('show');
+            if (stepCounters[id] >= total) document.getElementById('btn-' + id).disabled = true;
+        }
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+        const PUZ = [{"num": "①", "title": "Prove $\\sec\\theta - \\cos\\theta \\equiv \\sin\\theta\\tan\\theta$", "strips": [["A", "$= \\dfrac{\\sin^2\\theta}{\\cos\\theta}$"], ["B", "LHS $= \\sec\\theta - \\cos\\theta$"], ["C", "$= \\sin\\theta\\tan\\theta =$ RHS"], ["D", "$= \\dfrac{1 - \\cos^2\\theta}{\\cos\\theta}$"], ["E", "$= 1 - \\cos^2\\theta$"], ["F", "$= \\dfrac{1}{\\cos\\theta} - \\cos\\theta$"], ["G", "$= \\sin\\theta \\times \\dfrac{\\sin\\theta}{\\cos\\theta}$"]], "order": ["B", "F", "D", "A", "G", "C"], "trap": "E", "why": "it drops the denominator: (1 − cos²θ) is still divided by cos θ."}, {"num": "②", "title": "Prove $\\dfrac{1 - \\cos 2\\theta}{\\sin 2\\theta} \\equiv \\tan\\theta$", "strips": [["A", "$= \\tan\\theta =$ RHS"], ["B", "$= \\dfrac{1 - (1 - 2\\sin^2\\theta)}{2\\sin\\theta\\cos\\theta}$"], ["C", "$= \\dfrac{2\\cos^2\\theta}{2\\sin\\theta\\cos\\theta}$"], ["D", "LHS $= \\dfrac{1 - \\cos 2\\theta}{\\sin 2\\theta}$"], ["E", "$= \\dfrac{\\sin\\theta}{\\cos\\theta}$"], ["F", "$= \\dfrac{2\\sin^2\\theta}{2\\sin\\theta\\cos\\theta}$"]], "order": ["D", "B", "F", "E", "A"], "trap": "C", "why": "it uses 2cos²θ, but 1 − cos 2θ = 2sin²θ (the cos 2A form must match the 1)."}, {"num": "③", "title": "Prove $\\dfrac{1}{1 - \\sin\\theta} + \\dfrac{1}{1 + \\sin\\theta} \\equiv 2\\sec^2\\theta$", "strips": [["A", "$= \\dfrac{(1 + \\sin\\theta) + (1 - \\sin\\theta)}{(1 - \\sin\\theta)(1 + \\sin\\theta)}$"], ["B", "$= \\dfrac{2}{\\cos^2\\theta}$"], ["C", "$= \\dfrac{2}{1 + \\sin^2\\theta}$"], ["D", "$= 2\\sec^2\\theta =$ RHS"], ["E", "LHS $= \\dfrac{1}{1 - \\sin\\theta} + \\dfrac{1}{1 + \\sin\\theta}$"], ["F", "$= \\dfrac{2}{1 - \\sin^2\\theta}$"]], "order": ["E", "A", "F", "B", "D"], "trap": "C", "why": "(1 − sin θ)(1 + sin θ) = 1 − sin²θ (difference of two squares), not 1 + sin²θ."}, {"num": "④", "title": "Prove $\\cos^4\\theta - \\sin^4\\theta \\equiv \\cos 2\\theta$", "strips": [["A", "$= (\\cos^2\\theta + \\sin^2\\theta)^2$"], ["B", "$= (\\cos^2\\theta - \\sin^2\\theta)(1)$"], ["C", "LHS $= \\cos^4\\theta - \\sin^4\\theta$"], ["D", "$= \\cos^2\\theta - \\sin^2\\theta$"], ["E", "$= (\\cos^2\\theta - \\sin^2\\theta)(\\cos^2\\theta + \\sin^2\\theta)$"], ["F", "$= \\cos 2\\theta =$ RHS"]], "order": ["C", "E", "B", "D", "F"], "trap": "A", "why": "(cos²θ + sin²θ)² is a sum, but cos⁴θ − sin⁴θ is a difference of two squares."}];
+        let placed = [];
+        function loadPuzzle() {
+            const P = PUZ[+pz.value]; placed = [];
+            ptitle.innerHTML = 'Puzzle ' + P.num + ': ' + P.title;
+            strips.innerHTML = P.strips.map(([l, t]) => `<div class="strip" data-l="${l}" onclick="pickStrip('${l}')"><span class="lt">${l}</span><span>${t}</span></div>`).join('');
+            proof.innerHTML = '<span class="hint">Tap strips to place them here, top to bottom.</span>';
+            t1.textContent = ''; typeset(ptitle); typeset(strips);
+        }
+        function renderProof() {
+            const P = PUZ[+pz.value];
+            proof.innerHTML = placed.length ? placed.map((l, i) => { const t = P.strips.find(s => s[0] === l)[1]; return `<div class="strip placed" data-l="${l}" onclick="unpick('${l}')"><span class="lt">${i + 1}. ${l}</span><span>${t}</span></div>`; }).join('') : '<span class="hint">Tap strips to place them here, top to bottom.</span>';
+            document.querySelectorAll('#strips .strip').forEach(el => el.style.display = placed.includes(el.dataset.l) ? 'none' : 'flex');
+            typeset(proof);
+        }
+        function pickStrip(l) { placed.push(l); t1.textContent = ''; renderProof(); }
+        function unpick(l) { placed = placed.filter(x => x !== l); t1.textContent = ''; renderProof(); }
+        function checkPuzzle() {
+            const P = PUZ[+pz.value];
+            if (placed.includes(P.trap)) {
+                document.querySelector(`#proof .strip[data-l="${P.trap}"]`).classList.add('bad');
+                t1.className = 'sim-text bad'; t1.innerHTML = `❌ Strip ${P.trap} is the trap and cannot be in the proof: ${P.why}`; return;
+            }
+            const n = P.order.length;
+            let ok = placed.length === n && placed.every((l, i) => l === P.order[i]);
+            document.querySelectorAll('#proof .strip').forEach((el, i) => el.classList.add(el.dataset.l === P.order[i] ? 'ok' : 'bad'));
+            if (ok) { t1.className = 'sim-text good'; t1.innerHTML = `🎉 Correct proof! The leftover strip ${P.trap} is the trap: ${P.why}`; }
+            else if (placed.length < n) { t1.className = 'sim-text'; t1.textContent = `Keep going — a full proof uses ${n} strips (green = right place so far).`; }
+            else { t1.className = 'sim-text bad'; t1.textContent = 'Not in the right order yet — red strips are in the wrong place. Start from the LHS.'; }
+        }
+        function redraw() {}
+        window.addEventListener('load', loadPuzzle);
+
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

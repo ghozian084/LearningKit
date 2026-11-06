@@ -254,7 +254,15 @@ const LEARNING_KIT_DATA = {
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
             bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1" }] },
-            im: { label: "Interactive Media", files: [{ index: 1, file: "im-01.html", title: "Interactive Media 1" }] },
+            im: { label: "Interactive Media", files: [
+              { index: 1, file: "im-01.html", title: "Interactive Media 1 Web Lab" },
+              { index: 2, file: "im-02.html", title: "Interactive Media 2 Unit Circle (Meeting 1) — twin of Hands-on 1" },
+              { index: 3, file: "im-03.html", title: "Interactive Media 3 Proof Kit (Meeting 2) — twin of Hands-on 2" },
+              { index: 4, file: "im-04.html", title: "Interactive Media 4 Double Angle (Meeting 3) — twin of Hands-on 3" },
+              { index: 5, file: "im-05.html", title: "Interactive Media 5 Proof Puzzles (Meeting 4) — twin of Hands-on 4" },
+              { index: 6, file: "im-06.html", title: "Interactive Media 6 Waves & Tide Report (Meeting 5) — twin of Hands-on 5" },
+              { index: 7, file: "im-07.html", title: "Interactive Media 7 Review Loop (Meeting 6) — twin of Hands-on 6" }
+            ] },
             ws: {
               label: "Worksheet",
               files: [

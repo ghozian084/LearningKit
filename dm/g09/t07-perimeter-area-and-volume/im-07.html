@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 7 - Orange Peel and Review</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
+        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: grab; user-select: none; touch-action: none; }
+        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
+        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 150px; }
+        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 1em; text-align: center; }
+        .bin .slot { display: flex; flex-wrap: wrap; gap: 6px; }
+        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🍊 Digital Lab 6: Orange Peel &amp; Chapter Review</h1>
+        <span class="badge">Grade 9 · Topic 7 · Meeting 7 · Digital twin of Hands-on 7</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Peel the Orange</button><button class="tab-btn" onclick="openTab('s2', this)">2. Units Sort (1D/2D/3D)</button><button class="tab-btn" onclick="openTab('s3', this)">3. Endless Review</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>🍊 Peeling the Orange — Surface Area of a Sphere</h2>
+                <div class="twin">💡 No printer or no oranges? On-screen version of <strong>Hands-on 7, page 1</strong>.</div>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>radius $r$</label><input type="range" id="or" min="2" max="6" value="4" oninput="drawOrange()"><span class="big-value" id="orv">4 cm</span>
+                        <label>peel</label><input type="range" id="op" min="0" max="100" value="0" oninput="drawOrange()">
+                        <button class="action-btn" onclick="animPeel()">Peel ▶</button>
+                    </div>
+                    <canvas class="plot" id="cv1" style="height: 340px;"></canvas>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>✍️ Student Exercise</h2>
+                <div class="ex-row">Surface area of a sphere with r = 6 cm (cm², 1 d.p.) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 452.4, 0.06, 'fe1', '4π × 36 = 144π ≈ 452.4 cm²')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Volume of a sphere with r = 3 cm (cm³, 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 113.1, 0.06, 'fe2', '⁴⁄₃π × 27 = 36π ≈ 113.1 cm³')">Check</button><div class="feedback" id="fe2"></div></div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>📏 1D, 2D or 3D? — Units Sort</h2>
+                <p>Drag each card into the right box (or tap a card, then tap a box). Perimeter is 1D, area is 2D, volume is 3D.</p>
+                <div class="sim-area">
+                    <div id="pool" class="pool"></div>
+                    <div class="bins">
+                        <div class="bin" data-d="1"><h3>1D · length</h3><div class="slot"></div></div>
+                        <div class="bin" data-d="2"><h3>2D · area</h3><div class="slot"></div></div>
+                        <div class="bin" data-d="3"><h3>3D · volume</h3><div class="slot"></div></div>
+                    </div>
+                    <div class="controls-row" style="justify-content: center; margin-top: 12px;"><button class="action-btn" onclick="checkSort()">Check</button><button class="action-btn ghost" onclick="buildSort()">Shuffle</button></div>
+                    <div class="sim-text" id="t2"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>🔁 Chapter Review — Endless Practice</h2>
+                <p>A new question every time, from every part of the chapter. Give answers to 1 decimal place (use the π button on your calculator).</p>
+                <div class="sim-area">
+                    <div class="sim-text" id="rq" style="font-size: 1.25em;"></div>
+                    <div class="controls-row" style="justify-content: center;">
+                        <input type="text" id="ra" class="exercise-input" placeholder="answer">
+                        <button class="action-btn" onclick="checkReview()">Check</button>
+                        <button class="action-btn alt" onclick="newReview()">Next ▶</button>
+                        <button class="action-btn ghost" onclick="showReview()">Show solution</button>
+                    </div>
+                    <div class="sim-text" id="rf"></div>
+                    <div class="sim-text" style="color: #4a5568;">Score: <span id="rs">0</span> / <span id="rt">0</span></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        // ---------- Orange ----------
+        let peelAnim = null;
+        function drawOrange() {
+            const r = +or.value, p = +op.value / 100; orv.textContent = r + ' cm';
+            const c = setupCanvas(cv1); if (!c) return; const { ctx, W, H } = c;
+            const k = Math.min(18, H / (2 * r * 2.6)), R = r * k;
+            const ox = Math.min(W * 0.18, R * 1.6), oy = H / 2;
+            // orange: peeled part shown as pale flesh
+            ctx.fillStyle = '#fbd38d'; ctx.beginPath(); ctx.arc(ox, oy, R, 0, 2 * Math.PI); ctx.fill();
+            ctx.fillStyle = '#ed8936'; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.arc(ox, oy, R, -Math.PI / 2 + 2 * Math.PI * p, -Math.PI / 2 + 2 * Math.PI); ctx.closePath(); ctx.fill();
+            ctx.strokeStyle = '#c05621'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ox, oy, R, 0, 2 * Math.PI); ctx.stroke();
+            label(ctx, ox, oy + R + 22, 'r = ' + r + ' cm', '#c05621');
+            // 4 circles with radius r, filled in order
+            const gx = ox + R * 2.2, cw = Math.min((W - gx - 10) / 4, 2 * R + 14);
+            for (let i = 0; i < 4; i++) {
+                const cx = gx + cw * i + cw / 2, f = Math.max(0, Math.min(1, p * 4 - i));
+                ctx.setLineDash([5, 4]); ctx.strokeStyle = '#dd6b20'; ctx.beginPath(); ctx.arc(cx, oy, Math.min(R, cw / 2 - 4), 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
+                if (f > 0) { ctx.fillStyle = 'rgba(237,137,54,0.85)'; ctx.beginPath(); ctx.moveTo(cx, oy); ctx.arc(cx, oy, Math.min(R, cw / 2 - 4), -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * f); ctx.closePath(); ctx.fill(); }
+                label(ctx, cx, oy + R + 22, 'circle ' + (i + 1), '#dd6b20', 13);
+            }
+            t1.innerHTML = p >= 0.999 ? `The peel fills exactly <strong>4 circles</strong> of radius r: Surface area = 4πr² = 4π × ${r}² = <strong>${r1(4 * Math.PI * r * r)} cm²</strong>. Volume = ⁴⁄₃πr³ = <strong>${r1(4 / 3 * Math.PI * r ** 3)} cm³</strong>.`
+                : `Peel so far covers ${r2(p * 4)} circles…`;
+        }
+        function animPeel() { if (peelAnim) cancelAnimationFrame(peelAnim); const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / 2500); op.value = k * 100; drawOrange(); if (k < 1) peelAnim = requestAnimationFrame(step); }; peelAnim = requestAnimationFrame(step); }
+        // ---------- Units sort ----------
+        const CARDS = [['cm', 1], ['m', 1], ['km', 1], ['perimeter of a sawah', 1], ['length of a fence', 1], ['cm²', 2], ['m²', 2], ['area of a carpet', 2], ['paper to wrap a box', 2], ['surface area of a sphere', 2], ['cm³', 3], ['m³', 3], ['litres', 3], ['rice inside a prism', 3], ['water in a tank', 3]];
+        let selected = null;
+        function buildSort() {
+            pool.innerHTML = ''; document.querySelectorAll('.bin .slot').forEach(s => s.innerHTML = ''); t2.textContent = '';
+            CARDS.map(c => c).sort(() => Math.random() - 0.5).forEach(([txt, d]) => {
+                const el = document.createElement('div'); el.className = 'chip'; el.textContent = txt; el.dataset.d = d; el.draggable = true;
+                el.addEventListener('dragstart', e => { e.dataTransfer.setData('text', ''); selected = el; });
+                el.addEventListener('click', () => { document.querySelectorAll('.chip').forEach(x => x.classList.remove('sel')); selected = el; el.classList.add('sel'); });
+                pool.appendChild(el);
+            });
+        }
+        document.querySelectorAll('.bin').forEach(bin => {
+            bin.addEventListener('dragover', e => e.preventDefault());
+            bin.addEventListener('drop', e => { e.preventDefault(); if (selected) { bin.querySelector('.slot').appendChild(selected); selected.classList.remove('sel', 'right', 'wrong'); selected = null; } });
+            bin.addEventListener('click', e => { if (selected && e.target.closest('.chip') == null) { bin.querySelector('.slot').appendChild(selected); selected.classList.remove('sel', 'right', 'wrong'); selected = null; } });
+        });
+        function checkSort() {
+            let right = 0, placed = 0;
+            document.querySelectorAll('.bin').forEach(bin => bin.querySelectorAll('.chip').forEach(ch => { placed++; const ok = ch.dataset.d === bin.dataset.d; ch.classList.toggle('right', ok); ch.classList.toggle('wrong', !ok); if (ok) right++; }));
+            t2.innerHTML = `${right} of ${CARDS.length} correct` + (placed < CARDS.length ? ` (${CARDS.length - placed} cards still in the pool)` : '') + (right === CARDS.length ? ' 🎉' : '');
+        }
+        // ---------- Review ----------
+        const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+        const GEN = [
+            () => { const l = ri(3, 15), w = ri(2, 10); return [`Area of a rectangle ${l} cm × ${w} cm (cm²)`, l * w, `${l} × ${w}`]; },
+            () => { const l = ri(3, 15), w = ri(2, 10); return [`Perimeter of a rectangle ${l} cm × ${w} cm (cm)`, 2 * (l + w), `2(${l} + ${w})`]; },
+            () => { const b = ri(4, 14), h = ri(3, 10); return [`Area of a triangle: base ${b} cm, height ${h} cm (cm²)`, b * h / 2, `½ × ${b} × ${h}`]; },
+            () => { const b = ri(4, 14), h = ri(3, 10); return [`Area of a parallelogram: base ${b} cm, height ${h} cm (cm²)`, b * h, `${b} × ${h}`]; },
+            () => { const a = ri(3, 8), b = ri(9, 15), h = ri(2, 8); return [`Area of a trapezium: parallel sides ${a} and ${b} cm, height ${h} cm (cm²)`, (a + b) * h / 2, `½(${a} + ${b}) × ${h}`]; },
+            () => { const l = ri(2, 9), w = ri(2, 8), h = ri(2, 7); return [`Total surface area of a cuboid ${l} × ${w} × ${h} cm (cm²)`, 2 * (l * w + l * h + w * h), `2(${l * w} + ${l * h} + ${w * h})`]; },
+            () => { const l = ri(2, 9), w = ri(2, 8), h = ri(2, 7); return [`Volume of a cuboid ${l} × ${w} × ${h} cm (cm³)`, l * w * h, `${l} × ${w} × ${h}`]; },
+            () => { const r = ri(2, 8), h = ri(3, 12); return [`Volume of a cylinder: r = ${r} cm, h = ${h} cm (cm³, 1 d.p.)`, Math.PI * r * r * h, `π × ${r}² × ${h} = ${r * r * h}π`]; },
+            () => { const r = ri(2, 8), h = ri(3, 12); return [`Total surface area of a cylinder: r = ${r} cm, h = ${h} cm (cm², 1 d.p.)`, 2 * Math.PI * r * r + 2 * Math.PI * r * h, `2π${r}² + 2π(${r})(${h}) = ${2 * r * r + 2 * r * h}π`]; },
+            () => { const r = ri(2, 8), h = ri(3, 12); return [`Volume of a cone: r = ${r} cm, h = ${h} cm (cm³, 1 d.p.)`, Math.PI * r * r * h / 3, `⅓ × π × ${r}² × ${h}`]; },
+            () => { const b = ri(3, 10), h = ri(3, 12); return [`Volume of a square pyramid: base ${b} cm, height ${h} cm (cm³, 1 d.p.)`, b * b * h / 3, `⅓ × ${b}² × ${h}`]; },
+            () => { const r = ri(1, 9); return [`Surface area of a sphere: r = ${r} cm (cm², 1 d.p.)`, 4 * Math.PI * r * r, `4π × ${r}² = ${4 * r * r}π`]; },
+            () => { const r = ri(1, 9); return [`Volume of a sphere: r = ${r} cm (cm³, 1 d.p.)`, 4 / 3 * Math.PI * r ** 3, `⁴⁄₃π × ${r}³`]; },
+        ];
+        let cur = null, rsc = 0, rtot = 0, done = false;
+        function newReview() { const g = GEN[Math.floor(Math.random() * GEN.length)](); cur = g; done = false; rq.textContent = g[0]; ra.value = ''; rf.textContent = ''; }
+        function checkReview() {
+            const v = parseFloat(ra.value.replace(',', '.')); if (isNaN(v)) { rf.className = 'sim-text bad'; rf.textContent = 'Type a number.'; return; }
+            if (!done) rtot++;
+            const ok = Math.abs(v - cur[1]) <= 0.051 + 1e-9 || Math.abs(v - Math.round(cur[1] * 10) / 10) < 1e-9;
+            if (ok && !done) rsc++;
+            done = true;
+            rf.className = 'sim-text ' + (ok ? 'good' : 'bad'); rf.textContent = ok ? '✅ Correct!' : '❌ Not quite — try again or show the solution.';
+            rs.textContent = rsc; rt.textContent = rtot;
+        }
+        function showReview() { rf.className = 'sim-text'; rf.textContent = `${cur[2]} = ${r1(cur[1])}`; }
+        function redraw() { drawOrange(); }
+        window.addEventListener('load', () => { drawOrange(); buildSort(); newReview(); });
+
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

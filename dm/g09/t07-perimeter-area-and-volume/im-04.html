@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Media 4 - Gift Wrap Calculator</title>
+    <title>Interactive Media 4 - Net Folder</title>
     <!-- MathJax Configuration -->
     <script>
         MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
@@ -54,34 +54,50 @@
 </head>
 <body>
     <header>
-        <h1>🎁 Digital Lab 4: Gift Wrap Calculator</h1>
+        <h1>📦 Digital Lab 3: Net Folder</h1>
         <span class="badge">Grade 9 · Topic 7 · Meeting 4 · Digital twin of Hands-on 4</span>
     </header>
-    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Surface Area from the Net</button></div>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Fold the Nets</button><button class="tab-btn" onclick="openTab('s2', this)">2. Cube Net Test</button><button class="tab-btn" onclick="openTab('s3', this)">3. Exercises</button></div>
     <div class="main-content">
 
         <div id="s1" class="section-container active">
             <div class="module">
-                <h2>🎁 Gift Wrap Calculator — Surface Area from the Net</h2>
-                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 4</strong>. Change the sizes and watch every face area add up to the Total Surface Area.</div>
+                <h2>📦 Net Folder — Watch a Net Become a Solid</h2>
+                <div class="twin">💡 No printer and no boxes? On-screen version of <strong>Hands-on 4</strong>. Drag the picture to turn it around.</div>
                 <div class="sim-area">
                     <div class="controls-row">
-                        <label>solid</label><select id="solid" onchange="setSolid()"><option value="cuboid">Cuboid</option><option value="tri">Triangular prism (right-angled)</option><option value="cyl">Cylinder</option></select>
-                        <span id="dimCtl"></span>
+                        <label>solid</label><select id="solid" onchange="loadSolid()">
+                            <option value="cuboid">① Cuboid 5 × 3 × 2</option><option value="tri">② Triangular prism (equilateral)</option>
+                            <option value="cyl">③ Cylinder</option><option value="pyr">④ Square pyramid</option></select>
+                        <label>fold</label><input type="range" id="fold" min="0" max="100" value="0" oninput="draw3()">
+                        <button class="action-btn" onclick="animFold(1)">Fold ▶</button>
+                        <button class="action-btn ghost" onclick="animFold(0)">Unfold ◀</button>
                     </div>
-                    <div class="controls-row">
-                        <label>fold</label><input type="range" id="fold" min="0" max="100" value="0" oninput="draw()">
-                        <button class="action-btn" onclick="animFold(1)">Fold ▶</button><button class="action-btn ghost" onclick="animFold(0)">Unfold ◀</button>
-                        <label>paper</label><select id="price" onchange="draw()"><option value="5000">Rp 5 000 per m²</option><option value="8000">Rp 8 000 per m²</option></select>
-                    </div>
-                    <canvas class="plot" id="cv1" style="height: 400px; cursor: grab;"></canvas>
-                    <table class="vals" id="tab"></table>
+                    <canvas class="plot" id="cv1" style="height: 420px; cursor: grab;"></canvas>
                     <div class="sim-text" id="t1"></div>
                 </div>
             </div>
+        </div>
+        <div id="s2" class="section-container">
             <div class="module">
-                <h2>✍️ Student Exercise</h2>
-                <div class="ex-row">Cuboid 5 cm × 4 cm × 3 cm. TSA (cm²) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 94, 0.01, 'fe1', '2(20 + 15 + 12) = 94 cm²')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Cylinder r = 3 cm, h = 8 cm. TSA (cm², 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 207.3, 0.06, 'fe2', '18π + 48π = 66π ≈ 207.3 cm²')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">🎁 Box 40 × 30 × 20 cm, paper Rp 5 000 per m². Cost (Rp) = <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 2600, 0.5, 'fe3', 'TSA = 5200 cm² = 0.52 m² → Rp 2 600')">Check</button><div class="feedback" id="fe3"></div></div>
+                <h2>🧊 Is It a Net of a Cube?</h2>
+                <p>These are the six shapes from Worksheet 4, Question "Which ones are nets of a cube?". Predict first, then <strong>fold</strong> to test. A real net closes into a cube with no overlapping faces.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>shape</label><select id="cube" onchange="cubeT=0; fold2.value=0; draw4()"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option></select>
+                        <label>my prediction</label><select id="pred"><option value="">choose…</option><option value="1">Yes, it is a net</option><option value="0">No, it is not</option></select>
+                        <label>fold</label><input type="range" id="fold2" min="0" max="100" value="0" oninput="draw4()">
+                        <button class="action-btn" onclick="animFold2()">Fold ▶</button>
+                    </div>
+                    <canvas class="plot" id="cv2" style="height: 380px; cursor: grab;"></canvas>
+                    <div class="sim-text" id="t2"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>✍️ Faces, Edges, Vertices &amp; the Cylinder Net</h2>
+                <div class="ex-row">How many edges does a triangular prism have? <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 9, 0, 'fe1', 'a triangular prism has 5 faces, 9 edges, 6 vertices')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">How many vertices does a square-based pyramid have? <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 5, 0, 'fe2', '4 at the base + 1 apex = 5')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">Cylinder: radius 3 cm, height 10 cm. Length of the rectangle in its net (cm, 2 d.p.) = <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 18.85, 0.01, 'fe3', '2π × 3 ≈ 18.85 cm — it wraps once around the circle')">Check</button><div class="feedback" id="fe3"></div></div>
             </div>
         </div>
     </div>
@@ -243,35 +259,38 @@
             return faces;
         }
 
-        const view = { yaw: 0.6, pitch: 0.95 };
-        const DIMS = { cuboid: [['length', 1, 12, 6], ['width', 1, 10, 4], ['height', 1, 10, 3]], tri: [['base', 2, 10, 4], ['height', 2, 10, 3], ['length', 2, 14, 10]], cyl: [['radius', 1, 6, 3], ['height', 1, 12, 8]] };
+        const view = { yaw: 0.6, pitch: 0.95 }, view2 = { yaw: 0.6, pitch: 0.95 };
         let faces = [], foldAnim = null;
-        function setSolid() {
-            dimCtl.innerHTML = DIMS[solid.value].map(([n, lo, hi, v], i) => `<label>${n}</label><input type="range" id="d${i}" min="${lo}" max="${hi}" value="${v}" oninput="build()"><span class="big-value" id="d${i}v">${v}</span>`).join(' ');
-            build();
+        const INFO = { cuboid: ['Cuboid: 6 faces, 12 edges, 8 vertices', 'cuboid'], tri: ['Triangular prism: 5 faces, 9 edges, 6 vertices', 'prism'], cyl: ['Cylinder: 2 circles + 1 curved surface (a rectangle 2πr long)', 'not a polyhedron'], pyr: ['Square pyramid: 5 faces, 8 edges, 5 vertices', 'pyramid'] };
+        function loadSolid() {
+            const s = solid.value;
+            faces = s === 'cuboid' ? cuboidNet(5, 3, 2) : s === 'tri' ? triPrismNet(3, 1.5, 1.5 * Math.sqrt(3), 6) : s === 'cyl' ? cylinderNet(1.4, 6, 24) : pyramidNet(2.8, 2.8);
+            fold.value = 0; draw3();
         }
-        function build() {
-            const d = DIMS[solid.value].map((_, i) => { const v = +document.getElementById('d' + i).value; document.getElementById('d' + i + 'v').textContent = v; return v; });
-            faces = solid.value === 'cuboid' ? cuboidNet(d[0], d[1], d[2]) : solid.value === 'tri' ? triPrismNet(d[0], 0, d[1], d[2]) : cylinderNet(d[0], d[1], 24);
-            draw();
-        }
-        function draw() {
-            render3D(cv1, faces, +fold.value / 100, view);
-            const real = faces.filter(f => f.area !== undefined);
-            const tsa = real.reduce((s, f) => s + f.area, 0);
-            tab.innerHTML = '<tr><th class="l">Face</th><th>Dimensions (cm)</th><th>Area (cm²)</th></tr>' + real.map(f => `<tr><td class="l">${f.name}</td><td>${f.dims}</td><td>${r2(f.area)}</td></tr>`).join('') +
-                `<tr><th class="l" colspan="2" style="text-align:right">Total Surface Area</th><th>${r2(tsa)} cm²</th></tr>`;
-            const m2 = tsa / 10000, cost = m2 * +price.value;
-            t1.innerHTML = `TSA = ${r2(tsa)} cm² = ${Math.round(m2 * 10000) / 10000} m² → paper cost ≈ <strong>Rp ${Math.round(cost).toLocaleString('id-ID')}</strong>`;
-        }
+        function draw3() { render3D(cv1, faces, +fold.value / 100, view); t1.textContent = INFO[solid.value][0] + (+fold.value > 98 ? ' ✔️ folded!' : ''); }
         function animFold(target) {
             if (foldAnim) cancelAnimationFrame(foldAnim); const start = +fold.value / 100, t0 = performance.now();
-            const step = now => { const k = Math.min(1, (now - t0) / 1600); fold.value = (start + (target - start) * k) * 100; draw(); if (k < 1) foldAnim = requestAnimationFrame(step); };
+            const step = now => { const k = Math.min(1, (now - t0) / 1600); fold.value = (start + (target - start) * k) * 100; draw3(); if (k < 1) foldAnim = requestAnimationFrame(step); };
             foldAnim = requestAnimationFrame(step);
         }
-        hookDrag(cv1, view, draw);
-        function redraw() { draw(); }
-        window.addEventListener('load', setSolid);
+        const CUBES = {
+            A: [[[1, 1], [0, 1], [2, 1], [3, 1], [1, 0], [1, 2]], true], B: [[[0, 0], [1, 0], [2, 0], [0, 1], [1, 1], [2, 1]], false],
+            C: [[[1, 1], [0, 0], [0, 1], [2, 1], [3, 1], [3, 2]], true], D: [[[2, 1], [0, 1], [1, 1], [3, 1], [4, 1], [2, 0]], false],
+            E: [[[2, 0], [0, 0], [1, 0], [2, 1], [3, 1], [4, 1]], true], F: [[[1, 1], [0, 1], [2, 1], [3, 1], [1, 0], [2, 0]], false],
+        };
+        let cubeT = 0, anim2 = null;
+        function draw4() {
+            const [cells, ok] = CUBES[cube.value], f = cubeNetFromCells(cells), t = +fold2.value / 100;
+            render3D(cv2, f, t, view2);
+            const p = pred.value;
+            t2.innerHTML = t < 0.98 ? 'Fold it to test your prediction.' :
+                (ok ? '✅ It closes into a cube — this IS a net of a cube.' : '❌ Faces overlap or a side stays open — this is NOT a net of a cube.') +
+                (p === '' ? '' : (String(+ok) === p ? ' <span class="good">Your prediction was right!</span>' : ' <span class="bad">Your prediction was wrong — look at which faces collide.</span>'));
+        }
+        function animFold2() { if (anim2) cancelAnimationFrame(anim2); const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / 1600); fold2.value = k * 100; draw4(); if (k < 1) anim2 = requestAnimationFrame(step); }; anim2 = requestAnimationFrame(step); }
+        hookDrag(cv1, view, draw3); hookDrag(cv2, view2, draw4);
+        function redraw() { draw3(); draw4(); }
+        window.addEventListener('load', () => { loadSolid(); draw4(); });
 
         window.addEventListener('resize', () => { if (window.redraw) redraw(); });
     </script>

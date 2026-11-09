@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Media 5 - Rice Pouring Lab</title>
+    <title>Interactive Media 5 - Gift Wrap Calculator</title>
     <!-- MathJax Configuration -->
     <script>
         MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
@@ -54,42 +54,34 @@
 </head>
 <body>
     <header>
-        <h1>🍚 Digital Lab 5: Rice Pouring &amp; Volume</h1>
+        <h1>🎁 Digital Lab 4: Gift Wrap Calculator</h1>
         <span class="badge">Grade 9 · Topic 7 · Meeting 5 · Digital twin of Hands-on 5</span>
     </header>
-    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Rice Pouring &amp; Calculator</button></div>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Surface Area from the Net</button></div>
     <div class="main-content">
 
         <div id="s1" class="section-container active">
             <div class="module">
-                <h2>🍚 Rice Pouring Lab — How Many Pyramids Fill the Prism?</h2>
-                <div class="twin">💡 No printer and no rice? On-screen version of <strong>Hands-on 5</strong>.</div>
+                <h2>🎁 Gift Wrap Calculator — Surface Area from the Net</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 5</strong>. Change the sizes and watch every face area add up to the Total Surface Area.</div>
                 <div class="sim-area">
                     <div class="controls-row">
-                        <label>pair</label><select id="pair" onchange="resetPour()"><option value="sq">Square pyramid → square prism</option><option value="cone">Cone → cylinder</option></select>
-                        <label>base</label><input type="range" id="pbase" min="3" max="8" value="5" oninput="resetPour()"><span class="big-value" id="pbv">5 cm</span>
-                        <label>height</label><input type="range" id="ph" min="3" max="10" value="6" oninput="resetPour()"><span class="big-value" id="phv">6 cm</span>
+                        <label>solid</label><select id="solid" onchange="setSolid()"><option value="cuboid">Cuboid</option><option value="tri">Triangular prism (right-angled)</option><option value="cyl">Cylinder</option></select>
+                        <span id="dimCtl"></span>
                     </div>
                     <div class="controls-row">
-                        <button class="action-btn" id="pourBtn" onclick="pour()">Fill &amp; pour 🍚</button>
-                        <button class="action-btn ghost" onclick="resetPour()">Empty the prism</button>
-                        <span style="font-weight: bold;">Pours: <span id="pc">0</span></span>
+                        <label>fold</label><input type="range" id="fold" min="0" max="100" value="0" oninput="draw()">
+                        <button class="action-btn" onclick="animFold(1)">Fold ▶</button><button class="action-btn ghost" onclick="animFold(0)">Unfold ◀</button>
+                        <label>paper</label><select id="price" onchange="draw()"><option value="5000">Rp 5 000 per m²</option><option value="8000">Rp 8 000 per m²</option></select>
                     </div>
-                    <canvas class="plot" id="cv1" style="height: 360px;"></canvas>
+                    <canvas class="plot" id="cv1" style="height: 400px; cursor: grab;"></canvas>
+                    <table class="vals" id="tab"></table>
                     <div class="sim-text" id="t1"></div>
                 </div>
             </div>
             <div class="module">
-                <h2>🧮 Volume Calculator</h2>
-                <div class="controls-row">
-                    <label>solid</label><select id="vs" onchange="calc()"><option value="cuboid">Cuboid</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="pyr">Square pyramid</option><option value="tri">Triangular prism</option></select>
-                    <span id="vctl"></span>
-                </div>
-                <div class="sim-text" id="vt" style="text-align: left;"></div>
-            </div>
-            <div class="module">
                 <h2>✍️ Student Exercise</h2>
-                <div class="ex-row">Cylinder r = 5 cm, h = 12 cm. Volume (cm³, 1 d.p.) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 942.5, 0.06, 'fe1', 'π × 25 × 12 = 300π ≈ 942.5 cm³')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Cone r = 3 cm, h = 10 cm. Volume (cm³, 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 94.2, 0.06, 'fe2', '⅓ × π × 9 × 10 = 30π ≈ 94.2 cm³')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">A cylinder holds 300 cm³. A cone with the same radius and height holds (cm³) <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 100, 0.01, 'fe3', 'one third: 300 ÷ 3 = 100 cm³')">Check</button><div class="feedback" id="fe3"></div></div><div class="ex-row">A cylinder has volume 500π cm³ and height 20 cm. Radius (cm) = <input type="text" id="e4" class="exercise-input"><button class="action-btn" onclick="checkNum('e4', 5, 0.01, 'fe4', 'r² = 500 ÷ 20 = 25 → r = 5 cm')">Check</button><div class="feedback" id="fe4"></div></div>
+                <div class="ex-row">Cuboid 5 cm × 4 cm × 3 cm. TSA (cm²) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 94, 0.01, 'fe1', '2(20 + 15 + 12) = 94 cm²')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Cylinder r = 3 cm, h = 8 cm. TSA (cm², 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 207.3, 0.06, 'fe2', '18π + 48π = 66π ≈ 207.3 cm²')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">🎁 Box 40 × 30 × 20 cm, paper Rp 5 000 per m². Cost (Rp) = <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 2600, 0.5, 'fe3', 'TSA = 5200 cm² = 0.52 m² → Rp 2 600')">Check</button><div class="feedback" id="fe3"></div></div>
             </div>
         </div>
     </div>
@@ -129,71 +121,157 @@
         }
         function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
 
-        let level = 0, pours = 0, cupFill = 0, anim = null, pouring = false;
-        function resetPour() { level = 0; pours = 0; cupFill = 0; pouring = false; pourBtn.disabled = false; pbv.textContent = pbase.value + ' cm'; phv.textContent = ph.value + ' cm'; drawPour(); }
-        function drawPour() {
-            const c = setupCanvas(cv1); if (!c) return; const { ctx, W, H } = c;
-            const b = +pbase.value, h = +ph.value, cone = pair.value === 'cone';
-            const k = Math.min((W / 2 - 80) / b, (H - 90) / h), base = H - 40;
-            const px = W * 0.63 - b * k / 2, cx = W * 0.2, tipY = base - h * k;
-            // container (prism / cylinder), front view with depth
-            const dep = 18;
-            ctx.fillStyle = '#f7fafc'; ctx.fillRect(px, tipY, b * k, h * k);
-            const lv = Math.min(1, level), rh = lv * h * k;
-            ctx.fillStyle = '#f6e05e'; ctx.fillRect(px, base - rh, b * k, rh);
-            for (let i = 0; i < 70 * lv; i++) { ctx.fillStyle = '#d69e2e'; ctx.fillRect(px + ((i * 37) % 100) / 100 * b * k, base - ((i * 53) % 100) / 100 * rh, 2, 1.5); }
-            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 2;
-            if (cone) {
-                ctx.beginPath(); ctx.ellipse(px + b * k / 2, tipY, b * k / 2, dep / 2, 0, 0, 2 * Math.PI); ctx.stroke();
-                ctx.beginPath(); ctx.ellipse(px + b * k / 2, base, b * k / 2, dep / 2, 0, 0, Math.PI); ctx.stroke();
-                ctx.beginPath(); ctx.moveTo(px, tipY); ctx.lineTo(px, base); ctx.moveTo(px + b * k, tipY); ctx.lineTo(px + b * k, base); ctx.stroke();
-            } else {
-                ctx.strokeRect(px, tipY, b * k, h * k);
-                ctx.beginPath(); ctx.moveTo(px, tipY); ctx.lineTo(px + dep, tipY - dep); ctx.lineTo(px + b * k + dep, tipY - dep); ctx.lineTo(px + b * k, tipY); ctx.moveTo(px + b * k + dep, tipY - dep); ctx.lineTo(px + b * k + dep, base - dep); ctx.lineTo(px + b * k, base); ctx.stroke();
-            }
-            for (let i = 1; i <= 2; i++) { ctx.strokeStyle = '#a0aec0'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(px - 8, base - h * k * i / 3); ctx.lineTo(px + b * k + 8, base - h * k * i / 3); ctx.stroke(); ctx.setLineDash([]); label(ctx, px - 12, base - h * k * i / 3 + 4, i + '/3', '#718096', 12, 'right'); }
-            label(ctx, px + b * k / 2, base + 26, cone ? 'cylinder' : 'prism', '#1a365d');
-            // the pyramid / cone (point down when pouring)
-            const flip = pouring ? 1 : 0, ax = cx, ay = flip ? base - h * k - 30 : base;
-            ctx.save(); ctx.translate(ax, ay);
-            if (flip) ctx.rotate(Math.PI * 0.75);
-            const tri = [[-b * k / 2, 0], [b * k / 2, 0], [0, -h * k]];
-            poly(ctx, tri, '#fff', '#2d3748');
-            if (cupFill > 0) { const f = cupFill; poly(ctx, [[-b * k / 2 * f, -h * k * (1 - f)], [b * k / 2 * f, -h * k * (1 - f)], [0, -h * k]].map(p => [p[0], p[1] + 0]).map(p => p), '#f6e05e', '#d69e2e'); }
-            ctx.restore();
-            label(ctx, cx, base + 26, cone ? 'cone' : 'pyramid', '#1a365d');
-            const V = cone ? Math.PI * (b / 2) ** 2 * h : b * b * h;
-            t1.innerHTML = level >= 0.999 ? `🎉 Full after <strong>${pours} pours</strong>! ${cone ? 'Cylinder' : 'Prism'} = ${r1(V)} cm³, so one ${cone ? 'cone' : 'pyramid'} = ${r1(V)} ÷ 3 = <strong>${r1(V / 3)} cm³</strong> → V = ⅓ × base area × height.`
-                : `${cone ? 'Cylinder' : 'Prism'} volume = ${cone ? 'π × ' + r2(b / 2) + '² × ' + h : b + ' × ' + b + ' × ' + h} = ${r1(V)} cm³. Each pour adds one ${cone ? 'cone' : 'pyramid'} of rice.`;
-        }
-        function pour() {
-            if (anim || level >= 0.999) return; pourBtn.disabled = true;
-            const t0 = performance.now();
-            const step = now => {
-                const k = (now - t0) / 2200;
-                if (k < 0.35) { pouring = false; cupFill = k / 0.35; }
-                else if (k < 1) { pouring = true; cupFill = 1 - (k - 0.35) / 0.65; level = Math.min(1, pours / 3 + (k - 0.35) / 0.65 / 3); }
-                drawPour();
-                if (k < 1) anim = requestAnimationFrame(step);
-                else { anim = null; pours++; level = Math.min(1, pours / 3); pouring = false; cupFill = 0; pc.textContent = pours; pourBtn.disabled = level >= 0.999; drawPour(); }
+        // ---------- Minimal net-folding 3D engine ----------
+        const M4 = {
+            mul(a, b) { const r = new Array(16).fill(0); for (let i = 0; i < 4; i++) for (let j = 0; j < 4; j++) for (let k = 0; k < 4; k++) r[i * 4 + j] += a[i * 4 + k] * b[k * 4 + j]; return r; },
+            id() { return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1]; },
+            ap(m, p) { return [m[0] * p[0] + m[1] * p[1] + m[2] * p[2] + m[3], m[4] * p[0] + m[5] * p[1] + m[6] * p[2] + m[7], m[8] * p[0] + m[9] * p[1] + m[10] * p[2] + m[11]]; },
+            rot(P, u, th) {
+                const [x, y, z] = u, c = Math.cos(th), s = Math.sin(th), t = 1 - c;
+                const R = [t * x * x + c, t * x * y - s * z, t * x * z + s * y, 0, t * x * y + s * z, t * y * y + c, t * y * z - s * x, 0, t * x * z - s * y, t * y * z + s * x, t * z * z + c, 0, 0, 0, 0, 1];
+                return M4.mul([1, 0, 0, P[0], 0, 1, 0, P[1], 0, 0, 1, P[2], 0, 0, 0, 1], M4.mul(R, [1, 0, 0, -P[0], 0, 1, 0, -P[1], 0, 0, 1, -P[2], 0, 0, 0, 1]));
+            },
+        };
+        // face: { pts: [[x,y],...], parent: index|-1, hinge: [[x,y],[x,y]], angle: radians, color, label }
+        function foldFaces(faces, t) {
+            const mats = [];
+            const get = i => {
+                if (mats[i]) return mats[i];
+                const f = faces[i];
+                if (f.parent < 0) return (mats[i] = M4.id());
+                const [A, B] = f.hinge, L = Math.hypot(B[0] - A[0], B[1] - A[1]), u = [(B[0] - A[0]) / L, (B[1] - A[1]) / L, 0];
+                const cx = f.pts.reduce((s, p) => s + p[0], 0) / f.pts.length, cy = f.pts.reduce((s, p) => s + p[1], 0) / f.pts.length;
+                const test = M4.ap(M4.rot([A[0], A[1], 0], u, 0.3), [cx, cy, 0]);
+                const sign = test[2] > 0 ? 1 : -1;
+                return (mats[i] = M4.mul(get(f.parent), M4.rot([A[0], A[1], 0], u, sign * f.angle * t)));
             };
-            anim = requestAnimationFrame(step);
+            return faces.map((f, i) => f.pts.map(p => M4.ap(get(i), [p[0], p[1], 0])));
         }
-        const VD = { cuboid: [['l', 8], ['w', 5], ['h', 3]], cyl: [['r', 5], ['h', 12]], cone: [['r', 3], ['h', 10]], pyr: [['base', 9], ['h', 10]], tri: [['triangle base', 6], ['triangle height', 4], ['length', 15]] };
-        function calc() {
-            const s = vs.value, prev = Array.from(document.querySelectorAll('#vctl input')).map(i => i.value);
-            if (!vctl.dataset.s || vctl.dataset.s !== s) { vctl.dataset.s = s; vctl.innerHTML = VD[s].map(([n, v], i) => `<label>${n}</label><input type="number" id="v${i}" value="${v}" style="width:70px;padding:6px;" oninput="calc()">`).join(' '); }
-            const v = VD[s].map((_, i) => +document.getElementById('v' + i).value);
-            let txt;
-            if (s === 'cuboid') txt = `V = l × w × h = ${v[0]} × ${v[1]} × ${v[2]} = <strong>${r2(v[0] * v[1] * v[2])} cm³</strong>`;
-            if (s === 'cyl') txt = `V = πr²h = π × ${v[0]}² × ${v[1]} = ${r2(v[0] * v[0] * v[1])}π ≈ <strong>${r1(Math.PI * v[0] * v[0] * v[1])} cm³</strong>`;
-            if (s === 'cone') txt = `V = ⅓πr²h = ⅓ × π × ${v[0]}² × ${v[1]} = ${r2(v[0] * v[0] * v[1] / 3)}π ≈ <strong>${r1(Math.PI * v[0] * v[0] * v[1] / 3)} cm³</strong>`;
-            if (s === 'pyr') txt = `V = ⅓ × base area × h = ⅓ × ${v[0]}² × ${v[1]} = <strong>${r2(v[0] * v[0] * v[1] / 3)} cm³</strong>`;
-            if (s === 'tri') txt = `V = (cross-section) × length = (½ × ${v[0]} × ${v[1]}) × ${v[2]} = <strong>${r2(v[0] * v[1] / 2 * v[2])} cm³</strong>`;
-            vt.innerHTML = txt;
+        function render3D(cv, faces, t, view, opts) {
+            const c = setupCanvas(cv); if (!c) return; const { ctx, W, H } = c;
+            const world = foldFaces(faces, t);
+            const all = world.flat(), flat = faces.map(f => f.pts).flat();
+            const cx = all.reduce((s, p) => s + p[0], 0) / all.length, cy = all.reduce((s, p) => s + p[1], 0) / all.length, cz = all.reduce((s, p) => s + p[2], 0) / all.length;
+            const ext = Math.max(...flat.map(p => p[0])) - Math.min(...flat.map(p => p[0])), eyt = Math.max(...flat.map(p => p[1])) - Math.min(...flat.map(p => p[1]));
+            const k = Math.min(W, H) / (Math.hypot(ext, eyt) * 1.08);
+            const cyw = Math.cos(view.yaw), syw = Math.sin(view.yaw), cp = Math.cos(view.pitch), sp = Math.sin(view.pitch);
+            const proj = p => { const x = p[0] - cx, y = p[1] - cy, z = p[2] - cz; const x1 = x * cyw - y * syw, y1 = x * syw + y * cyw; const y2 = y1 * cp - z * sp, z2 = y1 * sp + z * cp; return [W / 2 + x1 * k, H / 2 - z2 * k, y2]; };
+            const items = world.map((pts, i) => { const pp = pts.map(proj); return { i, pp, depth: pp.reduce((s, p) => s + p[2], 0) / pp.length }; });
+            items.sort((a, b) => b.depth - a.depth);
+            items.forEach(({ i, pp }) => {
+                const f = faces[i];
+                poly(ctx, pp.map(p => [p[0], p[1]]), f.color, f.noStroke ? null : '#2d3748');
+                if (f.noStroke) { ctx.strokeStyle = 'rgba(45,55,72,0.25)'; ctx.lineWidth = 1; ctx.beginPath(); pp.forEach((p, j) => j ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath(); ctx.stroke(); }
+                if (f.label && (!opts || opts.labels !== false)) { const lx = pp.reduce((s, p) => s + p[0], 0) / pp.length, ly = pp.reduce((s, p) => s + p[1], 0) / pp.length; label(ctx, lx, ly + 5, f.label, '#1a202c', 13); }
+            });
         }
-        function redraw() { drawPour(); }
-        window.addEventListener('load', () => { resetPour(); calc(); });
+        function hookDrag(cv, view, redrawFn) {
+            let drag = null;
+            cv.addEventListener('pointerdown', e => { drag = [e.clientX, e.clientY]; cv.setPointerCapture(e.pointerId); });
+            cv.addEventListener('pointermove', e => { if (!drag) return; view.yaw += (e.clientX - drag[0]) * 0.01; view.pitch = Math.max(-0.3, Math.min(1.55, view.pitch + (e.clientY - drag[1]) * 0.01)); drag = [e.clientX, e.clientY]; redrawFn(); });
+            cv.addEventListener('pointerup', () => drag = null);
+        }
+        const rectPts = (x0, y0, x1, y1) => [[x0, y0], [x1, y0], [x1, y1], [x0, y1]];
+        function cuboidNet(l, w, h) {
+            const P = Math.PI / 2;
+            return [
+                { pts: rectPts(0, 0, l, w), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'base', area: l * w, name: 'base', dims: l + ' × ' + w },
+                { pts: rectPts(0, -h, l, 0), parent: 0, hinge: [[0, 0], [l, 0]], angle: P, color: 'rgba(190,227,248,0.92)', label: 'front', area: l * h, name: 'front', dims: l + ' × ' + h },
+                { pts: rectPts(0, w, l, w + h), parent: 0, hinge: [[0, w], [l, w]], angle: P, color: 'rgba(190,227,248,0.92)', label: 'back', area: l * h, name: 'back', dims: l + ' × ' + h },
+                { pts: rectPts(0, w + h, l, 2 * w + h), parent: 2, hinge: [[0, w + h], [l, w + h]], angle: P, color: 'rgba(254,252,191,0.92)', label: 'lid', area: l * w, name: 'lid (top)', dims: l + ' × ' + w },
+                { pts: rectPts(-h, 0, 0, w), parent: 0, hinge: [[0, 0], [0, w]], angle: P, color: 'rgba(254,215,215,0.92)', label: 'side', area: h * w, name: 'left side', dims: h + ' × ' + w },
+                { pts: rectPts(l, 0, l + h, w), parent: 0, hinge: [[l, 0], [l, w]], angle: P, color: 'rgba(254,215,215,0.92)', label: 'side', area: h * w, name: 'right side', dims: h + ' × ' + w },
+            ];
+        }
+        function triPrismNet(a, p, q, L) {
+            // cross-section triangle: (0,0), (a,0), (p,q); root = bottom rectangle a × L
+            const lenL = Math.hypot(p, q), lenR = Math.hypot(a - p, q), angA = Math.atan2(q, p), angB = Math.atan2(q, a - p);
+            const r = v => Math.round(v * 100) / 100;
+            return [
+                { pts: rectPts(0, 0, a, L), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'rectangle', area: a * L, name: 'rectangle', dims: r(a) + ' × ' + L },
+                { pts: rectPts(-lenL, 0, 0, L), parent: 0, hinge: [[0, 0], [0, L]], angle: Math.PI - angA, color: 'rgba(190,227,248,0.92)', label: 'rectangle', area: lenL * L, name: 'rectangle', dims: r(lenL) + ' × ' + L },
+                { pts: rectPts(a, 0, a + lenR, L), parent: 0, hinge: [[a, 0], [a, L]], angle: Math.PI - angB, color: 'rgba(190,227,248,0.92)', label: 'rectangle', area: lenR * L, name: 'rectangle', dims: r(lenR) + ' × ' + L },
+                { pts: [[0, L], [a, L], [p, L + q]], parent: 0, hinge: [[0, L], [a, L]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.92)', label: '▲', area: a * q / 2, name: 'triangle', dims: '½ × ' + r(a) + ' × ' + r(q) },
+                { pts: [[0, 0], [a, 0], [p, -q]], parent: 0, hinge: [[0, 0], [a, 0]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.92)', label: '▲', area: a * q / 2, name: 'triangle', dims: '½ × ' + r(a) + ' × ' + r(q) },
+            ];
+        }
+        function cylinderNet(rad, h, N) {
+            N = N || 24; const s = 2 * Math.PI * rad / N, i0 = N / 2, faces = [], idx = {};
+            const order = [i0]; for (let d = 1; d < N; d++) { if (i0 + d < N) order.push(i0 + d); if (i0 - d >= 0) order.push(i0 - d); }
+            order.forEach(i => {
+                const parent = i === i0 ? -1 : idx[i > i0 ? i - 1 : i + 1], hx = (i > i0 ? i : i + 1) * s;
+                idx[i] = faces.length;
+                faces.push({ pts: rectPts(i * s, 0, (i + 1) * s, h), parent, hinge: parent < 0 ? null : [[hx, 0], [hx, h]], angle: 2 * Math.PI / N, color: 'rgba(190,227,248,0.95)', noStroke: true, label: i === i0 ? '' : '', strip: true });
+            });
+            const Rp = s / (2 * Math.sin(Math.PI / N));
+            const ngon = (y0, dir) => { const pts = [], cxp = (i0 + 0.5) * s, cyp = y0 + dir * Rp * Math.cos(Math.PI / N); for (let j = 0; j < N; j++) { const a = -Math.PI / 2 * dir + (j + 0.5) * 2 * Math.PI / N; pts.push([cxp + Rp * Math.cos(a), cyp + Rp * Math.sin(a) * 1]); } return pts; };
+            faces.push({ pts: ngon(h, 1), parent: 0, hinge: [[i0 * s, h], [(i0 + 1) * s, h]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.95)', label: 'circle', area: Math.PI * rad * rad, name: 'top circle', dims: 'r = ' + rad });
+            faces.push({ pts: ngon(0, -1), parent: 0, hinge: [[i0 * s, 0], [(i0 + 1) * s, 0]], angle: Math.PI / 2, color: 'rgba(254,215,215,0.95)', label: 'circle', area: Math.PI * rad * rad, name: 'bottom circle', dims: 'r = ' + rad });
+            faces[0].label = 'curved'; faces[0].area = 2 * Math.PI * rad * h; faces[0].name = 'curved surface (rectangle)'; faces[0].dims = '2πr × h = ' + (Math.round(2 * Math.PI * rad * 100) / 100) + ' × ' + h;
+            return faces;
+        }
+        function pyramidNet(b, ap) {
+            const ang = Math.PI - Math.acos((b / 2) / ap);
+            return [
+                { pts: rectPts(0, 0, b, b), parent: -1, color: 'rgba(198,246,213,0.92)', label: 'base' },
+                { pts: [[0, 0], [b, 0], [b / 2, -ap]], parent: 0, hinge: [[0, 0], [b, 0]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[b, 0], [b, b], [b + ap, b / 2]], parent: 0, hinge: [[b, 0], [b, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[0, b], [b, b], [b / 2, b + ap]], parent: 0, hinge: [[0, b], [b, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+                { pts: [[0, 0], [0, b], [-ap, b / 2]], parent: 0, hinge: [[0, 0], [0, b]], angle: ang, color: 'rgba(190,227,248,0.92)', label: '▲' },
+            ];
+        }
+        function cubeNetFromCells(cells) {
+            const key = c => c[0] + ',' + c[1], idx = {}, faces = [], cols = ['rgba(198,246,213,0.92)', 'rgba(190,227,248,0.92)', 'rgba(254,252,191,0.92)', 'rgba(254,215,215,0.92)', 'rgba(233,216,253,0.92)', 'rgba(178,245,234,0.92)'];
+            const queue = [[cells[0], -1, null]]; const seen = new Set([key(cells[0])]);
+            while (queue.length) {
+                const [c, parent, hinge] = queue.shift(); idx[key(c)] = faces.length;
+                faces.push({ pts: rectPts(c[0], -c[1] - 1, c[0] + 1, -c[1]), parent, hinge, angle: Math.PI / 2, color: cols[faces.length % 6], label: String(faces.length + 1) });
+                const me = faces.length - 1;
+                [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => {
+                    const n = [c[0] + dx, c[1] + dy];
+                    if (cells.some(q => q[0] === n[0] && q[1] === n[1]) && !seen.has(key(n))) {
+                        seen.add(key(n));
+                        let h;
+                        if (dx === 1) h = [[c[0] + 1, -c[1] - 1], [c[0] + 1, -c[1]]];
+                        if (dx === -1) h = [[c[0], -c[1] - 1], [c[0], -c[1]]];
+                        if (dy === 1) h = [[c[0], -c[1] - 1], [c[0] + 1, -c[1] - 1]];
+                        if (dy === -1) h = [[c[0], -c[1]], [c[0] + 1, -c[1]]];
+                        queue.push([n, me, h]);
+                    }
+                });
+            }
+            return faces;
+        }
+
+        const view = { yaw: 0.6, pitch: 0.95 };
+        const DIMS = { cuboid: [['length', 1, 12, 6], ['width', 1, 10, 4], ['height', 1, 10, 3]], tri: [['base', 2, 10, 4], ['height', 2, 10, 3], ['length', 2, 14, 10]], cyl: [['radius', 1, 6, 3], ['height', 1, 12, 8]] };
+        let faces = [], foldAnim = null;
+        function setSolid() {
+            dimCtl.innerHTML = DIMS[solid.value].map(([n, lo, hi, v], i) => `<label>${n}</label><input type="range" id="d${i}" min="${lo}" max="${hi}" value="${v}" oninput="build()"><span class="big-value" id="d${i}v">${v}</span>`).join(' ');
+            build();
+        }
+        function build() {
+            const d = DIMS[solid.value].map((_, i) => { const v = +document.getElementById('d' + i).value; document.getElementById('d' + i + 'v').textContent = v; return v; });
+            faces = solid.value === 'cuboid' ? cuboidNet(d[0], d[1], d[2]) : solid.value === 'tri' ? triPrismNet(d[0], 0, d[1], d[2]) : cylinderNet(d[0], d[1], 24);
+            draw();
+        }
+        function draw() {
+            render3D(cv1, faces, +fold.value / 100, view);
+            const real = faces.filter(f => f.area !== undefined);
+            const tsa = real.reduce((s, f) => s + f.area, 0);
+            tab.innerHTML = '<tr><th class="l">Face</th><th>Dimensions (cm)</th><th>Area (cm²)</th></tr>' + real.map(f => `<tr><td class="l">${f.name}</td><td>${f.dims}</td><td>${r2(f.area)}</td></tr>`).join('') +
+                `<tr><th class="l" colspan="2" style="text-align:right">Total Surface Area</th><th>${r2(tsa)} cm²</th></tr>`;
+            const m2 = tsa / 10000, cost = m2 * +price.value;
+            t1.innerHTML = `TSA = ${r2(tsa)} cm² = ${Math.round(m2 * 10000) / 10000} m² → paper cost ≈ <strong>Rp ${Math.round(cost).toLocaleString('id-ID')}</strong>`;
+        }
+        function animFold(target) {
+            if (foldAnim) cancelAnimationFrame(foldAnim); const start = +fold.value / 100, t0 = performance.now();
+            const step = now => { const k = Math.min(1, (now - t0) / 1600); fold.value = (start + (target - start) * k) * 100; draw(); if (k < 1) foldAnim = requestAnimationFrame(step); };
+            foldAnim = requestAnimationFrame(step);
+        }
+        hookDrag(cv1, view, draw);
+        function redraw() { draw(); }
+        window.addEventListener('load', setSolid);
 
         window.addEventListener('resize', () => { if (window.redraw) redraw(); });
     </script>

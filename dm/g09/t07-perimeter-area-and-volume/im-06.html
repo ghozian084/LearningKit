@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Media 6 - Orange Peel and Review</title>
+    <title>Interactive Media 6 - Rice Pouring Lab</title>
     <!-- MathJax Configuration -->
     <script>
         MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
@@ -50,75 +50,46 @@
         .ex-row { margin-top: 16px; }
         .hint { color: #718096; font-size: 0.9em; font-style: italic; }
         
-        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
-        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; font-weight: bold; cursor: grab; user-select: none; touch-action: none; }
-        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
-        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 150px; }
-        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 1em; text-align: center; }
-        .bin .slot { display: flex; flex-wrap: wrap; gap: 6px; }
-        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
-
     </style>
 </head>
 <body>
     <header>
-        <h1>🍊 Digital Lab 6: Orange Peel &amp; Chapter Review</h1>
+        <h1>🍚 Digital Lab 5: Rice Pouring &amp; Volume</h1>
         <span class="badge">Grade 9 · Topic 7 · Meeting 6 · Digital twin of Hands-on 6</span>
     </header>
-    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Peel the Orange</button><button class="tab-btn" onclick="openTab('s2', this)">2. Units Sort (1D/2D/3D)</button><button class="tab-btn" onclick="openTab('s3', this)">3. Endless Review</button></div>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Rice Pouring &amp; Calculator</button></div>
     <div class="main-content">
 
         <div id="s1" class="section-container active">
             <div class="module">
-                <h2>🍊 Peeling the Orange — Surface Area of a Sphere</h2>
-                <div class="twin">💡 No printer or no oranges? On-screen version of <strong>Hands-on 6, page 1</strong>.</div>
+                <h2>🍚 Rice Pouring Lab — How Many Pyramids Fill the Prism?</h2>
+                <div class="twin">💡 No printer and no rice? On-screen version of <strong>Hands-on 6</strong>.</div>
                 <div class="sim-area">
                     <div class="controls-row">
-                        <label>radius $r$</label><input type="range" id="or" min="2" max="6" value="4" oninput="drawOrange()"><span class="big-value" id="orv">4 cm</span>
-                        <label>peel</label><input type="range" id="op" min="0" max="100" value="0" oninput="drawOrange()">
-                        <button class="action-btn" onclick="animPeel()">Peel ▶</button>
+                        <label>pair</label><select id="pair" onchange="resetPour()"><option value="sq">Square pyramid → square prism</option><option value="cone">Cone → cylinder</option></select>
+                        <label>base</label><input type="range" id="pbase" min="3" max="8" value="5" oninput="resetPour()"><span class="big-value" id="pbv">5 cm</span>
+                        <label>height</label><input type="range" id="ph" min="3" max="10" value="6" oninput="resetPour()"><span class="big-value" id="phv">6 cm</span>
                     </div>
-                    <canvas class="plot" id="cv1" style="height: 340px;"></canvas>
+                    <div class="controls-row">
+                        <button class="action-btn" id="pourBtn" onclick="pour()">Fill &amp; pour 🍚</button>
+                        <button class="action-btn ghost" onclick="resetPour()">Empty the prism</button>
+                        <span style="font-weight: bold;">Pours: <span id="pc">0</span></span>
+                    </div>
+                    <canvas class="plot" id="cv1" style="height: 360px;"></canvas>
                     <div class="sim-text" id="t1"></div>
                 </div>
             </div>
             <div class="module">
+                <h2>🧮 Volume Calculator</h2>
+                <div class="controls-row">
+                    <label>solid</label><select id="vs" onchange="calc()"><option value="cuboid">Cuboid</option><option value="cyl">Cylinder</option><option value="cone">Cone</option><option value="pyr">Square pyramid</option><option value="tri">Triangular prism</option></select>
+                    <span id="vctl"></span>
+                </div>
+                <div class="sim-text" id="vt" style="text-align: left;"></div>
+            </div>
+            <div class="module">
                 <h2>✍️ Student Exercise</h2>
-                <div class="ex-row">Surface area of a sphere with r = 6 cm (cm², 1 d.p.) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 452.4, 0.06, 'fe1', '4π × 36 = 144π ≈ 452.4 cm²')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Volume of a sphere with r = 3 cm (cm³, 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 113.1, 0.06, 'fe2', '⁴⁄₃π × 27 = 36π ≈ 113.1 cm³')">Check</button><div class="feedback" id="fe2"></div></div>
-            </div>
-        </div>
-        <div id="s2" class="section-container">
-            <div class="module">
-                <h2>📏 1D, 2D or 3D? — Units Sort</h2>
-                <p>Drag each card into the right box (or tap a card, then tap a box). Perimeter is 1D, area is 2D, volume is 3D.</p>
-                <div class="sim-area">
-                    <div id="pool" class="pool"></div>
-                    <div class="bins">
-                        <div class="bin" data-d="1"><h3>1D · length</h3><div class="slot"></div></div>
-                        <div class="bin" data-d="2"><h3>2D · area</h3><div class="slot"></div></div>
-                        <div class="bin" data-d="3"><h3>3D · volume</h3><div class="slot"></div></div>
-                    </div>
-                    <div class="controls-row" style="justify-content: center; margin-top: 12px;"><button class="action-btn" onclick="checkSort()">Check</button><button class="action-btn ghost" onclick="buildSort()">Shuffle</button></div>
-                    <div class="sim-text" id="t2"></div>
-                </div>
-            </div>
-        </div>
-        <div id="s3" class="section-container">
-            <div class="module">
-                <h2>🔁 Chapter Review — Endless Practice</h2>
-                <p>A new question every time, from every part of the chapter. Give answers to 1 decimal place (use the π button on your calculator).</p>
-                <div class="sim-area">
-                    <div class="sim-text" id="rq" style="font-size: 1.25em;"></div>
-                    <div class="controls-row" style="justify-content: center;">
-                        <input type="text" id="ra" class="exercise-input" placeholder="answer">
-                        <button class="action-btn" onclick="checkReview()">Check</button>
-                        <button class="action-btn alt" onclick="newReview()">Next ▶</button>
-                        <button class="action-btn ghost" onclick="showReview()">Show solution</button>
-                    </div>
-                    <div class="sim-text" id="rf"></div>
-                    <div class="sim-text" style="color: #4a5568;">Score: <span id="rs">0</span> / <span id="rt">0</span></div>
-                </div>
+                <div class="ex-row">Cylinder r = 5 cm, h = 12 cm. Volume (cm³, 1 d.p.) = <input type="text" id="e1" class="exercise-input"><button class="action-btn" onclick="checkNum('e1', 942.5, 0.06, 'fe1', 'π × 25 × 12 = 300π ≈ 942.5 cm³')">Check</button><div class="feedback" id="fe1"></div></div><div class="ex-row">Cone r = 3 cm, h = 10 cm. Volume (cm³, 1 d.p.) = <input type="text" id="e2" class="exercise-input"><button class="action-btn" onclick="checkNum('e2', 94.2, 0.06, 'fe2', '⅓ × π × 9 × 10 = 30π ≈ 94.2 cm³')">Check</button><div class="feedback" id="fe2"></div></div><div class="ex-row">A cylinder holds 300 cm³. A cone with the same radius and height holds (cm³) <input type="text" id="e3" class="exercise-input"><button class="action-btn" onclick="checkNum('e3', 100, 0.01, 'fe3', 'one third: 300 ÷ 3 = 100 cm³')">Check</button><div class="feedback" id="fe3"></div></div><div class="ex-row">A cylinder has volume 500π cm³ and height 20 cm. Radius (cm) = <input type="text" id="e4" class="exercise-input"><button class="action-btn" onclick="checkNum('e4', 5, 0.01, 'fe4', 'r² = 500 ÷ 20 = 25 → r = 5 cm')">Check</button><div class="feedback" id="fe4"></div></div>
             </div>
         </div>
     </div>
@@ -158,83 +129,71 @@
         }
         function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
 
-        // ---------- Orange ----------
-        let peelAnim = null;
-        function drawOrange() {
-            const r = +or.value, p = +op.value / 100; orv.textContent = r + ' cm';
+        let level = 0, pours = 0, cupFill = 0, anim = null, pouring = false;
+        function resetPour() { level = 0; pours = 0; cupFill = 0; pouring = false; pourBtn.disabled = false; pbv.textContent = pbase.value + ' cm'; phv.textContent = ph.value + ' cm'; drawPour(); }
+        function drawPour() {
             const c = setupCanvas(cv1); if (!c) return; const { ctx, W, H } = c;
-            const k = Math.min(18, H / (2 * r * 2.6)), R = r * k;
-            const ox = Math.min(W * 0.18, R * 1.6), oy = H / 2;
-            // orange: peeled part shown as pale flesh
-            ctx.fillStyle = '#fbd38d'; ctx.beginPath(); ctx.arc(ox, oy, R, 0, 2 * Math.PI); ctx.fill();
-            ctx.fillStyle = '#ed8936'; ctx.beginPath(); ctx.moveTo(ox, oy); ctx.arc(ox, oy, R, -Math.PI / 2 + 2 * Math.PI * p, -Math.PI / 2 + 2 * Math.PI); ctx.closePath(); ctx.fill();
-            ctx.strokeStyle = '#c05621'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(ox, oy, R, 0, 2 * Math.PI); ctx.stroke();
-            label(ctx, ox, oy + R + 22, 'r = ' + r + ' cm', '#c05621');
-            // 4 circles with radius r, filled in order
-            const gx = ox + R * 2.2, cw = Math.min((W - gx - 10) / 4, 2 * R + 14);
-            for (let i = 0; i < 4; i++) {
-                const cx = gx + cw * i + cw / 2, f = Math.max(0, Math.min(1, p * 4 - i));
-                ctx.setLineDash([5, 4]); ctx.strokeStyle = '#dd6b20'; ctx.beginPath(); ctx.arc(cx, oy, Math.min(R, cw / 2 - 4), 0, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]);
-                if (f > 0) { ctx.fillStyle = 'rgba(237,137,54,0.85)'; ctx.beginPath(); ctx.moveTo(cx, oy); ctx.arc(cx, oy, Math.min(R, cw / 2 - 4), -Math.PI / 2, -Math.PI / 2 + 2 * Math.PI * f); ctx.closePath(); ctx.fill(); }
-                label(ctx, cx, oy + R + 22, 'circle ' + (i + 1), '#dd6b20', 13);
+            const b = +pbase.value, h = +ph.value, cone = pair.value === 'cone';
+            const k = Math.min((W / 2 - 80) / b, (H - 90) / h), base = H - 40;
+            const px = W * 0.63 - b * k / 2, cx = W * 0.2, tipY = base - h * k;
+            // container (prism / cylinder), front view with depth
+            const dep = 18;
+            ctx.fillStyle = '#f7fafc'; ctx.fillRect(px, tipY, b * k, h * k);
+            const lv = Math.min(1, level), rh = lv * h * k;
+            ctx.fillStyle = '#f6e05e'; ctx.fillRect(px, base - rh, b * k, rh);
+            for (let i = 0; i < 70 * lv; i++) { ctx.fillStyle = '#d69e2e'; ctx.fillRect(px + ((i * 37) % 100) / 100 * b * k, base - ((i * 53) % 100) / 100 * rh, 2, 1.5); }
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 2;
+            if (cone) {
+                ctx.beginPath(); ctx.ellipse(px + b * k / 2, tipY, b * k / 2, dep / 2, 0, 0, 2 * Math.PI); ctx.stroke();
+                ctx.beginPath(); ctx.ellipse(px + b * k / 2, base, b * k / 2, dep / 2, 0, 0, Math.PI); ctx.stroke();
+                ctx.beginPath(); ctx.moveTo(px, tipY); ctx.lineTo(px, base); ctx.moveTo(px + b * k, tipY); ctx.lineTo(px + b * k, base); ctx.stroke();
+            } else {
+                ctx.strokeRect(px, tipY, b * k, h * k);
+                ctx.beginPath(); ctx.moveTo(px, tipY); ctx.lineTo(px + dep, tipY - dep); ctx.lineTo(px + b * k + dep, tipY - dep); ctx.lineTo(px + b * k, tipY); ctx.moveTo(px + b * k + dep, tipY - dep); ctx.lineTo(px + b * k + dep, base - dep); ctx.lineTo(px + b * k, base); ctx.stroke();
             }
-            t1.innerHTML = p >= 0.999 ? `The peel fills exactly <strong>4 circles</strong> of radius r: Surface area = 4πr² = 4π × ${r}² = <strong>${r1(4 * Math.PI * r * r)} cm²</strong>. Volume = ⁴⁄₃πr³ = <strong>${r1(4 / 3 * Math.PI * r ** 3)} cm³</strong>.`
-                : `Peel so far covers ${r2(p * 4)} circles…`;
+            for (let i = 1; i <= 2; i++) { ctx.strokeStyle = '#a0aec0'; ctx.setLineDash([4, 4]); ctx.beginPath(); ctx.moveTo(px - 8, base - h * k * i / 3); ctx.lineTo(px + b * k + 8, base - h * k * i / 3); ctx.stroke(); ctx.setLineDash([]); label(ctx, px - 12, base - h * k * i / 3 + 4, i + '/3', '#718096', 12, 'right'); }
+            label(ctx, px + b * k / 2, base + 26, cone ? 'cylinder' : 'prism', '#1a365d');
+            // the pyramid / cone (point down when pouring)
+            const flip = pouring ? 1 : 0, ax = cx, ay = flip ? base - h * k - 30 : base;
+            ctx.save(); ctx.translate(ax, ay);
+            if (flip) ctx.rotate(Math.PI * 0.75);
+            const tri = [[-b * k / 2, 0], [b * k / 2, 0], [0, -h * k]];
+            poly(ctx, tri, '#fff', '#2d3748');
+            if (cupFill > 0) { const f = cupFill; poly(ctx, [[-b * k / 2 * f, -h * k * (1 - f)], [b * k / 2 * f, -h * k * (1 - f)], [0, -h * k]].map(p => [p[0], p[1] + 0]).map(p => p), '#f6e05e', '#d69e2e'); }
+            ctx.restore();
+            label(ctx, cx, base + 26, cone ? 'cone' : 'pyramid', '#1a365d');
+            const V = cone ? Math.PI * (b / 2) ** 2 * h : b * b * h;
+            t1.innerHTML = level >= 0.999 ? `🎉 Full after <strong>${pours} pours</strong>! ${cone ? 'Cylinder' : 'Prism'} = ${r1(V)} cm³, so one ${cone ? 'cone' : 'pyramid'} = ${r1(V)} ÷ 3 = <strong>${r1(V / 3)} cm³</strong> → V = ⅓ × base area × height.`
+                : `${cone ? 'Cylinder' : 'Prism'} volume = ${cone ? 'π × ' + r2(b / 2) + '² × ' + h : b + ' × ' + b + ' × ' + h} = ${r1(V)} cm³. Each pour adds one ${cone ? 'cone' : 'pyramid'} of rice.`;
         }
-        function animPeel() { if (peelAnim) cancelAnimationFrame(peelAnim); const t0 = performance.now(); const step = now => { const k = Math.min(1, (now - t0) / 2500); op.value = k * 100; drawOrange(); if (k < 1) peelAnim = requestAnimationFrame(step); }; peelAnim = requestAnimationFrame(step); }
-        // ---------- Units sort ----------
-        const CARDS = [['cm', 1], ['m', 1], ['km', 1], ['perimeter of a sawah', 1], ['length of a fence', 1], ['cm²', 2], ['m²', 2], ['area of a carpet', 2], ['paper to wrap a box', 2], ['surface area of a sphere', 2], ['cm³', 3], ['m³', 3], ['litres', 3], ['rice inside a prism', 3], ['water in a tank', 3]];
-        let selected = null;
-        function buildSort() {
-            pool.innerHTML = ''; document.querySelectorAll('.bin .slot').forEach(s => s.innerHTML = ''); t2.textContent = '';
-            CARDS.map(c => c).sort(() => Math.random() - 0.5).forEach(([txt, d]) => {
-                const el = document.createElement('div'); el.className = 'chip'; el.textContent = txt; el.dataset.d = d; el.draggable = true;
-                el.addEventListener('dragstart', e => { e.dataTransfer.setData('text', ''); selected = el; });
-                el.addEventListener('click', () => { document.querySelectorAll('.chip').forEach(x => x.classList.remove('sel')); selected = el; el.classList.add('sel'); });
-                pool.appendChild(el);
-            });
+        function pour() {
+            if (anim || level >= 0.999) return; pourBtn.disabled = true;
+            const t0 = performance.now();
+            const step = now => {
+                const k = (now - t0) / 2200;
+                if (k < 0.35) { pouring = false; cupFill = k / 0.35; }
+                else if (k < 1) { pouring = true; cupFill = 1 - (k - 0.35) / 0.65; level = Math.min(1, pours / 3 + (k - 0.35) / 0.65 / 3); }
+                drawPour();
+                if (k < 1) anim = requestAnimationFrame(step);
+                else { anim = null; pours++; level = Math.min(1, pours / 3); pouring = false; cupFill = 0; pc.textContent = pours; pourBtn.disabled = level >= 0.999; drawPour(); }
+            };
+            anim = requestAnimationFrame(step);
         }
-        document.querySelectorAll('.bin').forEach(bin => {
-            bin.addEventListener('dragover', e => e.preventDefault());
-            bin.addEventListener('drop', e => { e.preventDefault(); if (selected) { bin.querySelector('.slot').appendChild(selected); selected.classList.remove('sel', 'right', 'wrong'); selected = null; } });
-            bin.addEventListener('click', e => { if (selected && e.target.closest('.chip') == null) { bin.querySelector('.slot').appendChild(selected); selected.classList.remove('sel', 'right', 'wrong'); selected = null; } });
-        });
-        function checkSort() {
-            let right = 0, placed = 0;
-            document.querySelectorAll('.bin').forEach(bin => bin.querySelectorAll('.chip').forEach(ch => { placed++; const ok = ch.dataset.d === bin.dataset.d; ch.classList.toggle('right', ok); ch.classList.toggle('wrong', !ok); if (ok) right++; }));
-            t2.innerHTML = `${right} of ${CARDS.length} correct` + (placed < CARDS.length ? ` (${CARDS.length - placed} cards still in the pool)` : '') + (right === CARDS.length ? ' 🎉' : '');
+        const VD = { cuboid: [['l', 8], ['w', 5], ['h', 3]], cyl: [['r', 5], ['h', 12]], cone: [['r', 3], ['h', 10]], pyr: [['base', 9], ['h', 10]], tri: [['triangle base', 6], ['triangle height', 4], ['length', 15]] };
+        function calc() {
+            const s = vs.value, prev = Array.from(document.querySelectorAll('#vctl input')).map(i => i.value);
+            if (!vctl.dataset.s || vctl.dataset.s !== s) { vctl.dataset.s = s; vctl.innerHTML = VD[s].map(([n, v], i) => `<label>${n}</label><input type="number" id="v${i}" value="${v}" style="width:70px;padding:6px;" oninput="calc()">`).join(' '); }
+            const v = VD[s].map((_, i) => +document.getElementById('v' + i).value);
+            let txt;
+            if (s === 'cuboid') txt = `V = l × w × h = ${v[0]} × ${v[1]} × ${v[2]} = <strong>${r2(v[0] * v[1] * v[2])} cm³</strong>`;
+            if (s === 'cyl') txt = `V = πr²h = π × ${v[0]}² × ${v[1]} = ${r2(v[0] * v[0] * v[1])}π ≈ <strong>${r1(Math.PI * v[0] * v[0] * v[1])} cm³</strong>`;
+            if (s === 'cone') txt = `V = ⅓πr²h = ⅓ × π × ${v[0]}² × ${v[1]} = ${r2(v[0] * v[0] * v[1] / 3)}π ≈ <strong>${r1(Math.PI * v[0] * v[0] * v[1] / 3)} cm³</strong>`;
+            if (s === 'pyr') txt = `V = ⅓ × base area × h = ⅓ × ${v[0]}² × ${v[1]} = <strong>${r2(v[0] * v[0] * v[1] / 3)} cm³</strong>`;
+            if (s === 'tri') txt = `V = (cross-section) × length = (½ × ${v[0]} × ${v[1]}) × ${v[2]} = <strong>${r2(v[0] * v[1] / 2 * v[2])} cm³</strong>`;
+            vt.innerHTML = txt;
         }
-        // ---------- Review ----------
-        const ri = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
-        const GEN = [
-            () => { const l = ri(3, 15), w = ri(2, 10); return [`Area of a rectangle ${l} cm × ${w} cm (cm²)`, l * w, `${l} × ${w}`]; },
-            () => { const l = ri(3, 15), w = ri(2, 10); return [`Perimeter of a rectangle ${l} cm × ${w} cm (cm)`, 2 * (l + w), `2(${l} + ${w})`]; },
-            () => { const b = ri(4, 14), h = ri(3, 10); return [`Area of a triangle: base ${b} cm, height ${h} cm (cm²)`, b * h / 2, `½ × ${b} × ${h}`]; },
-            () => { const b = ri(4, 14), h = ri(3, 10); return [`Area of a parallelogram: base ${b} cm, height ${h} cm (cm²)`, b * h, `${b} × ${h}`]; },
-            () => { const a = ri(3, 8), b = ri(9, 15), h = ri(2, 8); return [`Area of a trapezium: parallel sides ${a} and ${b} cm, height ${h} cm (cm²)`, (a + b) * h / 2, `½(${a} + ${b}) × ${h}`]; },
-            () => { const l = ri(2, 9), w = ri(2, 8), h = ri(2, 7); return [`Total surface area of a cuboid ${l} × ${w} × ${h} cm (cm²)`, 2 * (l * w + l * h + w * h), `2(${l * w} + ${l * h} + ${w * h})`]; },
-            () => { const l = ri(2, 9), w = ri(2, 8), h = ri(2, 7); return [`Volume of a cuboid ${l} × ${w} × ${h} cm (cm³)`, l * w * h, `${l} × ${w} × ${h}`]; },
-            () => { const r = ri(2, 8), h = ri(3, 12); return [`Volume of a cylinder: r = ${r} cm, h = ${h} cm (cm³, 1 d.p.)`, Math.PI * r * r * h, `π × ${r}² × ${h} = ${r * r * h}π`]; },
-            () => { const r = ri(2, 8), h = ri(3, 12); return [`Total surface area of a cylinder: r = ${r} cm, h = ${h} cm (cm², 1 d.p.)`, 2 * Math.PI * r * r + 2 * Math.PI * r * h, `2π${r}² + 2π(${r})(${h}) = ${2 * r * r + 2 * r * h}π`]; },
-            () => { const r = ri(2, 8), h = ri(3, 12); return [`Volume of a cone: r = ${r} cm, h = ${h} cm (cm³, 1 d.p.)`, Math.PI * r * r * h / 3, `⅓ × π × ${r}² × ${h}`]; },
-            () => { const b = ri(3, 10), h = ri(3, 12); return [`Volume of a square pyramid: base ${b} cm, height ${h} cm (cm³, 1 d.p.)`, b * b * h / 3, `⅓ × ${b}² × ${h}`]; },
-            () => { const r = ri(1, 9); return [`Surface area of a sphere: r = ${r} cm (cm², 1 d.p.)`, 4 * Math.PI * r * r, `4π × ${r}² = ${4 * r * r}π`]; },
-            () => { const r = ri(1, 9); return [`Volume of a sphere: r = ${r} cm (cm³, 1 d.p.)`, 4 / 3 * Math.PI * r ** 3, `⁴⁄₃π × ${r}³`]; },
-        ];
-        let cur = null, rsc = 0, rtot = 0, done = false;
-        function newReview() { const g = GEN[Math.floor(Math.random() * GEN.length)](); cur = g; done = false; rq.textContent = g[0]; ra.value = ''; rf.textContent = ''; }
-        function checkReview() {
-            const v = parseFloat(ra.value.replace(',', '.')); if (isNaN(v)) { rf.className = 'sim-text bad'; rf.textContent = 'Type a number.'; return; }
-            if (!done) rtot++;
-            const ok = Math.abs(v - cur[1]) <= 0.051 + 1e-9 || Math.abs(v - Math.round(cur[1] * 10) / 10) < 1e-9;
-            if (ok && !done) rsc++;
-            done = true;
-            rf.className = 'sim-text ' + (ok ? 'good' : 'bad'); rf.textContent = ok ? '✅ Correct!' : '❌ Not quite — try again or show the solution.';
-            rs.textContent = rsc; rt.textContent = rtot;
-        }
-        function showReview() { rf.className = 'sim-text'; rf.textContent = `${cur[2]} = ${r1(cur[1])}`; }
-        function redraw() { drawOrange(); }
-        window.addEventListener('load', () => { drawOrange(); buildSort(); newReview(); });
+        function redraw() { drawPour(); }
+        window.addEventListener('load', () => { resetPour(); calc(); });
 
         window.addEventListener('resize', () => { if (window.redraw) redraw(); });
     </script>

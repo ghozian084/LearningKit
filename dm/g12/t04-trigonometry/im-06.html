@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Media 6 - Adding Waves and the Tide Report</title>
+    <title>Interactive Media 6 - Waves, Tide Report and Graph Transformations</title>
     <!-- MathJax Configuration -->
     <script>
         MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
@@ -86,10 +86,10 @@
 </head>
 <body>
     <header>
-        <h1>🌊 Digital Hands-on 5: Adding Waves &amp; Tide Report</h1>
+        <h1>🌊 Digital Hands-on 5: Adding Waves, Tide Report &amp; Transformations</h1>
         <span class="badge">Grade 12 · Topic 3 Trigonometry · Meeting 5 · Digital twin of Hands-on 5</span>
     </header>
-    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Adding Two Waves</button><button class="tab-btn" onclick="openTab('s2', this)">2. Tide Report</button></div>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Adding Two Waves</button><button class="tab-btn" onclick="openTab('s2', this)">2. Tide Report</button><button class="tab-btn" onclick="openTab('s3', this)">3. Graph Transformations</button></div>
     <div class="main-content">
 
         <div id="s1" class="section-container active">
@@ -130,6 +130,49 @@
                 <canvas class="plot" id="cv2" style="height: 280px;"></canvas>
                 <p><strong>My recommendation to the harbour master:</strong></p>
                 <textarea style="width: 100%; min-height: 90px; box-sizing: border-box; padding: 10px; font-size: 1em; border: 1px solid #cbd5e0; border-radius: 5px;"></textarea>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>🎛️ Transformations of Trigonometric Graphs</h2>
+                <p>Every wave in this meeting is a transformed $\sin x$ or $\cos x$. Move the sliders and watch how $y = a\,f\big(b(x + c)\big) + d$ changes. The grey dashed curve is the original $y = f(x)$.</p>
+                <div class="sim-area">
+                    <div class="controls-row">
+                        <label>$f$</label><select id="tf" onchange="drawTr()"><option value="sin">sin</option><option value="cos">cos</option><option value="tan">tan</option></select>
+                        <label class="tr-lab">$a$</label><input type="range" id="ta_" min="-5" max="5" step="0.5" value="1" oninput="drawTr()"><span class="big-value" id="tav"></span>
+                        <label class="tr-lab">$b$</label><input type="range" id="tb_" min="0.5" max="4" step="0.5" value="1" oninput="drawTr()"><span class="big-value" id="tbv"></span>
+                    </div>
+                    <div class="controls-row">
+                        <label class="tr-lab">$c$</label><input type="range" id="tc_" min="-180" max="180" step="0.01" value="0" oninput="snapC(); drawTr()"><span class="big-value" id="tcv"></span>
+                        <label class="tr-lab">$d$</label><input type="range" id="td_" min="-3" max="3" step="0.5" value="0" oninput="drawTr()"><span class="big-value" id="tdv"></span>
+                        <label><input type="checkbox" id="tsteps" onchange="drawTr()"> show each step</label>
+                        <button class="action-btn ghost" onclick="setTr('sin', 1, 1, 0, 0)">Reset</button>
+                        <button class="action-btn alt" onclick="setTr('sin', 5, 1, 53.13, 0)">Preset: 5 sin(x + 53.13°)</button>
+                    </div>
+                    <div class="sim-text" id="teq" style="font-size: 1.35em;"></div>
+                    <canvas class="plot" id="cv3" style="height: 380px;"></canvas>
+                    <table class="vals" id="ttab" style="margin-top: 10px;"></table>
+                    <div class="sim-text" id="t3" style="text-align: left;"></div>
+                </div>
+            </div>
+            <div class="module">
+                <h2>🕵️ Mystery Graph</h2>
+                <p>A red mystery curve appears on the graph above. Move the sliders until your curve lies exactly on top of it, then press <strong>Check</strong>. (More than one equation can be right — e.g. $\cos x = \sin(x + 90^\circ)$!)</p>
+                <div class="controls-row" style="justify-content: center;">
+                    <button class="action-btn" onclick="newMystery()">🎲 New mystery graph</button>
+                    <button class="action-btn alt" onclick="checkMystery()">Check</button>
+                    <button class="action-btn ghost" onclick="revealMystery()">Reveal</button>
+                    <span style="font-weight: bold;">Solved: <span id="msolved">0</span></span>
+                </div>
+                <div class="sim-text" id="t4"></div>
+            </div>
+            <div class="module">
+                <h2>✏️ Quick Check</h2>
+                <div class="ex-row">Period of $y = 3\sin 2x$ (degrees): <input type="text" id="x1" class="exercise-input"><button class="action-btn" onclick="checkNum('x1', 180, 0.01, 'fx1', 'stretch parallel to the x-axis, factor ½: 360° ÷ 2 = 180°')">Check</button><div class="feedback" id="fx1"></div></div>
+                <div class="ex-row">Maximum value of $y = 2\cos(x - 30^\circ) + 1$: <input type="text" id="x2" class="exercise-input"><button class="action-btn" onclick="checkNum('x2', 3, 0.01, 'fx2', 'max = a + d = 2 + 1 = 3 (at x = 30°)')">Check</button><div class="feedback" id="fx2"></div></div>
+                <div class="ex-row">Minimum value of $y = 4 - 3\sin x$: <input type="text" id="x3" class="exercise-input"><button class="action-btn" onclick="checkNum('x3', 1, 0.01, 'fx3', 'sin x = 1 gives 4 − 3 = 1')">Check</button><div class="feedback" id="fx3"></div></div>
+                <div class="ex-row">$y = 5\sin(x + 53.13^\circ)$: the $x$-coordinate (degrees, 2 d.p.) of its first maximum for $x > 0$: <input type="text" id="x4" class="exercise-input"><button class="action-btn" onclick="checkNum('x4', 36.87, 0.006, 'fx4', 'x + 53.13° = 90° → x = 36.87° — the same peak as 3 sin x + 4 cos x in Tab 1!')">Check</button><div class="feedback" id="fx4"></div></div>
+                <div class="ex-row">$y = \tan x$ is stretched parallel to the $x$-axis with factor $\frac12$. New period (degrees): <input type="text" id="x5" class="exercise-input"><button class="action-btn" onclick="checkNum('x5', 90, 0.01, 'fx5', 'y = tan 2x has period 180° ÷ 2 = 90°')">Check</button><div class="feedback" id="fx5"></div></div>
             </div>
         </div>
     </div>
@@ -223,8 +266,87 @@
             label(ctx, X(12) - 4, Y(1.8) - 6, 'ship needs 1.8 m', '#c53030', 12, 'right');
             ctx.strokeStyle = '#2b6cb0'; ctx.lineWidth = 3; ctx.beginPath(); for (let i = 0; i <= 240; i++) { const t = i / 20; i ? ctx.lineTo(X(t), Y(h(t))) : ctx.moveTo(X(t), Y(h(t))); } ctx.stroke();
         }
-        function redraw() { drawWaves(); drawTide(); }
-        window.addEventListener('load', () => { buildWaves(); drawWaves(); drawTide(); });
+        // ---------- Tab 3: transformations ----------
+        const FN = { sin: x => Math.sin(x * D), cos: x => Math.cos(x * D), tan: x => Math.tan(x * D) };
+        let mystery = null, mSolved = 0;
+        const num = v => { const r = Math.round(v * 100) / 100; return Object.is(r, -0) ? '0' : String(r).replace('-', '−'); };
+        function snapC() { const v = +tc_.value, r = Math.round(v / 15) * 15; if (Math.abs(v - r) < 2.5 && Math.abs(v - 53.13) > 0.5) tc_.value = r; }
+        function trParams() { return { f: tf.value, a: +ta_.value, b: +tb_.value, c: +tc_.value, d: +td_.value }; }
+        function setTr(f, a, b, c, d) { tf.value = f; ta_.value = a; tb_.value = b; tc_.value = c; td_.value = d; drawTr(); }
+        function eqText({ f, a, b, c, d }) {
+            const A = a === 1 ? '' : (a === -1 ? '−' : num(a).replace('-', '−') + ' ');
+            const inner = c === 0 ? (b === 1 ? 'x' : num(b) + 'x') : (b === 1 ? `x ${c > 0 ? '+' : '−'} ${num(Math.abs(c))}°` : `${num(b)}(x ${c > 0 ? '+' : '−'} ${num(Math.abs(c))}°)`);
+            const D_ = d === 0 ? '' : ` ${d > 0 ? '+' : '−'} ${num(Math.abs(d))}`;
+            return `y = ${A}${f} ${c === 0 ? inner : '(' + inner + ')'}${D_}`.replace('( ', '(');
+        }
+        function curve(ctx, X, Y, g, col, w, dash, isTan) {
+            ctx.strokeStyle = col; ctx.lineWidth = w; ctx.setLineDash(dash || []); ctx.beginPath();
+            let pen = false, prev = null;
+            for (let x = -180; x <= 360; x += 0.5) {
+                const y = g(x);
+                if (!isFinite(y) || Math.abs(y) > 9 || (isTan && prev !== null && Math.abs(y - prev) > 4)) { pen = false; prev = isFinite(y) ? y : null; continue; }
+                pen ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)); pen = true; prev = y;
+            }
+            ctx.stroke(); ctx.setLineDash([]);
+        }
+        function drawTr() {
+            const P = trParams(), { f, a, b, c, d } = P, isTan = f === 'tan';
+            tav.textContent = num(a); tbv.textContent = num(b); tcv.textContent = num(c) + '°'; tdv.textContent = num(d);
+            teq.textContent = eqText(P);
+            const cv = setupCanvas(cv3); if (!cv) return; const { ctx, W, H } = cv;
+            const ymax = Math.max(3, Math.ceil(Math.abs(a) + Math.abs(d) + 0.5), mystery ? Math.ceil(Math.abs(mystery.a) + Math.abs(mystery.d) + 0.5) : 0);
+            const X = x => 45 + (x + 180) / 540 * (W - 60), Y = y => H / 2 - y / ymax * (H / 2 - 18);
+            ctx.lineWidth = 1;
+            for (let x = -180; x <= 360; x += 30) { ctx.strokeStyle = x % 90 ? '#edf2f7' : '#cbd5e0'; ctx.beginPath(); ctx.moveTo(X(x), 8); ctx.lineTo(X(x), H - 8); ctx.stroke(); if (x % 90 === 0) label(ctx, X(x), H / 2 + 16, x + '°', '#4a5568', 11); }
+            for (let y = -ymax; y <= ymax; y++) { ctx.strokeStyle = '#edf2f7'; ctx.beginPath(); ctx.moveTo(X(-180), Y(y)); ctx.lineTo(X(360), Y(y)); ctx.stroke(); if (y) label(ctx, 38, Y(y) + 4, y, '#4a5568', 11, 'right'); }
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 1.5; ctx.beginPath(); ctx.moveTo(X(-180), Y(0)); ctx.lineTo(X(360), Y(0)); ctx.moveTo(X(0), 8); ctx.lineTo(X(0), H - 8); ctx.stroke();
+            if (mystery) curve(ctx, X, Y, x => mystery.a * FN[mystery.f](mystery.b * (x + mystery.c)) + mystery.d, 'rgba(229,62,62,0.55)', 7, null, mystery.f === 'tan');
+            const F = FN[f];
+            curve(ctx, X, Y, F, '#a0aec0', 2, [6, 5], isTan);
+            if (tsteps.checked) {
+                curve(ctx, X, Y, x => F(b * x), '#ecc94b', 2, [3, 3], isTan);
+                curve(ctx, X, Y, x => F(b * (x + c)), '#ed8936', 2, [3, 3], isTan);
+                curve(ctx, X, Y, x => a * F(b * (x + c)), '#9f7aea', 2, [3, 3], isTan);
+                [['① stretch ∥ x-axis', '#b7791f'], ['② translate ∥ x-axis', '#dd6b20'], ['③ stretch ∥ y-axis', '#805ad5']].forEach(([t, col], i) => label(ctx, W - 12, 18 + i * 17, t, col, 12, 'right'));
+            }
+            curve(ctx, X, Y, x => a * F(b * (x + c)) + d, '#2b6cb0', 3.5, null, isTan);
+            // description (Cambridge wording), in the order the steps are applied
+            const st = [];
+            if (b !== 1) st.push(`Stretch parallel to the <strong>x-axis</strong>, scale factor <strong>${num(1 / b)}</strong> (from <em>b</em> = ${num(b)}).`);
+            if (c !== 0) st.push(`Translation by the vector <strong>(${num(-c)}°, 0)</strong> — ${c > 0 ? 'left' : 'right'} ${num(Math.abs(c))}° (from <em>c</em> = ${num(c)}; note the sign!).`);
+            if (a !== 1 && a !== 0) st.push(`Stretch parallel to the <strong>y-axis</strong>, scale factor <strong>${num(Math.abs(a))}</strong>${a < 0 ? ', then a <strong>reflection in the x-axis</strong> (a &lt; 0)' : ''}.`);
+            if (a === 0) st.push('a = 0 flattens the graph onto the x-axis.');
+            if (d !== 0) st.push(`Translation by the vector <strong>(0, ${num(d)})</strong> — ${d > 0 ? 'up' : 'down'} ${num(Math.abs(d))}.`);
+            t3.innerHTML = st.length ? '<strong>From y = ' + f + ' x:</strong><ol style="margin: 6px 0 0 18px; padding: 0;">' + st.map(x => '<li>' + x + '</li>').join('') + '</ol>' : 'This is the original graph y = ' + f + ' x. Move a slider!';
+            const per = (isTan ? 180 : 360) / b;
+            ttab.innerHTML = '<tr><th class="l">Property</th><th>Original</th><th>Transformed</th></tr>' +
+                `<tr><td class="l">Period</td><td>${isTan ? 180 : 360}°</td><td>${num(per)}°</td></tr>` +
+                (isTan ? `<tr><td class="l">Asymptotes</td><td>x = 90° + 180°n</td><td>x = ${num(90 / b - c)}° + ${num(per)}°n</td></tr>` :
+                `<tr><td class="l">Amplitude</td><td>1</td><td>${num(Math.abs(a))}</td></tr>` +
+                `<tr><td class="l">Maximum / minimum</td><td>1 / −1</td><td>${num(Math.abs(a) + d)} / ${num(-Math.abs(a) + d)}</td></tr>` +
+                `<tr><td class="l">Range</td><td>−1 ≤ y ≤ 1</td><td>${num(-Math.abs(a) + d)} ≤ y ≤ ${num(Math.abs(a) + d)}</td></tr>`);
+        }
+        function newMystery() {
+            const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+            do { mystery = { f: pick(['sin', 'sin', 'cos', 'cos', 'tan']), a: pick([-2, -1, 1, 2, 3]), b: pick([0.5, 1, 1, 2, 3]), c: pick([0, 0, 30, -30, 45, -45, 60, -60, 90, -90]), d: pick([-1, 0, 0, 1, 2]) }; }
+            while (mystery.a === 1 && mystery.b === 1 && mystery.c === 0 && mystery.d === 0);
+            if (mystery.f === 'tan') { mystery.a = pick([-1, 1, 2]); mystery.d = pick([0, 1, -1]); }
+            t4.className = 'sim-text'; t4.textContent = 'Match the thick red curve. Tip: read the max/min first (a and d), then the period (b), then the shift (c).';
+            drawTr();
+        }
+        function sameGraph(P, Q) {
+            const g = (R, x) => R.a * FN[R.f](R.b * (x + R.c)) + R.d;
+            for (let x = -180; x <= 360; x += 7.3) { const u = g(P, x), v = g(Q, x); if (Math.abs(u) > 20 || Math.abs(v) > 20) continue; if (Math.abs(u - v) > 0.02) return false; }
+            return true;
+        }
+        function checkMystery() {
+            if (!mystery) { newMystery(); return; }
+            if (sameGraph(trParams(), mystery)) { mSolved++; msolved.textContent = mSolved; t4.className = 'sim-text good'; t4.innerHTML = `🎉 Exact match! Your equation ${eqText(trParams())} draws the mystery graph${eqText(trParams()) === eqText(mystery) ? '' : ' (I was thinking of ' + eqText(mystery) + ' — the same curve!)'}.`; }
+            else { t4.className = 'sim-text bad'; t4.textContent = '❌ Not on top yet. Check the max and min first, then the period, then the shift.'; }
+        }
+        function revealMystery() { if (!mystery) return; setTr(mystery.f, mystery.a, mystery.b, mystery.c, mystery.d); t4.className = 'sim-text'; t4.textContent = 'The mystery graph was ' + eqText(mystery) + '.'; }
+        function redraw() { drawWaves(); drawTide(); drawTr(); }
+        window.addEventListener('load', () => { buildWaves(); drawWaves(); drawTide(); drawTr(); });
 
         window.addEventListener('resize', () => { if (window.redraw) redraw(); });
     </script>

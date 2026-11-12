@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lesson Plan - Differentiation (Traditional) - SMA Semesta</title>
+    <!-- MathJax Configuration MUST come first -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent-bg: #ebf8ff;
+            --mindful: #2980b9;
+            --meaningful: #27ae60;
+            --joyful: #d35400;
+            --rme: #8e44ad;
+            --char: #c0392b;
+
+            /* WALT & WILT Colors */
+            --walt-header: #1e3a8a;
+            --walt-bg: #e0f2fe;
+            --wilt-header: #831843;
+            --wilt-bg: #fce7f3;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.4;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            padding-bottom: 50px;
+            background-color: #fff;
+        }
+        mjx-container { font-size: 1.15em !important; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Print Styles */
+        @page { size: A4; margin: 12mm; margin-bottom: 20mm; }
+        @media print {
+            body { padding: 0; font-size: 9.5pt; }
+            .print-btn { display: none !important; }
+            .page-break { page-break-before: always; }
+            h1, h2, h3 { page-break-after: avoid; margin-top: 15px; margin-bottom: 5px;}
+            .header, .info-grid { page-break-inside: avoid; }
+            #print-footer { display: block !important; position: fixed; bottom: 0; left: 0; width: 100%; text-align: center; font-size: 9pt; font-style: italic; color: #555; }
+        }
+        #print-footer { display: none; text-align: center; margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; font-style: italic; color: #555; }
+
+        /* Header Elements */
+        .header { display: flex; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 10px; margin-bottom: 15px; }
+        .header img { width: 90px; margin-right: 20px; }
+        .header-text h1 { margin: 0; font-size: 1.5em; color: var(--primary); }
+        .header-text p { margin: 2px 0; font-size: 0.95em; }
+        .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; background: #f8f9fa; padding: 12px; border: 1px solid #dee2e6; margin-bottom: 15px; }
+        .info-grid p { margin: 3px 0; }
+
+        h2 { color: var(--primary); border-bottom: 1px solid #ccc; padding-bottom: 5px; margin-top: 20px; font-size: 1.2em;}
+
+        .char-dev, .rme, .joyful, .mindful, .meaningful { font-weight: bold; }
+        .char-dev { color: var(--char); } .rme { color: var(--rme); } .joyful { color: var(--joyful); } .mindful { color: var(--mindful); } .meaningful { color: var(--meaningful); }
+
+        /* WALT & WILT Section */
+        .ww-container {
+            display: flex; width: 100%; margin-bottom: 20px; border: 1px solid #cbd5e0; page-break-inside: avoid;
+        }
+        .ww-col { flex: 1; display: flex; flex-direction: column; }
+        .ww-header { color: white; font-weight: bold; text-align: center; padding: 8px; font-size: 1.1em; }
+        .ww-body { padding: 15px; flex: 1; font-size: 0.95em; }
+        .walt-col .ww-header { background-color: var(--walt-header); }
+        .walt-col .ww-body { background-color: var(--walt-bg); color: #1e3a8a;}
+        .wilt-col .ww-header { background-color: var(--wilt-header); }
+        .wilt-col .ww-body { background-color: var(--wilt-bg); color: #831843;}
+        .ww-body h4 { margin-top: 0; margin-bottom: 5px; font-size: 1em;}
+        .ww-body ul, .ww-body ol { margin-top: 5px; padding-left: 20px; margin-bottom: 10px;}
+        .ww-body li { margin-bottom: 5px; }
+
+        /* Traditional Phase Detailed Table Design */
+        .phase-container {
+            border: 1px solid var(--secondary); margin-bottom: 10px; page-break-inside: avoid; display: flex; flex-direction: column;
+        }
+        .phase-header {
+            background-color: var(--secondary); color: white; padding: 5px 12px;
+            font-weight: bold; display: flex; justify-content: space-between; font-size: 0.95em;
+        }
+        .phase-body { display: flex; width: 100%; }
+        .phase-left {
+            width: 22%; background-color: var(--accent-bg); padding: 10px;
+            font-style: italic; color: var(--primary); font-weight: bold;
+            border-right: 1px solid #cbd5e0; font-size: 0.85em;
+        }
+        .phase-right {
+            width: 78%; padding: 10px; background-color: white; font-size: 0.9em;
+        }
+        .phase-right h4 { margin: 0 0 5px 0; color: var(--primary); font-size: 1em; }
+        .phase-right ul { margin: 0 0 5px 0; padding-left: 20px; }
+        .phase-right li { margin-bottom: 3px; }
+        .scaffold-text {
+            color: var(--secondary); font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #f0f4f8; padding: 4px 8px; border-left: 3px solid var(--secondary);
+        }
+        .media-text {
+            color: #6b46c1; font-weight: bold; margin-top: 5px; display: block;
+            font-size: 0.9em; background-color: #faf5ff; padding: 4px 8px; border-left: 3px solid #805ad5;
+        }
+
+        /* Differentiation Table Styles */
+        .diff-header {
+            display: flex; align-items: center; color: var(--primary); font-size: 1.2em; font-weight: bold;
+            margin-top: 20px; margin-bottom: 10px; border-bottom: 1px solid #ccc; padding-bottom: 5px; page-break-after: avoid;
+        }
+        .diff-table { width: 100%; border-collapse: collapse; margin-bottom: 20px; page-break-inside: avoid; font-size: 0.9em;}
+        .diff-table th, .diff-table td { border: 1px solid #cbd5e0; padding: 8px 12px; text-align: left; vertical-align: top; }
+        .diff-table th { background-color: #f8f9fa; color: #2d3748; font-weight: bold; }
+        .diff-table td:first-child { font-weight: bold; color: #2c3e50; width: 25%; }
+
+        .signatures { display: flex; justify-content: space-between; margin-top: 40px; page-break-inside: avoid; font-size: 0.9em;}
+        .signature-block { width: 45%; text-align: left; }
+        .signature-title { margin-bottom: 50px; line-height: 1.2; }
+        .signature-name { font-weight: bold; text-decoration: underline; margin-bottom: 2px; }
+    </style>
+</head>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Lesson Plan</button>
+
+    <div class="header">
+        <img src="https://semesta.sch.id/wp-content/uploads/2025/09/cropped-Logo-Semesta-2017-200x200-1-1-300x300.png" alt="SMA Semesta Logo">
+        <div class="header-text">
+            <h1>Lesson Plan: Differentiation (Direct Instruction)</h1>
+            <p><strong>School:</strong> SMA Semesta 2026/2025 | <strong>Grade:</strong> 12 (Pure Math 2 & 3)</p>
+            <p><strong>Time Allocation:</strong> 6 Meetings (2 x 40 minutes = 80 mins per meeting)</p>
+        </div>
+    </div>
+
+    <div class="info-grid">
+        <div>
+            <p><strong>📌 Topic:</strong> 4. Differentiation</p>
+            <p><strong>Reference:</strong> Cambridge Mathematics Pure Math 2-3 A Level</p>
+            <p><strong>Method:</strong> Traditional Teaching / Lecturing</p>
+        </div>
+        <div>
+            <p><strong>Approach:</strong> Deep Learning & <span class="rme">Realistic Mathematics Education</span></p>
+            <p><strong>Character Focus:</strong> <span class="char-dev">Self-Regulated, Creativity, Critical Thinking</span></p>
+            <p><strong>Differentiation:</strong> Extension, Scaffolding, EAL, SEN</p>
+        </div>
+    </div>
+
+    <h2>🎯 Objectives</h2>
+    <ul style="font-size: 0.9em;">
+        <li><strong>2.4.1 / 3.4.1:</strong> Differentiate products and quotients, including those involving exponential, logarithmic, and trigonometric functions.</li>
+        <li><strong>2.4.3 / 3.4.2:</strong> Differentiate exponential and logarithmic functions, including those requiring the chain rule.</li>
+        <li><strong>2.4.5 / 3.4.3:</strong> Differentiate trigonometric functions, including those involving inverse trigonometric functions.</li>
+        <li><strong>3.4.4 & 3.4.5:</strong> Use implicit differentiation and parametric differentiation to find derivatives.</li>
+    </ul>
+
+    <!-- WALT & WILT SECTION -->
+    <div class="ww-container">
+        <div class="ww-col walt-col">
+            <div class="ww-header">WALT — We Are Learning To...</div>
+            <div class="ww-body">
+                <h4>Learning Objective:</h4>
+                <p>Master advanced differentiation techniques (Product, Quotient, Chain, Implicit, and Parametric rules) through direct instruction and rigorous practice to find the rate of change for complex and non-linear functions.</p>
+                <br>
+                <h4>Bloom's Level:</h4>
+                <p>Understand, Apply & Analyse (Levels 2–4)</p>
+            </div>
+        </div>
+        <div class="ww-col wilt-col">
+            <div class="ww-header">WILT — What I'm Looking For...</div>
+            <div class="ww-body">
+                <h4>Success Criteria (self-assessable):</h4>
+                <ol>
+                    <li>I can recite and apply the formulas for the Product Rule and Quotient Rule.</li>
+                    <li>I know the standard derivatives of $e^x$, $\ln x$, $\sin x$, $\cos x$, $\tan x$ and $\tan^{-1} x$.</li>
+                    <li>I can correctly apply the Chain Rule when differentiating composite functions.</li>
+                    <li>I can use implicit differentiation to find $\frac{dy}{dx}$ when $y$ cannot be isolated.</li>
+                    <li>I can find the gradient of a parametric curve by calculating $\frac{dy/dt}{dx/dt}$.</li>
+                </ol>
+            </div>
+        </div>
+    </div>
+
+    <div style="background-color: #f0fdf4; border-left: 5px solid #38a169; padding: 10px; margin-bottom: 15px; font-size: 0.95em;">
+        <strong>🖥️ Board 1 (projector slides)</strong> follows this plan meeting by meeting in the gradual-release order <strong>Lecture → I Do (teacher models) → We Do (guided) → You Do (independent)</strong>. In the worked examples each step is revealed one at a time (Space / → / clicker), the "We Do" answers stay hidden until the class has shown their mini-whiteboards, and the "You Do" slides have a countdown timer.
+    </div>
+
+    <!-- ==========================================
+         MEETING 1
+    =========================================== -->
+    <h2>📅 Meeting 1: The Product & Quotient Rules (Subtopics 4.1 & 4.2)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Concept Introduction</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction<br>(Teacher Lecture)</div>
+            <div class="phase-right">
+                <h4>Lecture & Hook (15 min):</h4>
+                <ul>
+                    <li><span class="rme">Meaningful Context:</span> "A rectangular metal plate is being heated. Its length $L$ and width $W$ expand over time. The Area is $A = L \times W$."</li>
+                    <li>Explain that the derivative of a product is NOT simply the product of their derivatives.</li>
+                    <li>Write the <strong>Product Rule</strong> explicitly on the board: $\frac{dy}{dx} = u \frac{dv}{dx} + v \frac{du}{dx}$.</li>
+                    <li>Write the <strong>Quotient Rule</strong> explicitly on the board: $\frac{dy}{dx} = \frac{v \frac{du}{dx} - u \frac{dv}{dx}}{v^2}$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Teacher Modeling (Examples)</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Step-by-Step Modeling</div>
+            <div class="phase-right">
+                <h4>Example 1: Product Rule (10 min):</h4>
+                <ul>
+                    <li>Teacher models finding $\frac{dy}{dx}$ for $y = x^2(2x+1)^3$. </li>
+                    <li><span class="mindful">Mindful:</span> Teacher demonstrates explicitly writing out $u =, v =, u' =, v'$ in a $2 \times 2$ grid before plugging into the formula.</li>
+                </ul>
+                <h4>Example 2: Quotient Rule (15 min):</h4>
+                <ul>
+                    <li>Teacher models finding $\frac{dy}{dx}$ for $y = \frac{3x}{x^2+1}$. </li>
+                    <li><span class="joyful">Joyful:</span> Teach the chant: <em>"Low d-High minus High d-Low, draw a line and square below!"</em></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Guided & Independent Practice</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Application</div>
+            <div class="phase-right">
+                <h4>Guided Practice (10 min):</h4>
+                <ul>
+                    <li>Teacher writes one product and one quotient question on the board. Students solve it on mini-whiteboards and hold them up. Teacher corrects immediately.</li>
+                </ul>
+                <h4>Independent Exercise (30 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 1, practicing strict application of the formulas.</li>
+                    <li><span class="char-dev">Self-Regulated:</span> Students verify their answers against an answer key provided at the front desk.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 2
+    =========================================== -->
+    <h2>📅 Meeting 2: Exponentials and Logarithms (Subtopics 4.3 & 4.4)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Concept Introduction</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction<br>(Teacher Lecture)</div>
+            <div class="phase-right">
+                <h4>Lecture & Hook (15 min):</h4>
+                <ul>
+                    <li><span class="rme">Meaningful Context:</span> "Population growth of bacteria is modeled by $P = e^t$. What is the rate of growth? It is exactly itself!"</li>
+                    <li>Teacher states the standard derivatives:
+                        <br>1) If $y = e^x$, then $y' = e^x$.
+                        <br>2) If $y = \ln x$, then $y' = \frac{1}{x}$.
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Teacher Modeling (Chain Rule Integration)</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Step-by-Step Modeling</div>
+            <div class="phase-right">
+                <h4>Example 1: Chain Rule with Exponentials (15 min):</h4>
+                <ul>
+                    <li>Teacher explains the generalized rules on the board: $y = e^{f(x)} \implies y' = f'(x)e^{f(x)}$.</li>
+                    <li>Model solving $y = e^{3x^2 - 4x}$.</li>
+                </ul>
+                <h4>Example 2: Chain Rule with Logarithms (10 min):</h4>
+                <ul>
+                    <li>Teacher explains $y = \ln(f(x)) \implies y' = \frac{f'(x)}{f(x)}$.</li>
+                    <li>Model solving $y = \ln(x^3 + 2x)$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Guided & Independent Practice</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Application</div>
+            <div class="phase-right">
+                <h4>Guided Practice (15 min):</h4>
+                <ul>
+                    <li>Teacher models combining rules: Differentiating $y = x^2 e^{3x}$ using the Product Rule. Students follow along step-by-step.</li>
+                </ul>
+                <h4>Independent Exercise (25 min):</h4>
+                <ul>
+                    <li>Worksheet 2: Drill exercises on exponential and logarithmic differentiation, combining them with product/quotient rules.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 3
+    =========================================== -->
+    <h2>📅 Meeting 3: Trigonometric Functions (Subtopic 4.5)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Concept Introduction</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction<br>(Teacher Lecture)</div>
+            <div class="phase-right">
+                <h4>Lecture & Hook (15 min):</h4>
+                <ul>
+                    <li><span class="rme">Meaningful Context:</span> "A pendulum swings back and forth, modeling a sine wave. Its velocity is the derivative of its position."</li>
+                    <li>Teacher explicitly lists the 6 standard trigonometric derivatives on the board:
+                        <br>$\sin x \rightarrow \cos x$ | $\cos x \rightarrow -\sin x$ | $\tan x \rightarrow \sec^2 x$
+                        <br>$\sec x \rightarrow \sec x\tan x$ | $\operatorname{cosec} x \rightarrow -\operatorname{cosec} x\cot x$ | $\cot x \rightarrow -\operatorname{cosec}^2 x$ &nbsp;(the last three follow from the Quotient Rule)
+                        <br>and the inverse function (P3): $\tan^{-1} x \rightarrow \frac{1}{1 + x^2}$.
+                    </li>
+                    <li><span class="mindful">Mindful:</span> These results are only true when $x$ is in <strong>radians</strong>.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Teacher Modeling (Chain Rule Applications)</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Step-by-Step Modeling</div>
+            <div class="phase-right">
+                <h4>Example 1: Linear Inner Functions (10 min):</h4>
+                <ul>
+                    <li>Teacher demonstrates the Chain Rule application: $\frac{d}{dx}(\sin(ax+b)) = a\cos(ax+b)$.</li>
+                </ul>
+                <h4>Example 2: Powers of Trig Functions (15 min):</h4>
+                <ul>
+                    <li>Teacher models how to rewrite $\sin^3(x)$ as $(\sin x)^3$ to apply the power chain rule: $3(\sin x)^2(\cos x) = 3\sin^2x\cos x$.</li>
+                    <li><span class="char-dev">Critical Thinking:</span> Ensure students see the difference between $\sin(x^2)$ and $\sin^2(x)$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Guided & Independent Practice</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Application</div>
+            <div class="phase-right">
+                <h4>Guided Practice (10 min):</h4>
+                <ul>
+                    <li>Students solve $y = e^x \cos x$ on whiteboards using the Product Rule.</li>
+                </ul>
+                <h4>Independent Exercise (30 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 3, focusing on fluency and accuracy with trigonometric derivatives.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 4
+    =========================================== -->
+    <h2>📅 Meeting 4: Implicit Differentiation (Subtopic 4.6)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Concept Introduction</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction<br>(Teacher Lecture)</div>
+            <div class="phase-right">
+                <h4>Lecture & Hook (15 min):</h4>
+                <ul>
+                    <li><span class="rme">Meaningful Context:</span> "The equation of a perfect circle is $x^2 + y^2 = 25$. We cannot isolate $y$ easily without a $\pm$ square root. We need a way to differentiate it <em>implicitly</em>, exactly as it is written."</li>
+                    <li>State the rule: When differentiating a $y$ term with respect to $x$, differentiate it normally, but multiply it by $\frac{dy}{dx}$ (due to the Chain Rule).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Teacher Modeling (Solving for dy/dx)</span><span>[30 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Step-by-Step Modeling</div>
+            <div class="phase-right">
+                <h4>Example 1: Basic Implicit (10 min):</h4>
+                <ul>
+                    <li>Teacher models finding $\frac{dy}{dx}$ for $x^2 + y^2 = 25$. </li>
+                    <li>Shows the algebraic steps to isolate $\frac{dy}{dx}$ on one side.</li>
+                </ul>
+                <h4>Example 2: The Implicit Product Trap (20 min):</h4>
+                <ul>
+                    <li>Teacher models differentiating $xy$ or $x^2y^3$.</li>
+                    <li><span class="mindful">Mindful:</span> Explicitly demonstrate the Product Rule applied here: $u=x$, $v=y \implies 1(y) + x(1\frac{dy}{dx})$. Warn students this is the #1 mistake in A-Level exams!</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Guided & Independent Practice</span><span>[35 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Application</div>
+            <div class="phase-right">
+                <h4>Independent Exercise (35 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 4. They must differentiate implicit equations, collect all $\frac{dy}{dx}$ terms on one side, factorise it out, and solve.</li>
+                    <li><span class="scaffold-text">Scaffold: Remind students that the derivative of an isolated constant number is ZERO.</span></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 5
+    =========================================== -->
+    <h2>📅 Meeting 5: Parametric Differentiation (Subtopic 4.7)</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Concept Introduction</span><span>[15 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Direct Instruction<br>(Teacher Lecture)</div>
+            <div class="phase-right">
+                <h4>Lecture & Hook (15 min):</h4>
+                <ul>
+                    <li><span class="rme">Meaningful Context:</span> "In projectile motion, we track horizontal position ($x$) and vertical position ($y$) based on a third variable, TIME ($t$)."</li>
+                    <li>Introduce the Parametric formula derived from the Chain Rule: $\frac{dy}{dx} = \frac{dy/dt}{dx/dt}$ (or with parameter $\theta$).</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Teacher Modeling (Tangent Lines)</span><span>[25 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Step-by-Step Modeling</div>
+            <div class="phase-right">
+                <h4>Example 1: Finding the Gradient (10 min):</h4>
+                <ul>
+                    <li>Given $x = 2t$, $y = t^3 - t$. Teacher models finding $\frac{dx}{dt}$ and $\frac{dy}{dt}$ separately, then dividing them to find the gradient function $\frac{dy}{dx}$.</li>
+                </ul>
+                <h4>Example 2: Finding Tangent Equations (15 min):</h4>
+                <ul>
+                    <li>Teacher models evaluating the gradient at $t=2$.</li>
+                    <li>Use the gradient $m$ and the $(x, y)$ coordinates at $t=2$ to construct the tangent line equation using $y - y_1 = m(x - x_1)$.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 3 & 4 | Guided & Independent Practice</span><span>[40 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Student Application</div>
+            <div class="phase-right">
+                <h4>Independent Exercise (40 min):</h4>
+                <ul>
+                    <li>Students complete Worksheet 5. They calculate gradients at specific values of $t$ or $\theta$, and find the equations of tangent and normal lines.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==========================================
+         MEETING 6
+    =========================================== -->
+    <h2>📅 Meeting 6: Chapter Review & Summative Evaluation</h2>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 1 | Teacher-Led Review</span><span>[20 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Concept Summary</div>
+            <div class="phase-right">
+                <h4>Review of All Rules (20 min):</h4>
+                <ul>
+                    <li>Teacher displays a summary chart of Product, Quotient, Chain, Implicit, and Parametric rules.</li>
+                    <li>Teacher writes 5 different expressions on the board. Calls on students to identify <em>which rule</em> must be used for each one without actually solving it.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="phase-container">
+        <div class="phase-header"><span>Phase 2 | Summative Evaluation</span><span>[60 mins]</span></div>
+        <div class="phase-body">
+            <div class="phase-left">Summative Test</div>
+            <div class="phase-right">
+                <h4>Chapter 4 Evaluation (55 min):</h4>
+                <ul>
+                    <li>Distribute the Chapter Test covering products, quotients, exp/log/trig derivatives, and implicit/parametric gradients.</li>
+                    <li><span class="char-dev">Self-Regulated:</span> Students must manage their time and rely on their own memory of the formulas.</li>
+                </ul>
+                <h4>Closure (5 min):</h4>
+                <ul>
+                    <li>Collect tests and briefly discuss the most challenging question on the paper.</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <h2>🔑 Teacher Key — Worked Examples on the Board</h2>
+    <ul style="font-size: 0.9em;">
+        <li><strong>M1:</strong> $y = x^2(2x+1)^3 \Rightarrow \frac{dy}{dx} = 6x^2(2x+1)^2 + 2x(2x+1)^3 = 2x(2x+1)^2(5x+1)$ · $y = \frac{3x}{x^2+1} \Rightarrow \frac{dy}{dx} = \frac{3(1 - x^2)}{(x^2+1)^2}$ · We Do: $y = x(3x-1)^4 \Rightarrow (3x-1)^3(15x-1)$; $y = \frac{2x-1}{x+3} \Rightarrow \frac{7}{(x+3)^2}$</li>
+        <li><strong>M2:</strong> $y = e^{3x^2-4x} \Rightarrow (6x-4)e^{3x^2-4x}$ · $y = \ln(x^3+2x) \Rightarrow \frac{3x^2+2}{x^3+2x}$ · $y = x^2e^{3x} \Rightarrow xe^{3x}(3x+2)$</li>
+        <li><strong>M3:</strong> $\sin(3x+1) \to 3\cos(3x+1)$; $\cos(2x - \frac{\pi}{4}) \to -2\sin(2x - \frac{\pi}{4})$; $\tan 5x \to 5\sec^2 5x$ · $\sin^3 x \to 3\sin^2 x\cos x$; $\sin(x^2) \to 2x\cos(x^2)$; $\sin^2 x \to 2\sin x\cos x = \sin 2x$ · $e^x\cos x \to e^x(\cos x - \sin x)$</li>
+        <li><strong>M4:</strong> $x^2 + y^2 = 25 \Rightarrow \frac{dy}{dx} = -\frac{x}{y}$, at $(3, 4)$: $-\frac34$ · $x^2 + 3xy + y^2 = 11 \Rightarrow \frac{dy}{dx} = -\frac{2x + 3y}{3x + 2y}$, at $(1, 2)$: $-\frac87$</li>
+        <li><strong>M5:</strong> $x = 2t$, $y = t^3 - t \Rightarrow \frac{dy}{dx} = \frac{3t^2 - 1}{2}$; at $t = 2$: point $(4, 6)$, $m = \frac{11}{2}$, tangent $2y = 11x - 32$, normal $2x + 11y = 74$</li>
+    </ul>
+
+    <div class="page-break"></div>
+
+    <!-- ==========================================
+         DIFFERENTIATION STRATEGIES
+    =========================================== -->
+    <div class="diff-header">
+        🌟 Differentiation Strategies
+    </div>
+    <table class="diff-table">
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Strategies & Actions in Class</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>Extension (High Achievers)</td>
+                <td>Require finding the second derivative $\frac{d^2y}{dx^2}$ for parametric equations (which requires the chain rule $\frac{d^2y}{dx^2} = \frac{d}{dt}\left(\frac{dy}{dx}\right) \times \frac{dt}{dx}$). Challenge them with finding stationary points on implicit curves where $\frac{dy}{dx} = 0$.</td>
+            </tr>
+            <tr>
+                <td>Scaffolding (Middle/Low)</td>
+                <td>Mandate the use of a rigid grid layout for Product and Quotient rules (draw a $2 \times 2$ box: $u$, $v$, $u'$, $v'$). Provide the trig derivative circle ($\sin \rightarrow \cos \rightarrow -\sin \rightarrow -\cos$) as a visual aid on the board during independent practice.</td>
+            </tr>
+            <tr>
+                <td>EAL (English Additional Language)</td>
+                <td>Provide a glossary: <em>Derivative (Turunan), Tangent (Garis singgung), Gradient (Gradien), Implicit (Implisit)</em>. Ensure they understand the phrase "differentiate with respect to $x$".</td>
+            </tr>
+            <tr>
+                <td>SEN (Special Educational Needs)</td>
+                <td>Use color-coding strictly on the board during modeling. In implicit differentiation, write all $y$ terms in red marker and all $x$ terms in blue marker so they remember to attach $\frac{dy}{dx}$ to the red terms only.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="signatures">
+        <div class="signature-block">
+            <div class="signature-title">Acknowledged by,<br><strong>Principal</strong></div>
+            <div class="signature-name">Ahmad Nurani, S.T., M.Pd.</div>
+        </div>
+        <div class="signature-block">
+            <div class="signature-title"><br><strong>Subject Teacher</strong></div>
+            <div class="signature-name">Muhammad Ghozian Kafi Ahsan, S.Pd., M.Pd., Gr.</div>
+        </div>
+    </div>
+
+    <div id="print-footer">Made with ❤️ by Mr Ghozi</div>
+    <script>document.getElementById('print-footer').style.display = 'block';</script>
+</body>
+</html>

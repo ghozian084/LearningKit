@@ -290,6 +290,15 @@ const LEARNING_KIT_DATA = {
             },
           },
         },
+        {
+          id: 5,
+          slug: "t05-differentiation",
+          title: "Differentiation",
+          sections: {
+            lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1 (Direct Instruction)" }] },
+          },
+        },
       ],
     },
   ],

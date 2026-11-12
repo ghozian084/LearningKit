@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board 1 - Differentiation (Direct Instruction)</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Recipe Card */
+        .recipe-card { background: #fffaf0; border: 2px solid #dd6b20; border-radius: 10px; padding: 12px 18px; }
+        .recipe-card table { width: 100%; border-collapse: collapse; font-size: 1.1em; }
+        .recipe-card td { padding: 5px 8px; border-bottom: 1px dotted #f6ad55; }
+
+        /* Fraction circles (CSS conic) */
+        .circle-row { display: flex; gap: 25px; align-items: center; justify-content: center; margin: 8px 0; }
+        .frac-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #2d3748; }
+        .circle-caption { text-align: center; font-weight: bold; margin-top: 4px; }
+
+        /* Multiplier table */
+        .mult-table { border-collapse: collapse; width: 100%; font-size: 1.1em; }
+        .mult-table th, .mult-table td { border: 1px solid #cbd5e0; padding: 6px 10px; text-align: center; }
+        .mult-table th { background: #ebf8ff; color: var(--primary); }
+
+        /* Frog Jumps */
+        .jump-line { font-family: 'Courier New', monospace; font-size: 1.6em; letter-spacing: 6px; text-align: center; margin: 6px 0; }
+        .jump-line .a-digit { background: #fbd38d; border-radius: 4px; padding: 0 3px; }
+
+        /* Group mini cards */
+        .group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .group-card { border-left: 6px solid; background: #f7fafc; padding: 8px 12px; border-radius: 6px; font-size: 0.95em; }
+        .group-card strong { display: block; color: var(--primary); }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+
+        /* ---------- Direct-instruction additions ---------- */
+        .p-lec { background: #3182ce; } .p-ido { background: #805ad5; } .p-wedo { background: #dd6b20; }
+        .p-youdo { background: #38a169; } .p-rev { background: #e53e3e; }
+        .flow { display: flex; gap: 8px; align-items: center; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
+        .flow span.chip { color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 1.15em; }
+        .flow .arrow { font-size: 1.6em; color: #718096; }
+        .rule { background: #ebf8ff; border: 3px solid #3182ce; border-radius: 10px; padding: 8px 16px; }
+        .rule h3 { margin-bottom: 2px; }
+        .rule.purple { background: #faf5ff; border-color: #805ad5; }
+        .rule.orange { background: #fffaf0; border-color: #dd6b20; }
+        .rule.green { background: #f0fff4; border-color: #38a169; }
+        .question { font-size: 1.35em; text-align: center; background: #fefcbf; border-radius: 8px; padding: 6px 10px; font-weight: bold; color: #1a365d; }
+        .grid22 { border-collapse: collapse; margin: 2px auto; font-size: 1.12em; }
+        .grid22 td { border: 2px solid #805ad5; padding: 4px 16px; min-width: 150px; }
+        .grid22 td.h { background: #faf5ff; }
+        .steps { display: flex; flex-direction: column; gap: 5px; }
+        .stepl { display: flex; gap: 10px; align-items: baseline; font-size: 1.12em; }
+        .stepl .n { background: #805ad5; color: #fff; border-radius: 12px; padding: 0 9px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
+        .final { display: inline-block; border: 3px solid #38a169; background: #f0fff4; border-radius: 8px; padding: 2px 12px; line-height: 1.2; vertical-align: middle; }
+        .warn { background: #fff5f5; border-left: 6px solid #e53e3e; padding: 6px 12px; border-radius: 6px; }
+        .tip { background: #fffff0; border-left: 6px solid #d69e2e; padding: 6px 12px; border-radius: 6px; }
+        .step { visibility: hidden; opacity: 0; transition: opacity 0.35s; }
+        .step.shown { visibility: visible; opacity: 1; }
+        .answer { color: #276749; font-weight: bold; }
+        .mini { font-size: 0.95em; }
+        .tbl { border-collapse: collapse; width: 100%; font-size: 1.05em; }
+        .tbl th, .tbl td { border: 1px solid #cbd5e0; padding: 5px 10px; text-align: left; }
+        .tbl th { background: #ebf8ff; color: var(--primary); }
+        .slide-timer { font-size: 4.2em; font-weight: bold; color: #276749; text-align: center; font-family: 'Courier New', monospace; line-height: 1.1; }
+        .slide-timer.low { color: #c53030; }
+        .checklist li { margin: 3px 0; }
+        .toolbar select { padding: 6px; border-radius: 5px; font-weight: bold; }
+        .timer-box { display: flex; align-items: center; gap: 6px; margin-left: 20px; }
+        #tmr { font-family: 'Courier New', monospace; font-size: 1.4em; font-weight: bold; min-width: 80px; text-align: center; }
+        .reveal-btn { background-color: #805ad5; }
+        .reveal-btn:hover { background-color: #6b46c1; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 10px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <select id="jump" onchange="jumpMeeting(this.value)" title="Jump to a meeting"><option value="0">📅 Overview</option><option value="1">Meeting 1 · Product &amp; Quotient</option><option value="2">Meeting 2 · Exp &amp; Log</option><option value="3">Meeting 3 · Trig</option><option value="4">Meeting 4 · Implicit</option><option value="5">Meeting 5 · Parametric</option><option value="6">Meeting 6 · Review &amp; Test</option></select>
+        <div class="timer-box"><span>⏱️</span><span id="tmr">--:--</span><button class="tool-btn" onclick="timerStart()" title="Start">▶</button><button class="tool-btn" onclick="timerPause()" title="Pause">⏸</button><button class="tool-btn" onclick="timerReset()" title="Reset">↺</button></div>
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <div class="slide title-slide active" data-meeting="0">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Differentiation</h1>
+                <h2>Grade 12 Mathematics — Topic 4 · Pure Mathematics 2 &amp; 3</h2>
+                <div class="flow"><span class="chip p-lec">📢 Lecture</span><span class="arrow">→</span><span class="chip p-ido">👩‍🏫 I Do</span><span class="arrow">→</span><span class="chip p-wedo">🤝 We Do</span><span class="arrow">→</span><span class="chip p-youdo">✍️ You Do</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">Direct Instruction — watch the method, practise it together, then master it alone.</p>
+                <p><em>Space / → / clicker reveals the next step · ← goes back · ✏️ write on any slide · ⏱️ timer on every "You Do" slide</em></p>
+            </div>
+        </div>
+        <div class="slide" data-meeting="0">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">🗺️ Chapter Roadmap &amp; Success Criteria</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.4;">
+                        <table class="tbl">
+                            <tr><th>Meeting</th><th>Rule</th><th>Key formula</th></tr>
+                            <tr><td>1 (4.1–4.2)</td><td>Product &amp; Quotient</td><td>$uv' + vu'$ · $\frac{vu' - uv'}{v^2}$</td></tr>
+                            <tr><td>2 (4.3–4.4)</td><td>Exponentials &amp; logs</td><td>$f'(x)e^{f(x)}$ · $\frac{f'(x)}{f(x)}$</td></tr>
+                            <tr><td>3 (4.5)</td><td>Trigonometric</td><td>$\sin \to \cos \to -\sin \to -\cos$</td></tr>
+                            <tr><td>4 (4.6)</td><td>Implicit</td><td>$\frac{d}{dx}(y^n) = ny^{n-1}\frac{dy}{dx}$</td></tr>
+                            <tr><td>5 (4.7)</td><td>Parametric</td><td>$\frac{dy}{dx} = \frac{dy/dt}{dx/dt}$</td></tr>
+                            <tr><td>6</td><td colspan="2">Review &amp; Chapter 4 Test</td></tr>
+                        </table>
+                        <div class="content-box mini">
+                            <h3><span class="badge bg-exit">WILT</span> I can…</h3>
+                            <p>① use the Product &amp; Quotient Rules ② recall $e^x$, $\ln x$, $\sin x$, $\cos x$, $\tan x$, $\tan^{-1}x$ ③ use the Chain Rule ④ differentiate implicitly ⑤ find parametric gradients.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-lec tag">Lecture</span> The Heated Metal Plate</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🔥</h3>
+                            <p>A metal plate is heated: its length $L$ and width $W$ both grow. Area $A = L \times W$. How fast does $A$ grow?</p>
+                        </div>
+                        <div class="warn step"><strong>Trap:</strong> is $(uv)' = u'v'$? Test $y = x \cdot x^2 = x^3$: the true answer is $3x^2$, but $u'v' = 1 \times 2x = 2x$ ❌</div>
+                        <div class="rule step"><h3>Product Rule</h3><p style="font-size: 1.15em; text-align: center;">$y = uv \;\Rightarrow\; \dfrac{dy}{dx} = u\dfrac{dv}{dx} + v\dfrac{du}{dx}$</p></div>
+                        <div class="rule purple step"><h3>Quotient Rule</h3><p style="font-size: 1.15em; text-align: center;">$y = \dfrac{u}{v} \;\Rightarrow\; \dfrac{dy}{dx} = \dfrac{v\dfrac{du}{dx} - u\dfrac{dv}{dx}}{v^2}$</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Why not u′v′?</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-ido tag">I Do</span> Example 1 · Product Rule</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = x^2(2x+1)^3$ &nbsp;— find $\dfrac{dy}{dx}$</div>
+                        <p class="mini">🧘 <strong>Mindful:</strong> always fill the $2 \times 2$ grid first.</p>
+                        <table class="grid22"><tr><td class="h">$u = x^2$</td><td class="h">$v = (2x+1)^3$</td></tr><tr><td class="step">$u' = 2x$</td><td class="step">$v' = 3(2x+1)^2 \times 2 = 6(2x+1)^2$</td></tr></table>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Rule</span><div>$\dfrac{dy}{dx} = uv' + vu' = x^2 \cdot 6(2x+1)^2 + (2x+1)^3 \cdot 2x$</div></div>
+                            <div class="stepl step"><span class="n">Factorise</span><div>common factor $2x(2x+1)^2$: &nbsp;$= 2x(2x+1)^2\,[\,3x + (2x+1)\,]$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$\dfrac{dy}{dx} = 2x(2x+1)^2(5x+1)$</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-ido tag">I Do</span> Example 2 · Quotient Rule</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = \dfrac{3x}{x^2+1}$ &nbsp;— find $\dfrac{dy}{dx}$</div>
+                        <div class="tip">🎵 <strong>"Low d-High minus High d-Low, draw a line and square below!"</strong></div>
+                        <table class="grid22"><tr><td class="h">$u = 3x$ (High)</td><td class="h">$v = x^2 + 1$ (Low)</td></tr><tr><td class="step">$u' = 3$</td><td class="step">$v' = 2x$</td></tr></table>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Rule</span><div>$\dfrac{dy}{dx} = \dfrac{(x^2+1)(3) - (3x)(2x)}{(x^2+1)^2}$</div></div>
+                            <div class="stepl step"><span class="n">Expand</span><div>$= \dfrac{3x^2 + 3 - 6x^2}{(x^2+1)^2} = \dfrac{3 - 3x^2}{(x^2+1)^2}$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$\dfrac{dy}{dx} = \dfrac{3(1 - x^2)}{(x^2+1)^2}$</span> &nbsp; ⚠️ order matters: $v u'$ comes first!</div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Grid first, then the rule. Hold up your board on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) &nbsp;$y = x(3x-1)^4$</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Answer (a)</span><div>$u = x,\ v = (3x-1)^4,\ v' = 12(3x-1)^3$ <br>$\dfrac{dy}{dx} = 12x(3x-1)^3 + (3x-1)^4 = $ <span class="final">$(3x-1)^3(15x-1)$</span></div></div></div>
+                        <div class="question">(b) &nbsp;$y = \dfrac{2x-1}{x+3}$</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Answer (b)</span><div>$\dfrac{(x+3)(2) - (2x-1)(1)}{(x+3)^2} = $ <span class="final">$\dfrac{7}{(x+3)^2}$</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-youdo tag">You Do</span> Worksheet 1</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 1</span> Independent exercise · 30 min</h3>
+                            <ul class="checklist"><li>Draw the $u$, $v$, $u'$, $v'$ grid for every question.</li><li>Product: $uv' + vu'$ · Quotient: "Low d-High minus High d-Low".</li><li>Factorise your final answer.</li><li><span style="color: #c0392b; font-weight: bold;">Self-Regulated:</span> check with the answer key at the front desk.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-lec tag">Lecture</span> Exponentials &amp; Logarithms</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🦠</h3>
+                            <p>Bacteria: $P = e^t$. The rate of growth is… <strong>exactly itself!</strong> $\frac{dP}{dt} = e^t$</p>
+                        </div>
+                        <div class="rule step"><h3>Standard derivatives</h3><p style="font-size: 1.25em; text-align: center;">$\dfrac{d}{dx}\left(e^x\right) = e^x \qquad \dfrac{d}{dx}\left(\ln x\right) = \dfrac{1}{x}$</p></div>
+                        <div class="rule purple step"><h3>With the Chain Rule</h3><p style="font-size: 1.25em; text-align: center;">$\dfrac{d}{dx}\left(e^{f(x)}\right) = f'(x)\,e^{f(x)} \qquad \dfrac{d}{dx}\left(\ln f(x)\right) = \dfrac{f'(x)}{f(x)}$</p></div>
+                        <div class="tip step">🤔 <strong>Puzzle:</strong> $\frac{d}{dx}\ln(3x) = \frac{3}{3x} = \frac1x$ — the same as $\ln x$! Why? ($\ln 3x = \ln 3 + \ln x$)</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-ido tag">I Do</span> Example 1 · Chain Rule with $e$</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = e^{3x^2 - 4x}$ &nbsp;— find $\dfrac{dy}{dx}$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Step 1</span><div>The power is $f(x) = 3x^2 - 4x$, so $f'(x) = 6x - 4$.</div></div>
+                            <div class="stepl step"><span class="n">Step 2</span><div>$\dfrac{dy}{dx} = f'(x)\,e^{f(x)} = (6x - 4)\,e^{3x^2 - 4x}$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$\dfrac{dy}{dx} = 2(3x - 2)\,e^{3x^2 - 4x}$</span></div></div>
+                        </div>
+                        <div class="tip step">🧘 The power stays <strong>exactly the same</strong> — we only multiply by $f'(x)$ in front.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-ido tag">I Do</span> Example 2 · Chain Rule with $\ln$</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = \ln(x^3 + 2x)$ &nbsp;— find $\dfrac{dy}{dx}$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Step 1</span><div>Inside: $f(x) = x^3 + 2x$, so $f'(x) = 3x^2 + 2$.</div></div>
+                            <div class="stepl step"><span class="n">Step 2</span><div>$\dfrac{dy}{dx} = \dfrac{f'(x)}{f(x)}$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$\dfrac{dy}{dx} = \dfrac{3x^2 + 2}{x^3 + 2x}$</span></div></div>
+                        </div>
+                        <div class="warn step">❌ Common error: $\dfrac{1}{x^3 + 2x}$ — forgetting to multiply by $f'(x)$. And never "cancel" terms in a sum!</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-wedo tag">We Do</span> Follow Along · Combining Rules</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = x^2 e^{3x}$ &nbsp;— Product Rule + Chain Rule</div>
+                        <p class="mini">✍️ Copy each line into your book as it appears.</p>
+                        <table class="grid22"><tr><td class="h step">$u = x^2$</td><td class="h step">$v = e^{3x}$</td></tr><tr><td class="step">$u' = 2x$</td><td class="step">$v' = 3e^{3x}$</td></tr></table>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Rule</span><div>$\dfrac{dy}{dx} = x^2 \cdot 3e^{3x} + e^{3x} \cdot 2x$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$\dfrac{dy}{dx} = x e^{3x}(3x + 2)$</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Your Turn: y = x³e²ˣ</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2" data-timer="25">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-youdo tag">You Do</span> Worksheet 2</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 2</span> Independent exercise · 25 min</h3>
+                            <ul class="checklist"><li>$e^{f(x)} \to f'(x)e^{f(x)}$ &nbsp;·&nbsp; $\ln f(x) \to \dfrac{f'(x)}{f(x)}$</li><li>Spot the structure first: product? quotient? function of a function?</li><li>Use log laws to simplify <em>before</em> differentiating, e.g. $\ln\sqrt{x} = \frac12 \ln x$.</li><li>Factorise $e^{\ldots}$ out of your final answer.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="25">25:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-lec tag">Lecture</span> Trigonometric Derivatives</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box mini"><p>🕰️ <strong>Hook:</strong> a pendulum's position is a sine wave; its <em>velocity</em> is the derivative of its position.</p></div>
+                        <div class="rule step"><h3>The 6 standard derivatives</h3>
+                            <table class="tbl" style="font-size: 1.1em;"><tr><td>$\sin x \to \cos x$</td><td>$\cos x \to -\sin x$</td><td>$\tan x \to \sec^2 x$</td></tr>
+                            <tr><td>$\sec x \to \sec x\tan x$</td><td>$\operatorname{cosec} x \to -\operatorname{cosec} x\cot x$</td><td>$\cot x \to -\operatorname{cosec}^2 x$</td></tr></table>
+                            <p class="mini">(row 2 comes from the Quotient Rule) &nbsp;·&nbsp; P3: $\tan^{-1} x \to \dfrac{1}{1 + x^2}$</p></div>
+                        <div class="step" style="display: flex; gap: 12px; align-items: center;"><svg viewBox="0 0 200 150" style="width: 190px; height: 142px; flex-shrink: 0;"><circle cx="100" cy="75" r="50" fill="none" stroke="#a0aec0" stroke-width="2" stroke-dasharray="4,3"/><text x="100" y="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0" font-size="15">sin x</text><text x="168" y="80" text-anchor="middle" font-weight="bold" fill="#2b6cb0" font-size="15">cos x</text><text x="100" y="145" text-anchor="middle" font-weight="bold" fill="#c53030" font-size="15">−sin x</text><text x="30" y="80" text-anchor="middle" font-weight="bold" fill="#c53030" font-size="15">−cos x</text><path d="M128,32 Q150,42 156,60" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M156,92 Q150,110 128,120" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M72,120 Q50,110 44,92" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M44,60 Q50,42 72,32" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><text x="100" y="80" text-anchor="middle" font-size="11" fill="#276749">d/dx ↻</text><defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#38a169"/></marker></defs></svg><div class="warn">⚠️ <strong>Radians only!</strong> These results are true only when $x$ is measured in radians.</div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-ido tag">I Do</span> Example 1 · Linear Inner Functions</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule purple"><p style="font-size: 1.25em; text-align: center;">$\dfrac{d}{dx}\big(\sin(ax + b)\big) = a\cos(ax + b)$</p><p class="mini" style="text-align: center;">differentiate the outside, keep the inside, multiply by the inside's derivative $a$</p></div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">(i)</span><div>$y = \sin(3x + 1) \;\Rightarrow\; $ <span class="final">$\dfrac{dy}{dx} = 3\cos(3x + 1)$</span></div></div>
+                            <div class="stepl step"><span class="n">(ii)</span><div>$y = \cos\left(2x - \frac{\pi}{4}\right) \;\Rightarrow\; $ <span class="final">$\dfrac{dy}{dx} = -2\sin\left(2x - \frac{\pi}{4}\right)$</span></div></div>
+                            <div class="stepl step"><span class="n">(iii)</span><div>$y = \tan 5x \;\Rightarrow\; $ <span class="final">$\dfrac{dy}{dx} = 5\sec^2 5x$</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-ido tag">I Do</span> Example 2 · Powers of Trig Functions</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = \sin^3 x$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Rewrite</span><div>$\sin^3 x = (\sin x)^3$ &nbsp;— a power of a function</div></div>
+                            <div class="stepl step"><span class="n">Chain</span><div>$\dfrac{dy}{dx} = 3(\sin x)^2 \times \cos x = $ <span class="final">$3\sin^2 x\cos x$</span></div></div>
+                        </div>
+                        <div class="rule orange step"><h3>🧠 Critical thinking: spot the difference</h3>
+                            <table class="tbl"><tr><th>$y = \sin(x^2)$ — angle squared</th><th>$y = \sin^2 x = (\sin x)^2$ — sine squared</th></tr>
+                            <tr><td>inside $x^2$: $\;\dfrac{dy}{dx} = 2x\cos(x^2)$</td><td>power: $\;\dfrac{dy}{dx} = 2\sin x\cos x = \sin 2x$</td></tr></table></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$y = e^x\cos x$ &nbsp;— Product Rule</div>
+                        <div class="content-box"><p>✍️ Grid → rule → factorise. Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <table class="grid22 step"><tr><td>$u = e^x,\ u' = e^x$</td><td>$v = \cos x,\ v' = -\sin x$</td></tr></table>
+                        <div class="steps"><div class="stepl step"><span class="n">Answer</span><div>$\dfrac{dy}{dx} = e^x(-\sin x) + \cos x \cdot e^x = $ <span class="final">$e^x(\cos x - \sin x)$</span></div></div></div>
+                        <div class="tip step">💡 Extension: where is the gradient zero for $0 \le x \le 2\pi$? ($\tan x = 1$: $x = \frac{\pi}{4}, \frac{5\pi}{4}$)</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-youdo tag">You Do</span> Worksheet 3</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 3</span> Independent exercise · 30 min</h3>
+                            <ul class="checklist"><li>Radians only!</li><li>Inner function? Multiply by its derivative.</li><li>$\sin^n x$: rewrite as $(\sin x)^n$ first.</li><li>Products and quotients still need their rules.</li></ul>
+                        </div>
+                        <div style="display: flex; justify-content: center;"><svg viewBox="0 0 200 150" style="width: 190px; height: 142px; flex-shrink: 0;"><circle cx="100" cy="75" r="50" fill="none" stroke="#a0aec0" stroke-width="2" stroke-dasharray="4,3"/><text x="100" y="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0" font-size="15">sin x</text><text x="168" y="80" text-anchor="middle" font-weight="bold" fill="#2b6cb0" font-size="15">cos x</text><text x="100" y="145" text-anchor="middle" font-weight="bold" fill="#c53030" font-size="15">−sin x</text><text x="30" y="80" text-anchor="middle" font-weight="bold" fill="#c53030" font-size="15">−cos x</text><path d="M128,32 Q150,42 156,60" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M156,92 Q150,110 128,120" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M72,120 Q50,110 44,92" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><path d="M44,60 Q50,42 72,32" fill="none" stroke="#38a169" stroke-width="2.5" marker-end="url(#ah)"/><text x="100" y="80" text-anchor="middle" font-size="11" fill="#276749">d/dx ↻</text><defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#38a169"/></marker></defs></svg></div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-lec tag">Lecture</span> Implicit Differentiation</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><h3><span class="badge bg-hook">Hook</span> ⭕</h3><p>Circle: $x^2 + y^2 = 25$. Isolating $y$ gives $y = \pm\sqrt{25 - x^2}$ — messy! Let's differentiate it <em>exactly as it is written</em>.</p></div>
+                        <div class="rule step"><h3>The rule (Chain Rule)</h3><p style="font-size: 1.3em; text-align: center;">$\dfrac{d}{dx}\left({\color{#c53030}{y^n}}\right) = {\color{#c53030}{ny^{n-1}\dfrac{dy}{dx}}}$</p><p class="mini" style="text-align: center;">differentiate a $y$-term normally, then multiply by $\frac{dy}{dx}$</p></div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">e.g.</span><div>$\dfrac{d}{dx}(''' + B % 'x^2' + r''') = ''' + B % '2x' + r''' \qquad \dfrac{d}{dx}(''' + R % 'y^2' + r''') = ''' + R % r'2y\dfrac{dy}{dx}' + r''' \qquad \dfrac{d}{dx}(''' + R % 'y^3' + r''') = ''' + R % r'3y^2\dfrac{dy}{dx}' + r''' \qquad \dfrac{d}{dx}(25) = 0$''</div></div>
+                        </div>
+                        <div class="tip step">🎨 Colour code: <span style="color: #2b6cb0; font-weight: bold;">$x$-terms blue</span>, <span style="color: #c53030; font-weight: bold;">$y$-terms red</span> — only the red terms get $\frac{dy}{dx}$.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-ido tag">I Do</span> Example 1 · The Circle</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$x^2 + y^2 = 25$ &nbsp;— find $\dfrac{dy}{dx}$, then the gradient at $(3, 4)$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Differentiate</span><div>$''' + B % '2x' + ' + ' + R % r'2y\dfrac{dy}{dx}' + r''' = 0$</div></div>
+                            <div class="stepl step"><span class="n">Isolate</span><div>$2y\dfrac{dy}{dx} = -2x$</div></div>
+                            <div class="stepl step"><span class="n">Solve</span><div><span class="final">$\dfrac{dy}{dx} = -\dfrac{x}{y}$</span></div></div>
+                            <div class="stepl step"><span class="n">At (3, 4)</span><div>$\dfrac{dy}{dx} = -\dfrac34$</div></div>
+                        </div>
+                        <div class="tip step">✅ Check: the radius to $(3, 4)$ has gradient $\frac43$; the tangent is perpendicular, so $-\frac34$. ✔</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-ido tag">I Do</span> Example 2 · The Implicit Product Trap</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="warn"><strong>⚠️ The #1 mistake in A-Level exams:</strong> $xy$ is a <strong>product</strong>!</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">$xy$</span><div>$u = x,\ v = y$: &nbsp; $\dfrac{d}{dx}(xy) = 1 \cdot y + x \cdot 1\dfrac{dy}{dx} = $ <span class="final">$y + x\dfrac{dy}{dx}$</span></div></div>
+                            <div class="stepl step"><span class="n">$x^2y^3$</span><div>$u = x^2,\ v = y^3$: &nbsp; $\dfrac{d}{dx}(x^2y^3) = 2x \cdot y^3 + x^2 \cdot 3y^2\dfrac{dy}{dx}$</div></div>
+                            <div class="stepl step"><span class="n">Simplify</span><div><span class="final">$2xy^3 + 3x^2y^2\dfrac{dy}{dx}$</span></div></div>
+                        </div>
+                        <div class="content-box step"><p>❌ Wrong: $\frac{d}{dx}(xy) = \frac{dy}{dx}$ &nbsp;or&nbsp; $1 \cdot \frac{dy}{dx}$ — this forgets one of the two terms.</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-ido tag">I Do</span> Example 2 (continued) · Solve for dy/dx</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$x^2 + 3xy + y^2 = 11$ &nbsp;— gradient at $(1, 2)$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Check</span><div>$(1, 2)$ is on the curve: $1 + 6 + 4 = 11$ ✓</div></div>
+                            <div class="stepl step"><span class="n">Differentiate</span><div>$2x + \left(3y + 3x\dfrac{dy}{dx}\right) + 2y\dfrac{dy}{dx} = 0$</div></div>
+                            <div class="stepl step"><span class="n">Collect</span><div>$(3x + 2y)\dfrac{dy}{dx} = -(2x + 3y)$</div></div>
+                            <div class="stepl step"><span class="n">Solve</span><div>$\dfrac{dy}{dx} = -\dfrac{2x + 3y}{3x + 2y}$</div></div>
+                            <div class="stepl step"><span class="n">At (1, 2)</span><div><span class="final">$\dfrac{dy}{dx} = -\dfrac{2 + 6}{3 + 4} = -\dfrac87$</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4" data-timer="35">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-youdo tag">You Do</span> Worksheet 4</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 4</span> Independent exercise · 35 min</h3>
+                            <ul class="checklist"><li>① Differentiate every term (red $y$-terms get $\frac{dy}{dx}$).</li><li>② Collect all $\frac{dy}{dx}$ terms on one side.</li><li>③ Factorise $\frac{dy}{dx}$ out.</li><li>④ Divide to solve.</li><li><span style="color: #2b6cb0; font-weight: bold;">Scaffold:</span> the derivative of a constant is ZERO.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="35">35:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-lec tag">Lecture</span> Parametric Differentiation</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box" style="display: flex; gap: 10px; align-items: center;"><div><h3><span class="badge bg-hook">Hook</span> ⚽</h3><p>A ball: $x = 20t$, $\;y = 15t - 5t^2$ — both depend on <strong>time $t$</strong>.</p></div><svg viewBox="0 0 240 110" style="width: 230px; height: 105px; flex-shrink: 0;"><line x1="10" y1="100" x2="235" y2="100" stroke="#2d3748"/><path d="M10,100 Q120,-50 230,100" fill="none" stroke="#2b6cb0" stroke-width="3"/><circle cx="120" cy="25" r="5" fill="#c53030"/><line x1="85" y1="25" x2="155" y2="25" stroke="#c53030" stroke-dasharray="4,3"/><text x="160" y="22" font-size="11" fill="#c53030">dy/dx = 0</text><text x="12" y="92" font-size="11" fill="#4a5568">t = 0</text></svg></div>
+                        <div class="rule step"><h3>Parametric gradient</h3><p style="font-size: 1.3em; text-align: center;">$\dfrac{dy}{dx} = \dfrac{dy}{dt} \times \dfrac{dt}{dx} = \dfrac{dy/dt}{dx/dt}$</p><p class="mini" style="text-align: center;">(the same with parameter $\theta$)</p></div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Ball</span><div>$\dfrac{dy}{dx} = \dfrac{15 - 10t}{20}$; the top of the flight is where $\dfrac{dy}{dx} = 0$: $\;t = 1.5$ s</div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-ido tag">I Do</span> Example 1 · Finding the Gradient</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">$x = 2t, \quad y = t^3 - t$ &nbsp;— find $\dfrac{dy}{dx}$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Step 1</span><div>$\dfrac{dx}{dt} = 2$</div></div>
+                            <div class="stepl step"><span class="n">Step 2</span><div>$\dfrac{dy}{dt} = 3t^2 - 1$</div></div>
+                            <div class="stepl step"><span class="n">Divide</span><div><span class="final">$\dfrac{dy}{dx} = \dfrac{3t^2 - 1}{2}$</span></div></div>
+                        </div>
+                        <div class="tip step">🧘 The gradient is given in terms of $t$ — that is normal for parametric curves.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-ido tag">I Do</span> Example 2 · Tangent (and Normal) at t = 2</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">Same curve: the tangent at $t = 2$</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Point</span><div>$x = 2(2) = 4,\quad y = 2^3 - 2 = 6 \;\Rightarrow\; (4, 6)$</div></div>
+                            <div class="stepl step"><span class="n">Gradient</span><div>$m = \dfrac{3(2)^2 - 1}{2} = \dfrac{11}{2}$</div></div>
+                            <div class="stepl step"><span class="n">Tangent</span><div>$y - 6 = \dfrac{11}{2}(x - 4) \;\Rightarrow\;$ <span class="final">$2y = 11x - 32$</span></div></div>
+                            <div class="stepl step"><span class="n">Normal</span><div>$m_n = -\dfrac{2}{11}$: &nbsp;$11(y - 6) = -2(x - 4) \;\Rightarrow\;$ <span class="final">$2x + 11y = 74$</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5" data-timer="40">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-youdo tag">You Do</span> Worksheet 5</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 5</span> Independent exercise · 40 min</h3>
+                            <ul class="checklist"><li>① Find $\frac{dx}{dt}$ and $\frac{dy}{dt}$ (or $\frac{dx}{d\theta}$, $\frac{dy}{d\theta}$).</li><li>② Divide: $\frac{dy}{dx} = \frac{dy/dt}{dx/dt}$.</li><li>③ Substitute the value of $t$: point AND gradient.</li><li>④ Tangent: $y - y_1 = m(x - x_1)$ · Normal: $m_n = -\frac{1}{m}$.</li></ul>
+                        </div>
+                        <div class="tip mini">$\theta$ example: $x = 3\cos\theta,\ y = 2\sin\theta \Rightarrow \frac{dy}{dx} = \frac{2\cos\theta}{-3\sin\theta} = -\frac23\cot\theta$</div>
+                        <div class="slide-timer" data-min="40">40:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-rev tag">Review</span> Summary Chart of All Rules</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.5;">
+                        <table class="tbl">
+                            <tr><th>Rule</th><th>Use it when…</th><th>Formula</th></tr>
+                            <tr><td><strong>Product</strong></td><td>two functions multiplied</td><td>$uv' + vu'$</td></tr>
+                            <tr><td><strong>Quotient</strong></td><td>one function divided by another</td><td>$\dfrac{vu' - uv'}{v^2}$</td></tr>
+                            <tr><td><strong>Chain</strong></td><td>a function of a function</td><td>$\dfrac{dy}{dx} = \dfrac{dy}{du} \times \dfrac{du}{dx}$</td></tr>
+                            <tr><td><strong>Exp / Log</strong></td><td>$e^{f(x)}$, $\ln f(x)$</td><td>$f'e^{f}$ · $\dfrac{f'}{f}$</td></tr>
+                            <tr><td><strong>Trig</strong></td><td>$\sin$, $\cos$, $\tan$, $\tan^{-1}$ (radians)</td><td>$\cos x$ · $-\sin x$ · $\sec^2 x$ · $\dfrac{1}{1+x^2}$</td></tr>
+                            <tr><td><strong>Implicit</strong></td><td>$y$ cannot be isolated</td><td>$y$-terms × $\dfrac{dy}{dx}$</td></tr>
+                            <tr><td><strong>Parametric</strong></td><td>$x$ and $y$ both in terms of $t$</td><td>$\dfrac{dy/dt}{dx/dt}$</td></tr>
+                        </table>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-rev tag">Review</span> Which Rule? (Don't Solve!)</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>🗣️ Name the rule for each expression — <strong>don't solve it</strong>. Cold call!</p></div>
+                        <table class="tbl"><tr><td style="width: 45%; font-size: 1.1em;">1. &nbsp;$y = x^3\sin x$</td><td class="step answer">Product Rule</td></tr><tr><td style="width: 45%; font-size: 1.1em;">2. &nbsp;$y = \dfrac{\ln x}{x^2}$</td><td class="step answer">Quotient Rule (or Product with $x^{-2}$)</td></tr><tr><td style="width: 45%; font-size: 1.1em;">3. &nbsp;$y = e^{\cos x}$</td><td class="step answer">Chain Rule (exponential): $-\sin x\,e^{\cos x}$</td></tr><tr><td style="width: 45%; font-size: 1.1em;">4. &nbsp;$x^2 + y^3 = 2xy$</td><td class="step answer">Implicit — with the Product Rule on $2xy$!</td></tr><tr><td style="width: 45%; font-size: 1.1em;">5. &nbsp;$x = t^2,\ y = 4t$</td><td class="step answer">Parametric</td></tr></table>
+                    </div>
+                    <div class="col-write"><div class="write-label">Votes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6" data-timer="55">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-rev tag">Review</span> Chapter 4 Evaluation</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-exit">Chapter 4 Test</span> 55 minutes</h3>
+                            <ul class="checklist"><li>Products, quotients, exp / log / trig derivatives, implicit and parametric gradients.</li><li>No notes — formulas from <strong>your own memory</strong>.</li><li>Show every step: marks are given for method.</li><li><span style="color: #c0392b; font-weight: bold;">Self-Regulated:</span> about 1 minute per mark; leave 5 minutes to check.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="55">55:00</div>
+                        <div class="content-box mini"><p>🔚 <strong>Closure (5 min):</strong> which question was the most challenging — and which rule did it need?</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Most Challenging Question</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div style="display: flex; gap: 10px; align-items: center; pointer-events: auto;">
+            <button class="nav-btn reveal-btn" id="revealBtn" onclick="revealNext()">▼ Reveal step</button>
+            <div class="progress-indicator" id="progress">Slide 1</div>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const revealBtn = document.getElementById('revealBtn');
+        const hiddenSteps = s => [...s.querySelectorAll('.step:not(.shown)')];
+        const allSteps = s => [...s.querySelectorAll('.step')];
+
+        function updateNav() {
+            const s = slides[currentSlide], tot = allSteps(s).length, left = hiddenSteps(s).length;
+            const m = +s.dataset.meeting;
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}` + (m ? ` · Meeting ${m}` : '') + (tot ? ` · step ${tot - left}/${tot}` : '');
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            revealBtn.style.display = left ? 'inline-block' : 'none';
+            slides.forEach((slide, index) => slide.classList.toggle('active', index === currentSlide));
+            document.getElementById('jump').value = String(m);
+            if (!timerRunning && s.dataset.timer) { remaining = +s.dataset.timer * 60; showTime(); }
+        }
+        function changeSlide(direction) {
+            currentSlide = Math.max(0, Math.min(slides.length - 1, currentSlide + direction));
+            updateNav();
+        }
+        function revealNext() { const h = hiddenSteps(slides[currentSlide]); if (h.length) { h[0].classList.add('shown'); updateNav(); return true; } return false; }
+        function hideLast() { const s = allSteps(slides[currentSlide]).filter(x => x.classList.contains('shown')); if (s.length) { s[s.length - 1].classList.remove('shown'); updateNav(); } }
+        function jumpMeeting(m) { const i = [...slides].findIndex(s => s.dataset.meeting === String(m)); if (i >= 0) { currentSlide = i; updateNav(); } }
+
+        // PowerPoint-style keys (works with presentation clickers): reveal the next step first, then move on
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SELECT') return;
+            if ([' ', 'ArrowRight', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); if (!revealNext()) changeSlide(1); }
+            else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); changeSlide(-1); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); revealNext(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); hideLast(); }
+        });
+
+        // ---------- Countdown timer ("You Do" slides set it automatically) ----------
+        let remaining = 0, timerRunning = false, timerId = null;
+        const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        function showTime() {
+            const t = remaining > 0 || timerRunning || slides[currentSlide].dataset.timer ? fmt(remaining) : '--:--';
+            document.getElementById('tmr').textContent = t;
+            document.querySelectorAll('.slide-timer').forEach(el => { el.textContent = fmt(slides[currentSlide].contains(el) ? remaining : +el.dataset.min * 60); el.classList.toggle('low', slides[currentSlide].contains(el) && remaining <= 60); });
+        }
+        function timerStart() { if (timerRunning) return; if (remaining <= 0) remaining = (+slides[currentSlide].dataset.timer || 5) * 60; timerRunning = true; timerId = setInterval(() => { remaining = Math.max(0, remaining - 1); showTime(); if (!remaining) { timerPause(); document.getElementById('tmr').textContent = "⏰ 00:00"; } }, 1000); showTime(); }
+        function timerPause() { timerRunning = false; clearInterval(timerId); }
+        function timerReset() { timerPause(); remaining = (+slides[currentSlide].dataset.timer || 0) * 60; showTime(); }
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

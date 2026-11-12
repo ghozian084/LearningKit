@@ -15,3 +15,5 @@
 - Chapter tests (with answer keys) are encrypted with the teacher password before their first commit;
   never commit an unlocked test.
 - Verify every numerical answer by computation before publishing.
+- Direct Teaching boards: use the `/directteach` skill (`.claude/skills/directteach/`) — same engine, slide order
+  (Lecture → I Do → We Do → You Do) and fit check for every topic; keep existing boards and add the next `bd-0N`.

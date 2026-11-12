@@ -1,0 +1,960 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board 2 - Perimeter, Area and Volume (Direct Teaching)</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+
+        /* ---------- Direct-instruction additions ---------- */
+        .p-lec { background: #3182ce; } .p-ido { background: #805ad5; } .p-wedo { background: #dd6b20; }
+        .p-youdo { background: #38a169; } .p-rev { background: #e53e3e; }
+        .flow { display: flex; gap: 8px; align-items: center; justify-content: center; margin: 12px 0; flex-wrap: wrap; }
+        .flow span.chip { color: #fff; padding: 8px 16px; border-radius: 8px; font-weight: bold; font-size: 1.15em; }
+        .flow .arrow { font-size: 1.6em; color: #718096; }
+        .rule { background: #ebf8ff; border: 3px solid #3182ce; border-radius: 10px; padding: 8px 16px; }
+        .rule h3 { margin-bottom: 2px; }
+        .rule.purple { background: #faf5ff; border-color: #805ad5; }
+        .rule.orange { background: #fffaf0; border-color: #dd6b20; }
+        .rule.green { background: #f0fff4; border-color: #38a169; }
+        .question { font-size: 1.35em; text-align: center; background: #fefcbf; border-radius: 8px; padding: 6px 10px; font-weight: bold; color: #1a365d; }
+        .grid22 { border-collapse: collapse; margin: 2px auto; font-size: 1.12em; }
+        .grid22 td { border: 2px solid #805ad5; padding: 4px 16px; min-width: 150px; }
+        .grid22 td.h { background: #faf5ff; }
+        .steps { display: flex; flex-direction: column; gap: 5px; }
+        .stepl { display: flex; gap: 10px; align-items: baseline; font-size: 1.12em; }
+        .stepl .n { background: #805ad5; color: #fff; border-radius: 12px; padding: 0 9px; font-size: 0.8em; font-weight: bold; white-space: nowrap; }
+        .final { display: inline-block; border: 3px solid #38a169; background: #f0fff4; border-radius: 8px; padding: 2px 12px; line-height: 1.2; vertical-align: middle; }
+        .warn { background: #fff5f5; border-left: 6px solid #e53e3e; padding: 6px 12px; border-radius: 6px; }
+        .tip { background: #fffff0; border-left: 6px solid #d69e2e; padding: 6px 12px; border-radius: 6px; }
+        .step { visibility: hidden; opacity: 0; transition: opacity 0.35s; }
+        .step.shown { visibility: visible; opacity: 1; }
+        .answer { color: #276749; font-weight: bold; }
+        .mini { font-size: 0.95em; }
+        .tbl { border-collapse: collapse; width: 100%; font-size: 1.05em; }
+        .tbl th, .tbl td { border: 1px solid #cbd5e0; padding: 5px 10px; text-align: left; }
+        .tbl th { background: #ebf8ff; color: var(--primary); }
+        .slide-timer { font-size: 4.2em; font-weight: bold; color: #276749; text-align: center; font-family: 'Courier New', monospace; line-height: 1.1; }
+        .slide-timer.low { color: #c53030; }
+        .checklist li { margin: 3px 0; }
+        .toolbar select { padding: 6px; border-radius: 5px; font-weight: bold; }
+        .timer-box { display: flex; align-items: center; gap: 6px; margin-left: 20px; }
+        #tmr { font-family: 'Courier New', monospace; font-size: 1.4em; font-weight: bold; min-width: 80px; text-align: center; }
+        .reveal-btn { background-color: #805ad5; }
+        .reveal-btn:hover { background-color: #6b46c1; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 10px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <select id="jump" onchange="jumpMeeting(this.value)" title="Jump to a meeting"><option value="0">📅 Overview</option><option value="1">Meeting 1 · Perimeter & area</option><option value="2">Meeting 2 · Trapeziums & composites</option><option value="3">Meeting 3 · Circles</option><option value="4">Meeting 4 · 3D objects & nets</option><option value="5">Meeting 5 · Surface area</option><option value="6">Meeting 6 · Volume</option><option value="7">Meeting 7 · Spheres & test</option></select>
+        <div class="timer-box"><span>⏱️</span><span id="tmr">--:--</span><button class="tool-btn" onclick="timerStart()" title="Start">▶</button><button class="tool-btn" onclick="timerPause()" title="Pause">⏸</button><button class="tool-btn" onclick="timerReset()" title="Reset">↺</button></div>
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <div class="slide title-slide active" data-meeting="0">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Perimeter, Area &amp; Volume</h1>
+                <h2>Grade 9 Mathematics — Topic 7 · Board 2: Direct Teaching</h2>
+                <div class="flow"><span class="chip p-lec">📢 Lecture</span><span class="arrow">→</span><span class="chip p-ido">👩‍🏫 I Do</span><span class="arrow">→</span><span class="chip p-wedo">🤝 We Do</span><span class="arrow">→</span><span class="chip p-youdo">✍️ You Do</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">Direct Teaching — watch the method, practise it together, then master it alone.</p>
+                <p><em>Space / → / clicker reveals the next step · ← goes back · ✏️ write on any slide · ⏱️ timer on every "You Do" slide</em></p>
+            </div>
+        </div>
+        <div class="slide" data-meeting="0">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">🗺️ Chapter Roadmap &amp; Success Criteria</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.4;">
+                        <table class="tbl">
+                            <tr><th>Meeting</th><th>Topic</th><th>Key formula</th></tr>
+                            <tr><td>1 (7.1)</td><td>Perimeter &amp; basic area</td><td>$A = lw$ · $A = bh$ · $A = \frac12 bh$</td></tr>
+                            <tr><td>2 (7.1)</td><td>Trapeziums &amp; composites</td><td>$A = \frac12(a + b)h$</td></tr>
+                            <tr><td>3 (7.1)</td><td>Circles, arcs &amp; sectors</td><td>$C = 2\pi r$ · $A = \pi r^2$ · $\frac{\theta}{360}$</td></tr>
+                            <tr><td>4 (7.2)</td><td>3D objects &amp; nets</td><td>faces · edges · vertices</td></tr>
+                            <tr><td>5 (7.3)</td><td>Surface area</td><td>add up the net</td></tr>
+                            <tr><td>6 (7.3)</td><td>Volume</td><td>$V = Ah$ · $V = \frac13 Ah$</td></tr>
+                            <tr><td>7 (7.3)</td><td>Spheres &amp; Chapter 7 Test</td><td>$4\pi r^2$ · $\frac43\pi r^3$</td></tr>
+                        </table>
+                        <div class="content-box mini"><h3><span class="badge bg-exit">WILT</span> I can…</h3><p>① tell perimeter (cm), area (cm²) and volume (cm³) apart ② find composite areas by splitting or subtracting ③ use $\pi$ for circles, arcs and sectors ④ draw nets and find surface areas ⑤ find volumes of prisms, cylinders, pyramids, cones and spheres.</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-lec tag">Lecture</span> Fence or Fertiliser?</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><h3><span class="badge bg-hook">Hook</span> 🌾</h3><p>A farmer puts a <strong>fence</strong> around a sawah and spreads <strong>fertiliser</strong> on the soil inside. Which is perimeter? Which is area?</p></div>
+                        <div class="rule step"><h3>Perimeter (1D) vs Area (2D)</h3><p><strong>Perimeter</strong> = distance <em>around</em> the shape → cm, m</p><p><strong>Area</strong> = space <em>inside</em> the shape → cm², m²</p></div>
+                        <div class="rule green step"><h3>Rectangle</h3><p style="text-align: center; font-size: 1.2em;">$P = 2(l + w)$ &nbsp;&nbsp;&nbsp; $A = l \times w$</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Units: cm, cm²</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-lec tag">Lecture</span> Parallelogram &amp; Triangle</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>❓ We only know $A = l \times w$. How can we <strong>prove</strong> the area of a parallelogram and a triangle?</p></div>
+                        <div class="rule purple step" style="display: flex; gap: 10px; align-items: center;"><div><h3>Parallelogram</h3><p>Cut a right triangle off one end and slide it across: a rectangle!</p><p style="font-size: 1.2em;">$A = b \times h$</p></div><svg viewBox="0 0 330 120" style="width: 300px; height: 110px; flex-shrink: 0;"><polygon points="20,100 140,100 170,20 50,20" fill="#ebf8ff" stroke="#2d3748" stroke-width="2"/><polygon points="20,100 50,100 50,20" fill="#fed7d7" stroke="#c53030" stroke-width="1.5" stroke-dasharray="4,3"/><text x="160" y="65" font-size="22" fill="#718096">→</text><polygon points="190,100 280,100 280,20 190,20" fill="#ebf8ff" stroke="#2d3748" stroke-width="2"/><polygon points="280,100 310,100 310,20 280,20" fill="#fed7d7" stroke="#c53030" stroke-width="1.5"/><text x="80" y="116" font-size="13" font-weight="bold" text-anchor="middle" fill="#1a365d">base b</text><line x1="50" y1="20" x2="50" y2="100" stroke="#c53030" stroke-width="1.5"/><text x="62" y="65" font-size="12" fill="#c53030" font-weight="bold">h</text><text x="250" y="116" font-size="13" font-weight="bold" text-anchor="middle" fill="#1a365d">b × h</text></svg></div>
+                        <div class="rule orange step"><h3>Triangle</h3><p>Two identical triangles make a parallelogram, so one triangle is half: &nbsp;<span style="font-size: 1.2em;">$A = \frac12 b \times h$</span></p></div>
+                        <div class="warn step">⚠️ $h$ is the <strong>perpendicular</strong> height — never the slanted side.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Draw the Cut</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-ido tag">I Do</span> Example 1 · The Sawah</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A rectangular sawah is 45 m by 28 m. Find the length of fence and the area to fertilise.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Perimeter</span><div>$P = 2(l + w) = 2(45 + 28) = 2 \times 73$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$P = 146$ m</span> &nbsp; (1D — metres)</div></div>
+                            <div class="stepl step"><span class="n">Area</span><div>$A = l \times w = 45 \times 28$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$A = 1260$ m²</span> &nbsp; (2D — square metres)</div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-ido tag">I Do</span> Example 2 · Parallelogram &amp; Triangle</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">Parallelogram: base 9 cm, slanted side 5 cm, perpendicular height 4 cm.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Perimeter</span><div>add all four sides: $P = 2(9 + 5) = $ <span class="final">28 cm</span></div></div>
+                            <div class="stepl step"><span class="n">Area</span><div>$A = b \times h = 9 \times 4 = $ <span class="final">36 cm²</span></div></div>
+                            <div class="stepl step"><span class="n">Trap</span><div>❌ $9 \times 5 = 45$ uses the slanted side — wrong!</div></div>
+                        </div>
+                        <div class="question step">Triangle: base 10 cm, perpendicular height 7 cm.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Area</span><div>$A = \frac12 \times 10 \times 7 = $ <span class="final">35 cm²</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Formula → substitute → answer <strong>with units</strong>. Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) Rectangle 13 cm × 6 cm: perimeter and area</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div>$P = 2(13 + 6) = $ <span class="final">38 cm</span> &nbsp; $A = 13 \times 6 = $ <span class="final">78 cm²</span></div></div></div>
+                        <div class="question">(b) Triangle: base 14 cm, height 9 cm</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$A = \frac12 \times 14 \times 9 = $ <span class="final">63 cm²</span></div></div></div>
+                        <div class="question">(c) Parallelogram: base 11 cm, slant 7 cm, height 5 cm</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(c)</span><div>$A = 11 \times 5 = $ <span class="final">55 cm²</span> &nbsp; $P = 2(11 + 7) = $ <span class="final">36 cm</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="1" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="p-youdo tag">You Do</span> Worksheet 1</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 1</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Write the formula first, then substitute.</li><li>Perimeter in cm, area in cm².</li><li>Use the <strong>perpendicular</strong> height for area.</li><li>Exit ticket: why must we use the perpendicular height, not the slanted side?</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-lec tag">Lecture</span> Trapeziums &amp; Composite Shapes</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><h3><span class="badge bg-hook">Hook</span> 🏠</h3><p>An L-shaped room needs carpet. There is no single formula — <strong>split</strong> it into rectangles, or <strong>subtract</strong> the missing corner.</p></div>
+                        <div class="rule step" style="display: flex; gap: 12px; align-items: center;"><div><h3>Trapezium</h3><p>A diagonal makes two triangles with the same height $h$:</p><p>$\frac12 ah + \frac12 bh = \frac12(a + b)h$</p><p style="font-size: 1.2em;"><strong>$A = \frac12(a + b)h$</strong></p><p class="mini">"half the sum of the parallel sides × the height"</p></div><svg viewBox="0 0 230 120" style="width: 210px; height: 110px; flex-shrink: 0;"><polygon points="15,100 215,100 160,20 60,20" fill="#ebf8ff" stroke="#2d3748" stroke-width="2"/><line x1="60" y1="20" x2="215" y2="100" stroke="#805ad5" stroke-width="2" stroke-dasharray="5,3"/><line x1="60" y1="20" x2="60" y2="100" stroke="#c53030" stroke-width="1.5" stroke-dasharray="3,3"/><text x="110" y="14" font-size="13" font-weight="bold" text-anchor="middle" fill="#1a365d">a</text><text x="115" y="116" font-size="13" font-weight="bold" text-anchor="middle" fill="#1a365d">b</text><text x="70" y="70" font-size="13" fill="#c53030" font-weight="bold">h</text></svg></div>
+                        <div class="tip step">💡 Composite shapes: <strong>add</strong> the pieces, or <strong>subtract</strong> the holes — both give the same answer.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-ido tag">I Do</span> Example 1 · A Trapezium</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">Trapezium: parallel sides 5 cm and 11 cm, height 6 cm.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Formula</span><div>$A = \frac12(a + b)h$</div></div>
+                            <div class="stepl step"><span class="n">Substitute</span><div>$A = \frac12(5 + 11) \times 6 = \frac12 \times 16 \times 6$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$A = 48$ cm²</span></div></div>
+                        </div>
+                        <div class="tip step">✅ Check with two triangles: $\frac12(5)(6) + \frac12(11)(6) = 15 + 33 = 48$ ✔</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-ido tag">I Do</span> Example 2 · The L-Shaped Room</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div style="display: flex; gap: 14px; align-items: center;"><svg viewBox="0 0 260 200" style="width: 230px; height: 177px; flex-shrink: 0;"><polygon points="20,180 236,180 236,108 146,108 146,18 20,18" fill="#fefcbf" stroke="#2d3748" stroke-width="2"/><polygon points="146,18 236,18 236,108 146,108" fill="none" stroke="#a0aec0" stroke-dasharray="5,4"/><line class="step" x1="20" y1="108" x2="146" y2="108" stroke="#805ad5" stroke-width="2" stroke-dasharray="6,4"/><text x="128" y="196" font-size="13" font-weight="bold" text-anchor="middle">12 m</text><text x="10" y="104" font-size="13" font-weight="bold" text-anchor="middle">9</text><text x="83" y="13" font-size="13" font-weight="bold" text-anchor="middle">7 m</text><text x="191" y="13" font-size="13" font-weight="bold" text-anchor="middle" fill="#a0aec0">5 m</text><text x="250" y="148" font-size="13" font-weight="bold" text-anchor="middle">5</text><text x="250" y="68" font-size="13" font-weight="bold" text-anchor="middle" fill="#a0aec0">4</text></svg><div class="question" style="flex: 1;">Find the area of carpet: a 12 m × 9 m room with a 5 m × 4 m corner missing.</div></div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Subtract</span><div>$12 \times 9 - 5 \times 4 = 108 - 20 = $ <span class="final">88 m²</span></div></div>
+                            <div class="stepl step"><span class="n">Split</span><div>bottom $12 \times 5 = 60$, top-left $7 \times 4 = 28$: $\;60 + 28 = $ <span class="final">88 m²</span> ✔</div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Formula → substitute → units. Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) Trapezium: parallel sides 8 cm and 14 cm, height 5 cm</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div>$A = \frac12(8 + 14) \times 5 = \frac12 \times 22 \times 5 = $ <span class="final">55 cm²</span></div></div></div>
+                        <div class="question">(b) Working backwards: a trapezium has area 60 cm² and parallel sides 7 cm and 13 cm. Find its height.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$\frac12(7 + 13)h = 60 \Rightarrow 10h = 60 \Rightarrow $ <span class="final">$h = 6$ cm</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="2" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="p-youdo tag">You Do</span> Worksheet 2</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 2</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Trapezium: $\frac12(a + b)h$ — add the parallel sides first.</li><li>Composite: draw dotted lines to split, or subtract the hole.</li><li>Label every piece's area before adding.</li><li>Exit ticket: trapezium with parallel sides 5 cm and 9 cm, height 6 cm.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-lec tag">Lecture</span> π and the Circumference</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><h3><span class="badge bg-hook">Hook</span> 🧺</h3><p>A round <em>tampah</em> needs rattan around the rim and a banana leaf on top. A circle has <strong>no straight sides</strong> — how do we measure it?</p></div>
+                        <div class="rule step"><h3>$\pi$</h3><p>Measure any circle: circumference ÷ diameter $\approx 3.14$ — always! This constant is $\pi = 3.14159\ldots$</p></div>
+                        <div class="rule green step"><h3>Circumference</h3><p style="text-align: center; font-size: 1.2em;">$C = \pi d = 2\pi r$</p><p class="mini" style="text-align: center;">$d$ = diameter (across), $r$ = radius (centre to edge), $d = 2r$</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-lec tag">Lecture</span> Area, Arcs &amp; Sectors</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule purple"><h3>Area</h3><p>Cut a circle into thin sectors and lay them top-to-tail: almost a rectangle, $\pi r$ long and $r$ high.</p><p style="text-align: center; font-size: 1.2em;">$A = \pi r \times r = \pi r^2$</p></div>
+                        <div class="rule orange step"><h3>Sector with angle $\theta$ = the fraction $\frac{\theta}{360}$ of the circle</h3><p style="text-align: center; font-size: 1.1em;">arc $= \frac{\theta}{360} \times 2\pi r$ &nbsp;&nbsp; area $= \frac{\theta}{360} \times \pi r^2$</p></div>
+                        <div class="warn step">⚠️ The perimeter of a sector or semicircle = curve + the straight edges.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-ido tag">I Do</span> Example 1 · A Whole Circle</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A circle has radius 6 cm. Find its circumference and its area (1 d.p.).</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Circumference</span><div>$C = 2\pi r = 2 \times \pi \times 6 = 12\pi$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$C = 12\pi \approx 37.7$ cm</span></div></div>
+                            <div class="stepl step"><span class="n">Area</span><div>$A = \pi r^2 = \pi \times 6^2 = 36\pi$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div><span class="final">$A = 36\pi \approx 113.1$ cm²</span></div></div>
+                        </div>
+                        <div class="warn step">⚠️ $6^2 = 36$, not $12$ — square the radius <em>before</em> multiplying by $\pi$.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-ido tag">I Do</span> Example 2 · A Sector</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div style="display: flex; gap: 14px; align-items: center;"><svg viewBox="0 0 150 130" style="width: 150px; height: 130px; flex-shrink: 0;"><circle cx="40" cy="105" r="95" fill="none" stroke="#cbd5e0" stroke-dasharray="4,4"/><path d="M40,105 L135,105 A95,95 0 0 0 69.4,14.6 Z" fill="#e9d8fd" stroke="#805ad5" stroke-width="2"/><text x="62" y="98" font-size="12" fill="#805ad5" font-weight="bold">72°</text><text x="88" y="121" font-size="13" font-weight="bold" text-anchor="middle">r = 10</text></svg><div class="question" style="flex: 1;">A sector has radius 10 cm and angle 72°. Find the arc length, the area and the perimeter.</div></div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Fraction</span><div>$\frac{72}{360} = \frac15$ of the circle</div></div>
+                            <div class="stepl step"><span class="n">Arc</span><div>$\frac15 \times 2\pi \times 10 = 4\pi \approx $ <span class="final">12.6 cm</span></div></div>
+                            <div class="stepl step"><span class="n">Area</span><div>$\frac15 \times \pi \times 10^2 = 20\pi \approx $ <span class="final">62.8 cm²</span></div></div>
+                            <div class="stepl step"><span class="n">Perimeter</span><div>arc + two radii $= 4\pi + 20 \approx $ <span class="final">32.6 cm</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Which formula? Then substitute. Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) Semicircle, diameter 8 cm: area and perimeter</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div>$r = 4$: $A = \frac12\pi(4)^2 = 8\pi \approx $ <span class="final">25.1 cm²</span> &nbsp; $P = \frac12(8\pi) + 8 = 4\pi + 8 \approx $ <span class="final">20.6 cm</span></div></div></div>
+                        <div class="question">(b) Working backwards: a circle has circumference 50 cm. Find its diameter.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$\pi d = 50 \Rightarrow d = \frac{50}{\pi} \approx $ <span class="final">15.9 cm</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="3" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="p-youdo tag">You Do</span> Worksheet 3</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 3</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Radius or diameter? $r = \frac{d}{2}$.</li><li>$C = 2\pi r$ (cm) · $A = \pi r^2$ (cm²).</li><li>Semicircles and sectors: the perimeter includes the straight edges.</li><li>Give answers to 1 d.p.; exit ticket: the tampah (diameter 50 cm).</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-lec tag">Lecture</span> 3D Objects &amp; Nets</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>📦 <strong>Hook:</strong> a cereal box and a Toblerone box: their "skin" is flat. A <strong>net</strong> is that skin unfolded.</p></div>
+                        <div class="rule step"><h3>Vocabulary</h3><p><strong>Face</strong> (flat surface) · <strong>edge</strong> (where two faces meet) · <strong>vertex</strong> (corner)</p><p>A <strong>prism</strong> has the same cross-section all the way through.</p><p class="mini">💡 Check: $F + V - E = 2$ (cuboid: $6 + 8 - 12 = 2$ ✔)</p></div>
+                        <table class="tbl step"><tr><th>Solid</th><th>Faces</th><th>Edges</th><th>Vertices</th></tr><tr><td>Cuboid</td><td>6</td><td>12</td><td>8</td></tr><tr><td>Square-based pyramid</td><td>5</td><td>8</td><td>5</td></tr><tr><td>Cylinder</td><td>3 (2 flat + 1 curved)</td><td>2 (curved)</td><td>0</td></tr></table>
+                    </div>
+                    <div class="col-write"><div class="write-label">Sketch Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-ido tag">I Do</span> Example 1 · Net of a Cuboid</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">Draw the net of a cuboid 5 cm × 3 cm × 2 cm and label every face.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Pairs</span><div>Opposite faces are equal: two of each.</div></div>
+                            <div class="stepl step"><span class="n">Faces</span><div>$5 \times 3$ (top and bottom) · $5 \times 2$ (front and back) · $3 \times 2$ (two ends)</div></div>
+                        </div>
+                        <div class="step" style="display: flex; justify-content: center;"><svg viewBox="0 0 300 170" style="width: 280px; height: 159px; flex-shrink: 0;"><g fill="#ebf8ff" stroke="#2d3748" stroke-width="1.5"><rect x="60" y="40" width="100" height="60"/><rect x="60" y="0" width="100" height="40"/><rect x="60" y="100" width="100" height="40"/><rect x="20" y="40" width="40" height="60"/><rect x="160" y="40" width="40" height="60"/><rect x="200" y="40" width="100" height="60"/></g><text x="110" y="75" font-size="13" font-weight="bold" text-anchor="middle">5 × 3</text><text x="250" y="75" font-size="13" font-weight="bold" text-anchor="middle">5 × 3</text><text x="110" y="25" font-size="11" text-anchor="middle">5 × 2</text><text x="110" y="125" font-size="11" text-anchor="middle">5 × 2</text><text x="40" y="75" font-size="11" text-anchor="middle">3×2</text><text x="180" y="75" font-size="11" text-anchor="middle">3×2</text><text x="150" y="160" font-size="12" fill="#4a5568" text-anchor="middle">cuboid 5 cm × 3 cm × 2 cm</text></svg></div>
+                        <div class="tip step">✅ Fold it in your head: every edge must meet an edge of the same length.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-ido tag">I Do</span> Example 2 · Net of a Cylinder</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A cylinder has radius 3 cm and height 10 cm. What shapes are in its net, and how long is the rectangle?</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Shapes</span><div>two circles (top and bottom) + one rectangle (the curved side, unrolled)</div></div>
+                            <div class="stepl step"><span class="n">Length</span><div>the rectangle wraps once around the circle, so its length = circumference $= 2\pi r$</div></div>
+                            <div class="stepl step"><span class="n">Answer</span><div>$2\pi \times 3 = 6\pi \approx$ <span class="final">18.8 cm by 10 cm</span></div></div>
+                        </div>
+                        <div class="step" style="display: flex; justify-content: center;"><svg viewBox="0 0 280 150" style="width: 260px; height: 140px; flex-shrink: 0;"><rect x="40" y="30" width="200" height="80" fill="#c6f6d5" stroke="#2d3748" stroke-width="1.5"/><circle cx="140" cy="15" r="15" fill="#c6f6d5" stroke="#2d3748" stroke-width="1.5"/><circle cx="140" cy="125" r="15" fill="#c6f6d5" stroke="#2d3748" stroke-width="1.5"/><text x="140" y="75" font-size="13" font-weight="bold" text-anchor="middle">2πr × h</text><text x="20" y="75" font-size="13" font-weight="bold" text-anchor="middle">h</text><line x1="140" y1="125" x2="155" y2="125" stroke="#c53030" stroke-width="1.5"/><text x="160" y="130" font-size="12" fill="#c53030" font-weight="bold">r</text></svg></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) A pentagonal prism: how many faces, edges and vertices?</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div><span class="final">F = 7, E = 15, V = 10</span> &nbsp; Euler: $7 + 10 - 15 = 2$ ✔</div></div></div>
+                        <div class="question">(b) A cylinder has radius 5 cm and height 8 cm. Give the size of the rectangle in its net.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$2\pi \times 5 = 10\pi \approx $ <span class="final">31.4 cm by 8 cm</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="4" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="p-youdo tag">You Do</span> Worksheet 4</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 4</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Count faces, edges and vertices; check with $F + V - E = 2$.</li><li>Nets: opposite faces are equal; edges that meet must match.</li><li>Cylinder net: rectangle $2\pi r$ by $h$, plus two circles.</li><li>Exit ticket: the length of the rectangle in a cylinder's net.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-lec tag">Lecture</span> Surface Area</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><h3><span class="badge bg-hook">Hook</span> 🎁</h3><p>Wrapping paper costs Rp 5 000 per m². How much paper does a gift box need — without waste?</p></div>
+                        <div class="rule step"><h3>Total surface area = area of the net</h3><p>Find the area of every face, then add them up.</p></div>
+                        <table class="tbl step"><tr><th>Solid</th><th>Total surface area</th></tr><tr><td>Cuboid $l \times w \times h$</td><td>$2(lw + lh + wh)$</td></tr><tr><td>Cylinder</td><td>$2\pi r^2 + 2\pi rh$ &nbsp;(two circles + curved side)</td></tr><tr><td>Prism</td><td>$2 \times$ cross-section $+$ perimeter of cross-section $\times$ length</td></tr></table>
+                        <div class="warn step">⚠️ Surface area is an <strong>area</strong>: cm² or m² — not cm³.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-ido tag">I Do</span> Example 1 · The Gift Box</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A gift box is 40 cm × 30 cm × 20 cm. Paper costs Rp 5 000 per m². Find the cost of paper to cover it.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Faces</span><div>$40 \times 30 = 1200$, &nbsp; $40 \times 20 = 800$, &nbsp; $30 \times 20 = 600$ (two of each)</div></div>
+                            <div class="stepl step"><span class="n">TSA</span><div>$2(1200 + 800 + 600) = 2 \times 2600 = 5200$ cm²</div></div>
+                            <div class="stepl step"><span class="n">Convert</span><div>$1$ m² $= 100 \times 100 = 10\,000$ cm², so $5200$ cm² $= 0.52$ m²</div></div>
+                            <div class="stepl step"><span class="n">Cost</span><div>$0.52 \times 5000 = $ <span class="final">Rp 2 600</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-ido tag">I Do</span> Example 2 · A Cylinder</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A cylinder has radius 4 cm and height 9 cm. Find its total surface area (1 d.p.).</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Circles</span><div>$2\pi r^2 = 2\pi(4)^2 = 32\pi$</div></div>
+                            <div class="stepl step"><span class="n">Curved</span><div>$2\pi rh = 2\pi(4)(9) = 72\pi$ &nbsp; (the rectangle in the net)</div></div>
+                            <div class="stepl step"><span class="n">Total</span><div>$32\pi + 72\pi = 104\pi \approx $ <span class="final">326.7 cm²</span></div></div>
+                        </div>
+                        <div class="tip step">💡 Keep answers in terms of $\pi$ until the last step — it avoids rounding errors.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ List the faces first. Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) A triangular prism: right-angled cross-section with sides 3, 4, 5 cm; length 10 cm</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div>$2 \times \frac12(3)(4) + (3 + 4 + 5) \times 10 = 12 + 120 = $ <span class="final">132 cm²</span></div></div></div>
+                        <div class="question">(b) A cylinder with radius 2 cm and height 5 cm</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$2\pi(2)^2 + 2\pi(2)(5) = 8\pi + 20\pi = 28\pi \approx $ <span class="final">88.0 cm²</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="5" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="p-youdo tag">You Do</span> Worksheet 5</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 5</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Scaffold: list every face in a table (shape, size, area, how many).</li><li>Cylinder: $2\pi r^2 + 2\pi rh$.</li><li>Answer in cm² (convert to m² for costs: ÷ 10 000).</li><li>Exit ticket: cylinder with radius 5 cm and height 10 cm.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-lec tag">Lecture</span> Volume</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>🥩 "Surface area is the <strong>skin</strong>. Volume is the <strong>meat</strong>." How much space is inside?</p></div>
+                        <div class="rule step"><h3>Prisms and cylinders: stack the cross-section</h3><p style="text-align: center; font-size: 1.15em;">$V = \text{area of cross-section} \times \text{length}$ &nbsp;·&nbsp; cylinder $V = \pi r^2 h$</p></div>
+                        <div class="rule purple step" style="display: flex; gap: 10px; align-items: center;"><div><h3>Pyramids and cones</h3><p>Rice from <strong>3</strong> pyramids exactly fills a prism with the same base and height:</p><p style="text-align: center; font-size: 1.15em;">$V = \frac13 \times \text{base area} \times h$ &nbsp;·&nbsp; cone $V = \frac13\pi r^2 h$</p></div><svg viewBox="0 0 270 120" style="width: 245px; height: 109px; flex-shrink: 0;"><polygon points="20,110 90,110 90,30 20,30" fill="#ebf8ff" stroke="#2d3748" stroke-width="2"/><polygon points="140,110 210,110 175,30" fill="#fefcbf" stroke="#2d3748" stroke-width="2"/><text x="55" y="75" font-size="13" font-weight="bold" text-anchor="middle">prism</text><text x="175" y="102" font-size="11" font-weight="bold" text-anchor="middle">pyramid</text><text x="222" y="72" font-size="18" fill="#805ad5" font-weight="bold">× 3</text></svg></div>
+                        <div class="tip step">💡 Units: cm³ · and $1$ litre $= 1000$ cm³.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-ido tag">I Do</span> Example 1 · Prism &amp; Cylinder</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">(i) A triangular prism: cross-section base 6 cm and height 4 cm, length 15 cm.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Area</span><div>cross-section $= \frac12 \times 6 \times 4 = 12$ cm²</div></div>
+                            <div class="stepl step"><span class="n">Volume</span><div>$V = 12 \times 15 = $ <span class="final">180 cm³</span></div></div>
+                        </div>
+                        <div class="question step">(ii) A cylinder: radius 3 cm, height 10 cm.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Volume</span><div>$V = \pi r^2 h = \pi \times 9 \times 10 = 90\pi \approx $ <span class="final">282.7 cm³</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-ido tag">I Do</span> Example 2 · Cone &amp; Pyramid</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">(i) A cone: radius 5 cm, height 12 cm.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Volume</span><div>$V = \frac13\pi r^2 h = \frac13 \times \pi \times 25 \times 12 = 100\pi \approx $ <span class="final">314.2 cm³</span></div></div></div>
+                        <div class="question step">(ii) A square-based pyramid: base 6 cm, height 10 cm.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">Volume</span><div>$V = \frac13 \times 6^2 \times 10 = \frac13 \times 360 = $ <span class="final">120 cm³</span></div></div></div>
+                        <div class="warn step">⚠️ Use the <strong>perpendicular</strong> height of the cone or pyramid, not the slant height.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-wedo tag">We Do</span> Mini-Whiteboards</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>✍️ Boards up on <strong>3 – 2 – 1</strong>!</p></div>
+                        <div class="question">(a) A cone and a cylinder have the same radius and height. The cylinder holds 300 cm³. The cone?</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(a)</span><div>$\frac13 \times 300 = $ <span class="final">100 cm³</span></div></div></div>
+                        <div class="question">(b) A fish tank is 50 cm × 30 cm × 40 cm. How many litres?</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(b)</span><div>$60\,000$ cm³ $\div 1000 = $ <span class="final">60 litres</span></div></div></div>
+                        <div class="question">(c) A cylinder has volume $200\pi$ cm³ and radius 5 cm. Find its height.</div>
+                        <div class="steps"><div class="stepl step"><span class="n">(c)</span><div>$25\pi h = 200\pi \Rightarrow $ <span class="final">$h = 8$ cm</span></div></div></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Common Mistakes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="6" data-timer="30">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="p-youdo tag">You Do</span> Worksheet 6</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-activity">Worksheet 6</span> Independent practice · 30 min</h3>
+                            <ul class="checklist"><li>Prism / cylinder: area of cross-section × length.</li><li>Pyramid / cone: $\frac13$ × base area × height.</li><li>Volume in cm³ (1 litre = 1000 cm³).</li><li>Exit ticket: the cone and cylinder with the same radius and height.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="30">30:00</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Questions &amp; Help</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="7">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 7 · <span class="p-lec tag">Lecture</span> Peeling the Orange</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box" style="display: flex; gap: 10px; align-items: center;"><div><h3><span class="badge bg-hook">Hook</span> 🍊</h3><p>Draw 4 circles with the orange's radius. The peel fills <strong>exactly 4</strong> of them!</p></div><svg viewBox="0 0 300 92" style="width: 270px; height: 83px; flex-shrink: 0;"><circle cx="40" cy="42" r="35" fill="#fbd38d" stroke="#c05621" stroke-width="2"/><text x="90" y="49" font-size="22" fill="#718096">→</text><g fill="#feebc8" stroke="#c05621" stroke-width="1.5"><circle cx="135" cy="42" r="19"/><circle cx="177" cy="42" r="19"/><circle cx="219" cy="42" r="19"/><circle cx="261" cy="42" r="19"/></g><text x="198" y="86" font-size="11" text-anchor="middle" fill="#4a5568">peel = 4 circles, radius r</text></svg></div>
+                        <div class="rule step"><h3>Sphere</h3><p style="text-align: center; font-size: 1.2em;">surface area $= 4\pi r^2$ &nbsp;&nbsp;&nbsp; volume $= \frac43\pi r^3$</p></div>
+                        <div class="question step">A ball has radius 5 cm.</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Surface</span><div>$4\pi(5)^2 = 100\pi \approx $ <span class="final">314.2 cm²</span></div></div>
+                            <div class="stepl step"><span class="n">Volume</span><div>$\frac43\pi(5)^3 = \frac{500}{3}\pi \approx $ <span class="final">523.6 cm³</span></div></div>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="7">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 7 · <span class="p-ido tag">I Do</span> Example · A Hemisphere</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="question">A solid hemisphere has radius 4 cm. Find its total surface area and its volume (1 d.p.).</div>
+                        <div class="steps">
+                            <div class="stepl step"><span class="n">Curved</span><div>half a sphere: $\frac12 \times 4\pi r^2 = 2\pi(4)^2 = 32\pi$</div></div>
+                            <div class="stepl step"><span class="n">Flat</span><div>the circular base: $\pi r^2 = 16\pi$</div></div>
+                            <div class="stepl step"><span class="n">Total</span><div>$32\pi + 16\pi = 48\pi \approx $ <span class="final">150.8 cm²</span></div></div>
+                            <div class="stepl step"><span class="n">Volume</span><div>$\frac12 \times \frac43\pi(4)^3 = \frac{128}{3}\pi \approx $ <span class="final">134.0 cm³</span></div></div>
+                        </div>
+                        <div class="warn step">⚠️ Don't forget the flat circle on a <strong>solid</strong> hemisphere.</div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Teacher Working</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="7">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 7 · <span class="p-rev tag">Review</span> 1D, 2D or 3D? Which Formula?</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="content-box"><p>🗣️ Name the measurement, the formula and the unit — <strong>don't calculate</strong>. Cold call!</p></div>
+                        <table class="tbl"><tr><td style="width: 45%;">1. Fence around a field</td><td class="step answer">Perimeter — m</td></tr><tr><td style="width: 45%;">2. Paint for a wall with a door</td><td class="step answer">Composite area (subtract) — m²</td></tr><tr><td style="width: 45%;">3. Rattan around a round tray</td><td class="step answer">Circumference $2\pi r$ — cm</td></tr><tr><td style="width: 45%;">4. Paper to wrap a tin</td><td class="step answer">Surface area $2\pi r^2 + 2\pi rh$ — cm²</td></tr><tr><td style="width: 45%;">5. Water in an ice-cream cone</td><td class="step answer">Volume $\frac13\pi r^2h$ — cm³</td></tr><tr><td style="width: 45%;">6. Leather on a football</td><td class="step answer">Sphere surface $4\pi r^2$ — cm²</td></tr></table>
+                    </div>
+                    <div class="col-write"><div class="write-label">Votes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide" data-meeting="7" data-timer="45">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 7 · <span class="p-rev tag">Review</span> Chapter 7 Evaluation</h2>
+                <div class="two-column">
+                    <div class="col" style="flex: 1.25;">
+                        <div class="rule green">
+                            <h3><span class="badge bg-exit">Chapter 7 Test</span> 45 minutes</h3>
+                            <ul class="checklist"><li>Composite areas, circles, surface areas from nets, volumes and working backwards.</li><li>Visual aids away — formulas from <strong>your own memory</strong>.</li><li>Show your working and write the units (cm, cm², cm³) in every answer.</li><li><span style="color: #c0392b; font-weight: bold;">Self-Regulated:</span> about 1 minute per mark; leave 5 minutes to check.</li></ul>
+                        </div>
+                        <div class="slide-timer" data-min="45">45:00</div>
+                        <div class="content-box mini"><p>🔚 <strong>Reflection (10 min):</strong> which formula was hardest to remember — and which example on this board helped you most?</p></div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Reflection</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div style="display: flex; gap: 10px; align-items: center; pointer-events: auto;">
+            <button class="nav-btn reveal-btn" id="revealBtn" onclick="revealNext()">▼ Reveal step</button>
+            <div class="progress-indicator" id="progress">Slide 1</div>
+        </div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const revealBtn = document.getElementById('revealBtn');
+        const hiddenSteps = s => [...s.querySelectorAll('.step:not(.shown)')];
+        const allSteps = s => [...s.querySelectorAll('.step')];
+
+        function updateNav() {
+            const s = slides[currentSlide], tot = allSteps(s).length, left = hiddenSteps(s).length;
+            const m = +s.dataset.meeting;
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}` + (m ? ` · Meeting ${m}` : '') + (tot ? ` · step ${tot - left}/${tot}` : '');
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+            revealBtn.style.display = left ? 'inline-block' : 'none';
+            slides.forEach((slide, index) => slide.classList.toggle('active', index === currentSlide));
+            document.getElementById('jump').value = String(m);
+            if (!timerRunning && s.dataset.timer) { remaining = +s.dataset.timer * 60; showTime(); }
+        }
+        function changeSlide(direction) {
+            currentSlide = Math.max(0, Math.min(slides.length - 1, currentSlide + direction));
+            updateNav();
+        }
+        function revealNext() { const h = hiddenSteps(slides[currentSlide]); if (h.length) { h[0].classList.add('shown'); updateNav(); return true; } return false; }
+        function hideLast() { const s = allSteps(slides[currentSlide]).filter(x => x.classList.contains('shown')); if (s.length) { s[s.length - 1].classList.remove('shown'); updateNav(); } }
+        function jumpMeeting(m) { const i = [...slides].findIndex(s => s.dataset.meeting === String(m)); if (i >= 0) { currentSlide = i; updateNav(); } }
+
+        // PowerPoint-style keys (works with presentation clickers): reveal the next step first, then move on
+        document.addEventListener('keydown', (e) => {
+            if (e.target.tagName === 'SELECT') return;
+            if ([' ', 'ArrowRight', 'PageDown', 'Enter'].includes(e.key)) { e.preventDefault(); if (!revealNext()) changeSlide(1); }
+            else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); changeSlide(-1); }
+            else if (e.key === 'ArrowDown') { e.preventDefault(); revealNext(); }
+            else if (e.key === 'ArrowUp') { e.preventDefault(); hideLast(); }
+        });
+
+        // ---------- Countdown timer ("You Do" slides set it automatically) ----------
+        let remaining = 0, timerRunning = false, timerId = null;
+        const fmt = s => String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        function showTime() {
+            const t = remaining > 0 || timerRunning || slides[currentSlide].dataset.timer ? fmt(remaining) : '--:--';
+            document.getElementById('tmr').textContent = t;
+            document.querySelectorAll('.slide-timer').forEach(el => { el.textContent = fmt(slides[currentSlide].contains(el) ? remaining : +el.dataset.min * 60); el.classList.toggle('low', slides[currentSlide].contains(el) && remaining <= 60); });
+        }
+        function timerStart() { if (timerRunning) return; if (remaining <= 0) remaining = (+slides[currentSlide].dataset.timer || 5) * 60; timerRunning = true; timerId = setInterval(() => { remaining = Math.max(0, remaining - 1); showTime(); if (!remaining) { timerPause(); document.getElementById('tmr').textContent = "⏰ 00:00"; } }, 1000); showTime(); }
+        function timerPause() { timerRunning = false; clearInterval(timerId); }
+        function timerReset() { timerPause(); remaining = (+slides[currentSlide].dataset.timer || 0) * 60; showTime(); }
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

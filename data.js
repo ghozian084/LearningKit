@@ -164,7 +164,10 @@ const LEARNING_KIT_DATA = {
           title: "Perimeter, Area and Volume",
           sections: {
             lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
-            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1" }] },
+            bd: { label: "Board", files: [
+              { index: 1, file: "bd-01.html", title: "Board 1 (Discovery Learning)" },
+              { index: 2, file: "bd-02.html", title: "Board 2 (Direct Teaching)" },
+            ] },
             im: {
               label: "Interactive Media",
               files: [

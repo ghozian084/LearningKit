@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 4 - Two Spinners and the Area Model</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 4 · Meeting 4: Two Friends, Two Spinners</h1><p>Grade 9 · Topic 8 · Phase 3–4 · one sheet per student · you need a paper clip and a pencil · <em>digital twin: Interactive Media 4</em></p></div>
+        <div class="teacher-note">Noa passes with probability $\frac34$ and Sunja with probability $\frac56$. Hold a paper clip at the centre with a pencil point and flick it. Spin <strong>both</strong> spinners 24 times; write P or F for each and ✓ when <strong>both</strong> pass.</div>
+        <div style="display: flex; justify-content: space-around; align-items: center;">
+            <div style="text-align: center;"><svg viewBox="0 0 200 200" style="width: 62mm; height: 62mm;"><path d="M100,100 L100.0,10.0 A90,90 0 0 1 190.0,100.0 Z" fill="#c6f6d5" stroke="#2d3748" stroke-width="2"/><text x="141.0" y="65.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L190.0,100.0 A90,90 0 0 1 100.0,190.0 Z" fill="#c6f6d5" stroke="#2d3748" stroke-width="2"/><text x="141.0" y="147.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L100.0,190.0 A90,90 0 0 1 10.0,100.0 Z" fill="#c6f6d5" stroke="#2d3748" stroke-width="2"/><text x="59.0" y="147.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L10.0,100.0 A90,90 0 0 1 100.0,10.0 Z" fill="#fed7d7" stroke="#2d3748" stroke-width="2"/><text x="59.0" y="65.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">FAIL</text><circle cx="100" cy="100" r="5" fill="#2d3748"/></svg><br><strong style="color: #276749;">Noa: $P(\text{pass}) = \frac34$</strong></div>
+            <div style="text-align: center;"><svg viewBox="0 0 200 200" style="width: 62mm; height: 62mm;"><path d="M100,100 L100.0,10.0 A90,90 0 0 1 177.9,55.0 Z" fill="#bee3f8" stroke="#2d3748" stroke-width="2"/><text x="129.0" y="55.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L177.9,55.0 A90,90 0 0 1 177.9,145.0 Z" fill="#bee3f8" stroke="#2d3748" stroke-width="2"/><text x="158.0" y="106.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L177.9,145.0 A90,90 0 0 1 100.0,190.0 Z" fill="#bee3f8" stroke="#2d3748" stroke-width="2"/><text x="129.0" y="156.2" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L100.0,190.0 A90,90 0 0 1 22.1,145.0 Z" fill="#bee3f8" stroke="#2d3748" stroke-width="2"/><text x="71.0" y="156.2" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L22.1,145.0 A90,90 0 0 1 22.1,55.0 Z" fill="#bee3f8" stroke="#2d3748" stroke-width="2"/><text x="42.0" y="106.0" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">PASS</text><path d="M100,100 L22.1,55.0 A90,90 0 0 1 100.0,10.0 Z" fill="#fed7d7" stroke="#2d3748" stroke-width="2"/><text x="71.0" y="55.8" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a202c">FAIL</text><circle cx="100" cy="100" r="5" fill="#2d3748"/></svg><br><strong style="color: #2b6cb0;">Sunja: $P(\text{pass}) = \frac56$</strong></div>
+        </div>
+        <table class="tbl grow" style="font-size: 9pt;"><tr><th>Spin</th><th>Noa</th><th>Sunja</th><th>Both? ✓</th><th>Spin</th><th>Noa</th><th>Sunja</th><th>Both? ✓</th></tr><tr><td>1</td><td></td><td></td><td></td><td>13</td><td></td><td></td><td></td></tr><tr><td>2</td><td></td><td></td><td></td><td>14</td><td></td><td></td><td></td></tr><tr><td>3</td><td></td><td></td><td></td><td>15</td><td></td><td></td><td></td></tr><tr><td>4</td><td></td><td></td><td></td><td>16</td><td></td><td></td><td></td></tr><tr><td>5</td><td></td><td></td><td></td><td>17</td><td></td><td></td><td></td></tr><tr><td>6</td><td></td><td></td><td></td><td>18</td><td></td><td></td><td></td></tr><tr><td>7</td><td></td><td></td><td></td><td>19</td><td></td><td></td><td></td></tr><tr><td>8</td><td></td><td></td><td></td><td>20</td><td></td><td></td><td></td></tr><tr><td>9</td><td></td><td></td><td></td><td>21</td><td></td><td></td><td></td></tr><tr><td>10</td><td></td><td></td><td></td><td>22</td><td></td><td></td><td></td></tr><tr><td>11</td><td></td><td></td><td></td><td>23</td><td></td><td></td><td></td></tr><tr><td>12</td><td></td><td></td><td></td><td>24</td><td></td><td></td><td></td></tr></table>
+        <div class="box guide">
+            <p>Both pass: <span class="blank"></span> times out of 24 → relative frequency <span class="blank"></span> &nbsp;&nbsp; Neither passes: <span class="blank"></span> times &nbsp;&nbsp; Exactly one: <span class="blank"></span> times</p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 4 · Meeting 4 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 4 · Meeting 4: The Area Model — Why AND Means Multiply</h1><p>Phase 4 · shade, count, generalise · <em>digital twin: Interactive Media 4</em></p></div>
+        <div class="row" style="align-items: center;">
+            <div style="text-align: center;"><svg viewBox="0 0 420 320" style="width: 105mm; height: 80mm;"><rect x="90" y="40" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="40" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="40" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="40" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="90" y="84" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="84" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="84" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="84" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="90" y="128" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="128" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="128" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="128" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="90" y="172" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="172" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="172" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="172" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="90" y="216" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="216" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="216" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="216" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="90" y="260" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="170" y="260" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="250" y="260" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><rect x="330" y="260" width="80" height="44" fill="#fff" stroke="#2d3748" stroke-width="1.5"/><text x="130" y="30" font-size="18" text-anchor="middle" font-weight="bold" fill="#276749">P</text><text x="210" y="30" font-size="18" text-anchor="middle" font-weight="bold" fill="#276749">P</text><text x="290" y="30" font-size="18" text-anchor="middle" font-weight="bold" fill="#276749">P</text><text x="370" y="30" font-size="18" text-anchor="middle" font-weight="bold" fill="#c53030">F</text><text x="70" y="68" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0">P</text><text x="70" y="112" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0">P</text><text x="70" y="156" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0">P</text><text x="70" y="200" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0">P</text><text x="70" y="244" font-size="18" text-anchor="middle" font-weight="bold" fill="#2b6cb0">P</text><text x="70" y="288" font-size="18" text-anchor="middle" font-weight="bold" fill="#c53030">F</text><text x="250" y="12" font-size="14" text-anchor="middle" fill="#276749" font-weight="bold">Noa (4 equal parts)</text><text x="22" y="170" font-size="14" text-anchor="middle" fill="#2b6cb0" font-weight="bold" transform="rotate(-90 22 170)">Sunja (6 equal parts)</text></svg></div>
+            <div class="box guide" style="display: flex; flex-direction: column; gap: 2mm;">
+                <span class="box-title">🖍️ Shade</span>
+                <p>🟩 Colour green every cell where <strong>both</strong> pass.</p>
+                <p>🟥 Colour red the cell where <strong>neither</strong> passes.</p>
+                <p>Total cells: <span class="blank"></span></p>
+                <p>$P(\text{both}) = \frac{\phantom{00}}{24} =$ <span class="blank"></span></p>
+                <p>$P(\text{neither}) = \frac{\phantom{00}}{24}$</p>
+            </div>
+        </div>
+        <div class="box action">
+            <span class="box-title">🪙 Check with two coins</span>
+            <p>Outcomes: <span class="blank" style="min-width: 60mm;"></span> &nbsp; $P(H \text{ and } H) =$ <span class="blank"></span> &nbsp; $\frac12 \times \frac12 =$ <span class="blank"></span></p>
+        </div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 Generalise</span>
+            <p>Shaded fraction for "both pass" $= \frac{3 \times 5}{4 \times 6} = \frac34 \times$ <span class="blank"></span> $=$ <span class="blank"></span></p>
+            <p>For <strong>independent</strong> events: $P(A \text{ and } B) =$ <span class="blank" style="min-width: 40mm;"></span></p>
+            <p>My 24 spins gave <span class="blank"></span> for "both pass". How close is it to $\frac58 = 0.625$? Why not exactly? <span class="blank" style="min-width: 50mm;"></span></p>
+            <p>Why can't we add $\frac34 + \frac56$? <span class="blank" style="min-width: 100mm;"></span></p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 4 · Meeting 4 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

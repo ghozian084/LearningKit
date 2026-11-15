@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 5 - Card Sort and Venn Mat</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 5 · Meeting 5: Can They Happen Together? — Card Sort</h1><p>Grade 9 · Topic 8 · Phase 3–4 · one sheet per student · <em>digital twin: Interactive Media 5</em></p></div>
+        <div class="teacher-note">✂️ Cut out the 16 cards. Sort them into two piles: <strong>CANNOT happen together</strong> (mutually exclusive) and <strong>CAN happen together</strong>. Then record two of each on Worksheet 5. The order of the cards is mixed — think about each one!</div>
+        <div class="tiles grow" style="grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(4, 1fr); gap: 3mm;"><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">⚽ Futsal Club and Robotics Club, both on Tuesday at 3:00 PM</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">📱 Owning a smartphone and wearing glasses</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🎲 Rolling a 1 and rolling a 6 on one roll</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🎲 Rolling an even number and rolling less than 4</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🧋 Ordering iced tea and hot tea as your one drink</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🃏 One card is a king and is a heart</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">📄 Getting an A and getting a C for the same subject on one report</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🎂 Being born in March and liking K-pop</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">✅ Passing and failing the same test</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🎲 Rolling a prime number and rolling an odd number</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🚦 Turning left and turning right at the same corner</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🎸 Playing futsal and playing the guitar</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🃏 One card is a heart and is a club</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🔤 A letter is a vowel and is in the first half of the alphabet</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🏆 Winning and losing the same match</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10pt;">🏫 Being in Grade 9 and being in the school choir</span></div></div>
+        <div class="row" style="height: 40mm;">
+            <div class="box action" style="text-align: center;"><strong style="font-size: 12pt; color: #c53030;">🚫 CANNOT happen together</strong><br><span style="font-size: 9pt;">(mutually exclusive) — put cards here</span></div>
+            <div class="box guide" style="text-align: center;"><strong style="font-size: 12pt; color: #276749;">🤝 CAN happen together</strong><br><span style="font-size: 9pt;">(not mutually exclusive) — put cards here</span></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 5 · Meeting 5 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 5 · Meeting 5: Venn Mat &amp; the "Exactly One" Grid</h1><p>Phase 4 · test the OR rule, then combine AND and OR · <em>digital twin: Interactive Media 5</em></p></div>
+        <div class="row" style="align-items: center;">
+            <div style="text-align: center;"><svg viewBox="0 0 300 170" style="width: 88mm; height: 49.9mm;"><rect x="2" y="2" width="296" height="166" fill="#fff" stroke="#4a5568" stroke-width="1.5"/><circle cx="115" cy="88" r="68" fill="rgba(144,205,244,0.3)" stroke="#2b6cb0" stroke-width="2.5"/><circle cx="190" cy="88" r="68" fill="rgba(251,182,206,0.3)" stroke="#d53f8c" stroke-width="2.5"/><text x="60" y="20" font-size="13" font-weight="bold" fill="#2b6cb0">A: ________</text><text x="185" y="20" font-size="13" font-weight="bold" fill="#d53f8c">B: ________</text><text x="285" y="160" font-size="12" fill="#718096">ξ = {1,…,6}</text></svg></div>
+            <div class="box guide"><p>Write the numbers 1–6 of a die in the right regions for each pair (use a pencil and rub out).</p><p>If the overlap is <strong>empty</strong>, $A$ and $B$ are <span class="blank" style="min-width: 32mm;"></span>.</p></div>
+        </div>
+        <table class="tbl"><tr><th class="l">A</th><th class="l">B</th><th>$P(A) + P(B)$</th><th>$P(A \text{ or } B)$ (count!)</th><th>Same? Mutually exclusive?</th></tr>
+            <tr><td class="l">even</td><td class="l">less than 4</td><td></td><td></td><td></td></tr>
+            <tr><td class="l">a 1</td><td class="l">a 6</td><td></td><td></td><td></td></tr>
+            <tr><td class="l">prime</td><td class="l">odd</td><td></td><td></td><td></td></tr>
+            <tr><td class="l">greater than 4</td><td class="l">less than 3</td><td></td><td></td><td></td></tr></table>
+        <div class="row grow" style="align-items: center;">
+            <div style="text-align: center;"><svg viewBox="0 0 270 260" style="width: 66mm; height: 63.6mm;"><rect x="40" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="30" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="52" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="74" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="96" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="118" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="140" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="162" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="184" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="206" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="40" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="62" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="84" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="106" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="128" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="150" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="172" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="194" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="216" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><rect x="238" y="228" width="22" height="22" fill="#fff" stroke="#718096"/><text x="150" y="18" font-size="11" text-anchor="middle" font-weight="bold" fill="#2b6cb0">Simone: 1 column scores (0.1)</text><text x="22" y="140" font-size="11" text-anchor="middle" font-weight="bold" fill="#805ad5" transform="rotate(-90 22 140)">Rami: 2 rows score (0.2)</text></svg></div>
+            <div class="box action" style="display: flex; flex-direction: column; gap: 2mm;">
+                <span class="box-title">🏀 Simone (0.1) and Rami (0.2)</span>
+                <p>Shade 🟩 Simone scores, Rami misses (1 × 8 cells).</p>
+                <p>Shade 🟦 Simone misses, Rami scores (9 × 2 cells).</p>
+                <p>$P(\text{exactly one scores}) = \frac{\phantom{00} + \phantom{00}}{100} =$ <span class="blank"></span></p>
+                <p>$P(\text{neither}) =$ <span class="blank"></span> &nbsp; $P(\text{at least one}) = 1 -$ <span class="blank"></span> $=$ <span class="blank"></span></p>
+            </div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 5 · Meeting 5 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Board 1 - Introduction to Probability</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --accent: #e2e8f0;
+            --text-main: #2d3748;
+            --bg-color: #cbd5e0;
+            --badge-concept: #3182ce;
+            --badge-activity: #38a169;
+            --badge-question: #dd6b20;
+            --badge-exit: #805ad5;
+            --badge-hook: #d69e2e;
+        }
+
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            overflow: hidden; color: var(--text-main);
+        }
+
+        /* Teacher Toolbar */
+        .toolbar {
+            position: absolute; top: 0; left: 0; width: 100%; height: 60px;
+            background-color: #2d3748; display: flex; align-items: center;
+            padding: 0 15px; box-sizing: border-box; z-index: 200; color: white; gap: 10px;
+        }
+        .tool-btn {
+            background-color: #4a5568; color: white; border: 2px solid transparent;
+            padding: 8px 12px; border-radius: 5px; cursor: pointer; font-weight: bold; transition: 0.2s;
+        }
+        .tool-btn:hover { background-color: #718096; }
+        .tool-btn.active { border-color: #63b3ed; background-color: #2b6cb0; }
+        .color-picker { width: 30px; height: 30px; border: none; cursor: pointer; padding: 0; border-radius: 4px;}
+        .clear-btn { background-color: #e53e3e; margin-left: auto; }
+        .clear-btn:hover { background-color: #c53030; }
+
+        /* Slide Container */
+        #presentation-container {
+            width: 100%; height: calc(100% - 60px); margin-top: 60px;
+            display: flex; justify-content: center; align-items: center; position: relative;
+        }
+        .slide {
+            position: absolute; width: 92%; height: 86%; top: 2%; background: #fff;
+            border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            padding: 25px 40px; box-sizing: border-box;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s ease-in-out;
+            display: flex; flex-direction: column; overflow: hidden;
+        }
+        .slide.active { opacity: 1; visibility: visible; z-index: 10; }
+
+        /* Drawing Canvas */
+        .drawing-board {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: crosshair; touch-action: none; border-radius: 12px;
+        }
+
+        /* Content Layout */
+        .content-layer { position: relative; z-index: 10; width: 100%; height: 100%; display: flex; flex-direction: column; pointer-events: none;}
+        .header-title { color: var(--primary); font-size: 1.8em; border-bottom: 3px solid var(--accent); padding-bottom: 8px; margin-top: 0; margin-bottom: 5px;}
+        .two-column { display: flex; gap: 25px; flex: 1; min-height: 0; margin-top: 10px; }
+        .col { flex: 1; display: flex; flex-direction: column; gap: 12px; }
+        .col-write {
+            flex: 1.1; background-color: #fafafa; border: 2px dashed #a0aec0; border-radius: 8px; position: relative;
+            background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        .write-label { position: absolute; top: 10px; right: 10px; color: #718096; font-weight: bold; font-style: italic; font-size: 1.1em;}
+
+        /* Typography & Badges */
+        h3 { font-size: 1.3em; margin: 3px 0; display: flex; align-items: center; gap: 10px; color: var(--primary);}
+        p, li { font-size: 1.15em; line-height: 1.45; margin-top: 4px; margin-bottom: 4px;}
+        ul, ol { margin-top: 4px; padding-left: 25px;}
+        .badge { color: white; padding: 4px 10px; border-radius: 4px; font-size: 0.65em; text-transform: uppercase; letter-spacing: 1px; }
+        .bg-concept { background-color: var(--badge-concept); }
+        .bg-activity { background-color: var(--badge-activity); }
+        .bg-question { background-color: var(--badge-question); }
+        .bg-exit { background-color: var(--badge-exit); }
+        .bg-hook { background-color: var(--badge-hook); }
+        .content-box { background-color: #f7fafc; border: 1px solid #e2e8f0; padding: 12px 15px; border-radius: 8px; }
+        .highlight { background: #fefcbf; padding: 0 4px; border-radius: 3px; font-weight: bold; }
+
+        /* Recipe Card */
+        .recipe-card { background: #fffaf0; border: 2px solid #dd6b20; border-radius: 10px; padding: 12px 18px; }
+        .recipe-card table { width: 100%; border-collapse: collapse; font-size: 1.1em; }
+        .recipe-card td { padding: 5px 8px; border-bottom: 1px dotted #f6ad55; }
+
+        /* Fraction circles (CSS conic) */
+        .circle-row { display: flex; gap: 25px; align-items: center; justify-content: center; margin: 8px 0; }
+        .frac-circle { width: 90px; height: 90px; border-radius: 50%; border: 3px solid #2d3748; }
+        .circle-caption { text-align: center; font-weight: bold; margin-top: 4px; }
+
+        /* Multiplier table */
+        .mult-table { border-collapse: collapse; width: 100%; font-size: 1.1em; }
+        .mult-table th, .mult-table td { border: 1px solid #cbd5e0; padding: 6px 10px; text-align: center; }
+        .mult-table th { background: #ebf8ff; color: var(--primary); }
+
+        /* Frog Jumps */
+        .jump-line { font-family: 'Courier New', monospace; font-size: 1.6em; letter-spacing: 6px; text-align: center; margin: 6px 0; }
+        .jump-line .a-digit { background: #fbd38d; border-radius: 4px; padding: 0 3px; }
+
+        /* Group mini cards */
+        .group-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .group-card { border-left: 6px solid; background: #f7fafc; padding: 8px 12px; border-radius: 6px; font-size: 0.95em; }
+        .group-card strong { display: block; color: var(--primary); }
+
+        /* Navigation */
+        .nav-panel {
+            position: absolute; bottom: 12px; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 5%; box-sizing: border-box; z-index: 100; pointer-events: none;
+        }
+        .nav-btn {
+            background-color: var(--primary); color: #fff; border: none; padding: 8px 20px;
+            font-size: 1.1em; border-radius: 8px; cursor: pointer; pointer-events: auto;
+        }
+        .nav-btn:hover { background-color: var(--secondary); }
+        .nav-btn:disabled { background-color: #a0aec0; cursor: not-allowed; }
+        .progress-indicator { font-size: 1.1em; font-weight: bold; color: #2d3748; align-self: center; pointer-events: auto;}
+
+        /* Title Slide */
+        .title-slide .content-layer { justify-content: center; align-items: center; text-align: center; }
+        .title-slide h1 { font-size: 3.2em; color: var(--primary); margin-bottom: 10px; }
+        .title-slide h2 { font-size: 1.8em; color: var(--text-main); border: none; margin: 5px 0; }
+
+        /* 5E phase colours */
+        .b-engage { background: #d69e2e; } .b-explore { background: #38a169; } .b-explain { background: #3182ce; }
+        .b-elaborate { background: #805ad5; } .b-evaluate { background: #e53e3e; }
+        .tag { color: white; padding: 2px 12px; border-radius: 6px; font-size: 0.75em; vertical-align: middle; }
+        .five-e { display: flex; gap: 6px; margin: 10px 0; }
+        .five-e span { color: white; padding: 6px 14px; border-radius: 6px; font-weight: bold; font-size: 1.1em; }
+    </style>
+</head>
+<body>
+
+    <!-- Teacher Toolbar -->
+    <div class="toolbar">
+        <span style="font-weight: bold; font-size: 1.2em; margin-right: 20px;">Teacher Tools:</span>
+        <button class="tool-btn active" id="penBtn" onclick="setMode('pen')">✏️ Pen</button>
+        <button class="tool-btn" id="eraserBtn" onclick="setMode('eraser')">🧽 Eraser</button>
+        <input type="color" id="colorPicker" class="color-picker" value="#000000" onchange="setColor(this.value)" title="Pen colour">
+        <button class="tool-btn clear-btn" onclick="clearCanvas()">🗑️ Clear Slide</button>
+    </div>
+
+    <div id="presentation-container">
+
+        <div class="slide title-slide active">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h1>Introduction to Probability</h1>
+                <h2>Grade 9 Mathematics — Topic 8</h2>
+                <div class="five-e"><span class="b-engage">Stimulation</span><span class="b-engage">Problem</span><span class="b-explore">Data</span><span class="b-explore">Processing</span><span class="b-explain">Verification</span><span class="b-evaluate">Generalization</span></div>
+                <p style="font-size: 1.3em; color: #276749; font-weight: bold;">🎲 Discovery Learning + RME — flip it, roll it, spin it, then prove it!</p>
+                <p><em>Every Hands-on Activity has an Interactive Media twin — use it when there is no time to print.</em></p>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-engage tag">Stimulation</span> Gacha &amp; Higher or Lower</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🎁</h3>
+                            <p>A Rare Mystery Box has a $\frac14$ (25%) drop rate for a legendary skin.</p><p>If you open <strong>4</strong> boxes, are you <strong>guaranteed</strong> 1 legendary skin?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span> 🔢</h3>
+                            <p>Higher or Lower with <code>ran#</code> (0 to 1): when should you guess "higher"?</p><p>Key words: <em>trial · outcome · event · sample space</em></p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Impossible ⟷ Certain</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explore tag">Data</span> The Paper Toss Trial Lab</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 1</span> 🗑️ (or Interactive Media 1)</h3>
+                            <ul><li>25 trials each: paper ball into the bin, or bottle cap face-up.</li><li>Pool the class data: 20 × 25 = 500 trials.</li></ul>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span> </h3>
+                            <p style="font-size: 1.2em;">Relative frequency $= \dfrac{\text{number of successes}}{\text{number of trials}}$</p><p>Worked Example 1: 15 hits in 125 throws → $\frac{15}{125} = 0.12$</p><p>More trials → a more <strong>reliable</strong> estimate.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Class Data</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 1 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Expected occurrences</span> </h3>
+                            <p>Expected $= n \times P(A)$. Win rate 18%: 80 plays → $14.4 \approx 14$ wins; 200 plays → $36$ wins.</p><p>Worksheet 1 + Exercise 8.1 Q1–Q3.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span> </h3>
+                            <p>Why is 0.12 from 125 throws more reliable than 0.2 from 5 throws?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-engage tag">Stimulation</span> Socks in the Dark</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🧦</h3>
+                            <p>Late for school! 20 socks: 8 red, 10 blue, 2 green. $P(\text{red})$?</p><p>🏅 9 teams draw a tile from <strong>H O L L Y W O O D</strong>: $P(Y)$, $P(O)$, $P(H \text{ or } L)$, $P(Z)$?</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span> </h3>
+                            <p>If every outcome is equally likely (unbiased), do we still need 100 experiments?</p><p style="font-size: 1.15em;">Theoretical $P(A) = \dfrac{\text{favourable outcomes}}{\text{possible outcomes}}$</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">P(Y) P(O) P(Z)</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explore tag">Data</span> Complements &amp; Myth-Busting</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span> </h3>
+                            <p>Jas: $P(\text{pass}) = \frac23 \Rightarrow P(\text{fail}) = 1 - \frac23 = \frac13$</p><p style="font-size: 1.2em;">$P(A\') = 1 - P(A)$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 2</span> 🕵️ (or Interactive Media 2)</h3>
+                            <ul><li>"Guessing 10 True/False questions guarantees 5 right."</li><li>"Win, lose or draw → $\frac13$ each."</li><li>"Four 6s in 10 rolls proves the die is rigged."</li></ul><p>BUSTED or TRUE? Give a probability as evidence!</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Debate Notes</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 2 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 2</span> </h3>
+                            <p>Film-genre bar chart · flowers · marbles · 52-card pack (Exercise 8.1 Q4–Q9).</p><p class="highlight">Tip: 4 suits × 13 cards = 52</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span> </h3>
+                            <p>A: &gt; 2 on a die · B: red from 12 red, 12 white, 6 blue · C: a 7 on a die · D: 14 heads in 20 tosses — probability, word, theoretical or experimental? 😀 🙂 😐 😕 😟</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-engage tag">Stimulation</span> The Bazaar Dice Booth</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 🧋</h3>
+                            <p>Roll a red die and a blue die and ADD. Sum <strong>7</strong> wins a free boba; a sum <strong>less than 5</strong> loses.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span> </h3>
+                            <p>11 possible totals (2 to 12). Is $P(7) = \frac{1}{11}$, the same as $P(2)$?</p><p>How do we list ALL the outcomes fairly?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">My Prediction</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explore tag">Data</span> The 6 × 6 Sample Space</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 3</span> 🎲 (or Interactive Media 3)</h3>
+                            <p>25 rolls each → tally the sums → pool the class.</p><p>7 keeps winning! Build the $6 \times 6$ grid: 36 equally likely outcomes.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span> </h3>
+                            <p>$P(7) = \frac{6}{36} = \frac16$ · $P(&lt;5) = \frac{6}{36} = \frac16$</p><p>$P(\ge 8) = \frac{15}{36} = \frac{5}{12}$ · $P(&lt;8) = 1 - \frac{5}{12} = \frac{7}{12}$</p><p>🕵️ Detective: Set A (4-sided + 8-sided) or Set B (two 6-sided)?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Sample Space</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 3 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 3</span> </h3>
+                            <p>Coin twice · product of two dice · spinner + tetrahedral die (greater number) · HCF (Exercise 8.2 Q1–Q4).</p><p><em>Scaffold: pre-drawn empty grids.</em></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Peer Check</span> </h3>
+                            <p>Swap with your neighbour: Are all outcomes shown? Is it easy to read?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-engage tag">Stimulation</span> Two Friends, Two Exams</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> 📝</h3>
+                            <p>Noa and Sunja take exams in different rooms. Does Noa\'s score change Sunja\'s? No — <strong>independent</strong> events.</p><p>Also: flip a coin twice; draw a candy and <strong>put it back</strong>.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span> </h3>
+                            <p>$P(\text{Noa passes}) = \frac34$, $P(\text{Sunja passes}) = \frac56$. $P(\text{both})$?</p><p>Why NOT $\frac34 + \frac56$? (It is more than 1!)</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Both pass?</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explore tag">Data</span> Spin, Then Shade</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 4</span> 🎡 (or Interactive Media 4)</h3>
+                            <p>Spin both spinners 24 times; count "both pass". Shade the $4 \times 6$ area model: 15 of 24 cells.</p><p>Two coins: HH, HT, TH, TT → $P(HH) = \frac14 = \frac12 \times \frac12$</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span> </h3>
+                            <p style="font-size: 1.2em;">Independent: $P(A \text{ and } B) = P(A) \times P(B)$ &nbsp; <strong>AND = ×</strong></p><p>$\frac34 \times \frac56 = \frac58$ &nbsp;·&nbsp; neither: $\frac14 \times \frac16 = \frac{1}{24}$</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Area Model</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 4 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Worksheet 4</span> </h3>
+                            <p>Dice thrown twice · balls with replacement · two competitors (Exercise 8.3 Q1, Q2 i–iii, Q4 a–c).</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Self-Check</span> </h3>
+                            <p>An AND answer must be <strong>smaller</strong> than each single probability and between 0 and 1.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-engage tag">Stimulation</span> Futsal or Robotics?</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Hook</span> ⚽</h3>
+                            <p>Futsal and Robotics both meet Tuesday at 3:00 PM — you can\'t do both: <strong>mutually exclusive</strong>.</p><p>Smartphone AND glasses? Even AND less than 4 on a die? (2 fits both!)</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Problem Statement</span> </h3>
+                            <p>When events CANNOT happen together, how do we find $P(A \text{ or } B)$?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Together or not?</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explore tag">Data</span> Sort, Test, Combine</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 5</span> 🃏 (or Interactive Media 5)</h3>
+                            <p>Sort 16 cards: can / cannot happen together. Test die events on the Venn mat.</p><p style="font-size: 1.15em;">Mutually exclusive: $P(A \text{ or } B) = P(A) + P(B)$ &nbsp; <strong>OR = +</strong></p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Processing</span> </h3>
+                            <p>At least one passes: $1 - \frac{1}{24} = \frac{23}{24}$</p><p>Exactly one: $\frac34 \cdot \frac16 + \frac14 \cdot \frac56 = \frac{3}{24} + \frac{5}{24} = \frac13$</p><p>Simone 0.1, Rami 0.2: exactly one $= 0.08 + 0.18 = 0.26$</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">AND + OR</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 5 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Think – Share</span> </h3>
+                            <p>Write 3 teen examples of mutually exclusive events (iced tea vs hot tea for one drink…).</p><p>Worksheet 5 + Exercise 8.3 (Q2 b iv–vii, Q3, Q4 d–e).</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Exit Ticket</span> </h3>
+                            <p>Why are "even" and "less than 4" on a die NOT mutually exclusive?</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Solve Here</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="b-engage tag">Stimulation</span> Spin-the-Wheel Food Stall</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-hook">Synthesis</span> 🍪🥤</h3>
+                            <p>Square spinner (1–4) + pentagon spinner (1–5): 20 outcomes.</p><p>🍪 A: total 5 → snack · 🥤 B: difference 1 → drink.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-question">Prove it</span> </h3>
+                            <p>$P(A) = \frac{4}{20}$, $P(B) = \frac{7}{20}$, but $P(A \text{ or } B) = \frac{9}{20} \ne \frac{11}{20}$. Why?</p><p>(2, 3) and (3, 2) win BOTH → not mutually exclusive.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Sample Space 4 × 5</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="b-explore tag">Data</span> Review Loop &amp; Chapter Summary</h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Hands-on 6</span> 🔁 (or Interactive Media 6)</h3>
+                            <p>"I have… who has…?" — 20 cards, back to ⭐ START. Beat the class record!</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-concept">Summary</span> </h3>
+                            <p><strong>NOT</strong>: $1 - P(A)$ · <strong>AND</strong> (independent): × · <strong>OR</strong> (mutually exclusive): + · <strong>Sample space</strong>: list everything first!</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Record Time ⏱️</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="slide">
+            <canvas class="drawing-board"></canvas>
+            <div class="content-layer">
+                <h2 class="header-title">Meeting 6 · <span class="b-explain tag">Verification</span> &amp; <span class="b-evaluate tag">Generalization</span></h2>
+                <div class="two-column">
+                    <div class="col">
+                        <div class="content-box">
+                            <h3><span class="badge bg-exit">Chapter 8 Test · 45 min</span> </h3>
+                            <p>Worksheet 6 (password-protected): single events, relative frequency, sample spaces, independent and mutually exclusive events.</p>
+                        </div>
+                        <div class="content-box">
+                            <h3><span class="badge bg-activity">Self-Assessment (p. 245)</span> </h3>
+                            <p>My strengths · Evidence · My goals · My plan to reach the goals.</p>
+                        </div>
+                    </div>
+                    <div class="col-write"><div class="write-label">Reflection</div></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Navigation Panel -->
+    <div class="nav-panel">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">❮ Prev</button>
+        <div class="progress-indicator" id="progress">Slide 1</div>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next ❯</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const progress = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateNav() {
+            progress.innerText = `Slide ${currentSlide + 1} of ${slides.length}`;
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            slides.forEach((slide, index) => {
+                if (index === currentSlide) slide.classList.add('active');
+                else slide.classList.remove('active');
+            });
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateNav();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') changeSlide(1);
+            else if (e.key === 'ArrowLeft') changeSlide(-1);
+        });
+
+        updateNav();
+
+        // --- Canvas Drawing Logic ---
+        let currentMode = 'pen';
+        let strokeColor = '#000000';
+        let strokeWidth = 3;
+
+        function setMode(mode) {
+            currentMode = mode;
+            document.getElementById('penBtn').classList.remove('active');
+            document.getElementById('eraserBtn').classList.remove('active');
+            document.getElementById(mode + 'Btn').classList.add('active');
+        }
+
+        function setColor(color) {
+            strokeColor = color;
+            setMode('pen');
+        }
+
+        function clearCanvas() {
+            const canvas = slides[currentSlide].querySelector('canvas');
+            if (canvas) {
+                const ctx = canvas.getContext('2d');
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        function resizeCanvases() {
+            slides.forEach(slide => {
+                const canvas = slide.querySelector('canvas');
+                if (canvas) {
+                    canvas.width = canvas.offsetWidth;
+                    canvas.height = canvas.offsetHeight;
+                    const ctx = canvas.getContext('2d');
+                    ctx.lineCap = 'round';
+                    ctx.lineJoin = 'round';
+                }
+            });
+        }
+
+        slides.forEach(slide => {
+            const canvas = slide.querySelector('canvas');
+            if (!canvas) return;
+
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+                const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+                return { x: clientX - rect.left, y: clientY - rect.top };
+            }
+
+            function startDraw(e) {
+                isDrawing = true;
+                const pos = getPos(e);
+                ctx.beginPath();
+                ctx.moveTo(pos.x, pos.y);
+            }
+
+            function draw(e) {
+                if (!isDrawing) return;
+                e.preventDefault();
+
+                const pos = getPos(e);
+
+                if (currentMode === 'eraser') {
+                    ctx.globalCompositeOperation = 'destination-out';
+                    ctx.lineWidth = 20;
+                } else {
+                    ctx.globalCompositeOperation = 'source-over';
+                    ctx.strokeStyle = strokeColor;
+                    ctx.lineWidth = strokeWidth;
+                }
+
+                ctx.lineTo(pos.x, pos.y);
+                ctx.stroke();
+            }
+
+            function stopDraw() {
+                isDrawing = false;
+                ctx.closePath();
+            }
+
+            canvas.addEventListener('mousedown', startDraw);
+            canvas.addEventListener('mousemove', draw);
+            canvas.addEventListener('mouseup', stopDraw);
+            canvas.addEventListener('mouseout', stopDraw);
+
+            canvas.addEventListener('touchstart', startDraw, {passive: false});
+            canvas.addEventListener('touchmove', draw, {passive: false});
+            canvas.addEventListener('touchend', stopDraw);
+        });
+
+        window.onload = resizeCanvases;
+        window.onresize = resizeCanvases;
+    </script>
+</body>
+</html>

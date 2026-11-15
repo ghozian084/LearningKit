@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 5 - Mutually Exclusive Events</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.05em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+        .match { color: var(--success); font-weight: bold; } .nomatch { color: var(--danger); font-weight: bold; }
+        .cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+        .mcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; min-height: 64px; display: flex; align-items: center; justify-content: center; font-size: 1.15em; cursor: pointer; user-select: none; padding: 6px; text-align: center; }
+        .mcard:hover { border-color: var(--secondary); }
+        .mcard.sel { border-color: var(--warn); background: #fffaf0; }
+        .mcard.done { cursor: default; opacity: 0.9; }
+        .mcard.shake { animation: shake 0.35s; border-color: var(--danger); }
+        @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
+        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; cursor: grab; user-select: none; font-size: 1.05em; }
+        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
+        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 160px; }
+        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 0.95em; text-align: center; }
+        .bin .slot { display: flex; flex-direction: column; gap: 6px; }
+        .strip { background: #fff; border: 2px solid #805ad5; border-radius: 6px; padding: 8px 12px; cursor: pointer; margin: 5px 0; display: flex; gap: 10px; align-items: center; user-select: none; }
+        .strip .lt { font-weight: bold; color: #805ad5; }
+        .strip.placed { border-color: var(--secondary); background: #ebf8ff; }
+        .strip.ok { border-color: var(--success); background: #f0fff4; } .strip.bad { border-color: var(--danger); background: #fff5f5; }
+        .proof-area { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 10px; min-height: 120px; }
+        .num-in { width: 70px; padding: 6px; border: 2px solid #cbd5e0; border-radius: 4px; font-size: 1em; text-align: center; }
+        .num-in.ok { border-color: var(--success); background: #f0fff4; } .num-in.bad { border-color: var(--danger); background: #fff5f5; }
+        .big-card { background: #fff; border: 3px solid var(--secondary); border-radius: 12px; padding: 25px; text-align: center; max-width: 560px; margin: 10px auto; }
+        .big-card .have { font-size: 2.2em; color: var(--primary); font-weight: bold; margin: 10px 0 18px; }
+        .big-card .who { font-size: 1.5em; border-top: 2px dotted #a0aec0; padding-top: 14px; }
+        .choice { display: block; width: 100%; text-align: left; margin: 6px 0; padding: 10px 14px; border: 2px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 1.1em; cursor: pointer; }
+        .choice.right { border-color: var(--success); background: #f0fff4; } .choice.wrong { border-color: var(--danger); background: #fff5f5; }
+        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
+
+        .track { position: relative; height: 230px; margin: 10px 20px 30px; border-bottom: 4px solid var(--primary); cursor: crosshair; background: linear-gradient(90deg, #fff5f5, #fffff0 50%, #f0fff4); border-radius: 6px 6px 0 0; }
+        .track .tick { position: absolute; bottom: -26px; transform: translateX(-50%); font-weight: bold; color: var(--primary); font-size: 0.9em; text-align: center; }
+        .track .tick::before { content: ''; position: absolute; left: 50%; top: -12px; height: 16px; border-left: 2px solid var(--primary); }
+        .track .pin { position: absolute; transform: translateX(-50%); background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 2px 6px; font-size: 0.8em; max-width: 120px; text-align: center; }
+        .track .pin::after { content: ''; position: absolute; left: 50%; bottom: -8px; border: 5px solid transparent; border-top-color: var(--secondary); transform: translateX(-50%); }
+        .track .pin.ok { border-color: var(--success); background: #f0fff4; } .track .pin.bad { border-color: var(--danger); background: #fff5f5; }
+        .bignum { font-size: 3.2em; font-weight: bold; text-align: center; color: var(--primary); font-family: 'Courier New', monospace; }
+        .mythcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+        .mythcard .row-btn { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+        .tilebtn { width: 46px; height: 46px; font-size: 1.4em; font-weight: bold; border: 2px solid #2d3748; border-radius: 6px; background: #fefcbf; cursor: pointer; margin: 3px; }
+        .tilebtn.sel { background: #f6ad55; }
+        .ssg { border-collapse: collapse; margin: 8px auto; }
+        .ssg td, .ssg th { border: 1px solid #a0aec0; width: 44px; height: 34px; text-align: center; font-weight: bold; }
+        .ssg th { background: #ebf8ff; color: var(--primary); }
+        .ssg td.hit { background: #fbd38d; color: #7b341e; }
+        .ssg td.hitA { background: #bee3f8; } .ssg td.hitB { background: #fed7e2; } .ssg td.hitAB { background: #d6bcfa; }
+        .tally { border-collapse: collapse; margin: 8px auto; }
+        .tally td, .tally th { border: 1px solid #cbd5e0; padding: 5px 10px; text-align: center; }
+        .tally th { background: #ebf8ff; }
+        .dieface { display: inline-block; width: 44px; height: 44px; border: 2px solid #2d3748; border-radius: 8px; font-size: 1.6em; font-weight: bold; line-height: 44px; margin: 0 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🚫 Digital Lab 5: Mutually Exclusive Events — Sort, Venn &amp; Exactly One</h1>
+        <span class="badge">Grade 9 · Topic 8 · Meeting 5 · Digital twin of Hands-on 5</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Card Sort</button><button class="tab-btn" onclick="openTab('s2', this)">2. Venn on a Die</button><button class="tab-btn" onclick="openTab('s3', this)">3. Exactly One / At Least One</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>🃏 Can They Happen Together? — Card Sort</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 5, page 1</strong>.</div>
+                <p>Tap a card, then tap a bin (or drag it). Then press <strong>Check</strong>.</p>
+                <div class="sim-area">
+                    <div id="pool" class="pool"></div>
+                    <div class="bins" style="grid-template-columns: 1fr 1fr;">
+                        <div class="bin" data-d="1"><h3>🚫 CANNOT happen together<br>(mutually exclusive)</h3><div class="slot"></div></div>
+                        <div class="bin" data-d="0"><h3>🤝 CAN happen together<br>(not mutually exclusive)</h3><div class="slot"></div></div>
+                    </div>
+                    <div class="controls-row" style="justify-content: center; margin-top: 10px;"><button class="action-btn" onclick="checkSort()">Check</button><button class="action-btn ghost" onclick="buildSort()">Shuffle</button></div>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>⭕ Venn Diagram on a Die</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 5, page 2 (Venn mat)</strong>.</div>
+                <div class="sim-area">
+                    <div class="controls-row" style="justify-content: center;"><label>A</label><select id="va" onchange="drawVenn()"></select><label>B</label><select id="vb" onchange="drawVenn()"></select></div>
+                    <div style="text-align: center;" id="venn"></div>
+                    <div class="sim-text" id="t2"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>🏀 Exactly One or At Least One?</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 5, page 2 (10 × 10 grid)</strong>.</div>
+                <div class="sim-area">
+                    <div class="controls-row" style="justify-content: center;"><label>P(A) =</label><input type="range" id="pa" min="0" max="10" value="1" oninput="drawGrid10()"><span class="big-value" id="pav"></span><label>P(B) =</label><input type="range" id="pb" min="0" max="10" value="2" oninput="drawGrid10()"><span class="big-value" id="pbv"></span></div>
+                    <div style="text-align: center;" id="g10"></div>
+                    <div class="sim-text" id="t3"></div>
+                </div>
+                <div class="ex-row">Simone 0.1, Rami 0.2: P(exactly one scores) = <input type="text" id="r1" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('r1', 0.26, 0.001, 'fr1', '0.1 × 0.8 + 0.9 × 0.2 = 0.26')">Check</button><div class="feedback" id="fr1"></div></div><div class="ex-row">Noa 3/4, Sunja 5/6: P(at least one passes) = <input type="text" id="r2" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('r2', 0.9583333333333334, 0.0005, 'fr2', '1 − 1/24 = 23/24')">Check</button><div class="feedback" id="fr2"></div></div><div class="ex-row">Noa and Sunja: P(exactly one passes) = <input type="text" id="r3" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('r3', 0.3333333333333333, 0.001, 'fr3', '3/24 + 5/24 = 8/24 = 1/3')">Check</button><div class="feedback" id="fr3"></div></div><div class="ex-row">Dewi 0.7, Arif 0.6: P(exactly one scores) = <input type="text" id="r4" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('r4', 0.46, 0.001, 'fr4', '0.7 × 0.4 + 0.3 × 0.6 = 0.46')">Check</button><div class="feedback" id="fr4"></div></div><div class="ex-row">A spinner: red 0.25, blue 0.4, yellow 0.15, green x. x = <input type="text" id="r5" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('r5', 0.2, 0.001, 'fr5', '1 − 0.8 = 0.2')">Check</button><div class="feedback" id="fr5"></div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        function gcdI(a, b) { return b ? gcdI(b, a % b) : Math.abs(a); }
+        function frac(n, d) { if (n === 0) return '0'; const g = gcdI(n, d); return (d / g === 1) ? String(n / g) : (n / g) + '/' + (d / g); }
+        function parseVal(s) { s = String(s || '').trim().replace(',', '.').replace('%', ''); if (!s) return NaN; if (s.includes('/')) { const [a, b] = s.split('/').map(Number); return a / b; } const v = Number(s); return String(s).includes('%') ? v / 100 : v; }
+        function checkVal(id, expected, tol, fbId, explanation) {
+            const raw = document.getElementById(id).value, fb = document.getElementById(fbId);
+            let v = parseVal(raw); if (raw.trim().endsWith('%')) v = v / 100;
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Type a fraction (e.g. 2/5), a decimal or a percentage.'; return; }
+            const ok = Math.abs(v - expected) <= tol;
+            fb.className = 'feedback ' + (ok ? 'correct' : 'wrong'); fb.innerText = ok ? '✅ Correct! ' + explanation : '❌ Not quite — count the favourable and possible outcomes again.';
+        }
+        function rf(k, n) { return n ? (k / n).toFixed(3) : '–'; }
+
+        const SC = [["⚽ Futsal Club and Robotics Club, both on Tuesday at 3:00 PM", true], ["📱 Owning a smartphone and wearing glasses", false], ["🎲 Rolling a 1 and rolling a 6 on one roll", true], ["🎲 Rolling an even number and rolling less than 4", false], ["🧋 Ordering iced tea and hot tea as your one drink", true], ["🃏 One card is a king and is a heart", false], ["📄 Getting an A and getting a C for the same subject on one report", true], ["🎂 Being born in March and liking K-pop", false], ["✅ Passing and failing the same test", true], ["🎲 Rolling a prime number and rolling an odd number", false], ["🚦 Turning left and turning right at the same corner", true], ["🎸 Playing futsal and playing the guitar", false], ["🃏 One card is a heart and is a club", true], ["🔤 A letter is a vowel and is in the first half of the alphabet", false], ["🏆 Winning and losing the same match", true], ["🏫 Being in Grade 9 and being in the school choir", false]];
+        let selected = null;
+        function buildSort() {
+            pool.innerHTML = ''; document.querySelectorAll('.bin .slot').forEach(s => s.innerHTML = ''); t1.textContent = '';
+            shuffle(SC.map((s, i) => i)).forEach(i => { const el = document.createElement('div'); el.className = 'chip'; el.textContent = SC[i][0]; el.dataset.d = SC[i][1] ? 1 : 0; el.draggable = true;
+                el.addEventListener('dragstart', e => { e.dataTransfer.setData('text', ''); selected = el; });
+                el.addEventListener('click', e => { e.stopPropagation(); document.querySelectorAll('.chip').forEach(x => x.classList.remove('sel')); selected = el; el.classList.add('sel'); }); pool.appendChild(el); });
+        }
+        document.querySelectorAll('.bin').forEach(bin => { const put = () => { if (selected) { bin.querySelector('.slot').appendChild(selected); selected.classList.remove('sel', 'right', 'wrong'); selected = null; } };
+            bin.addEventListener('dragover', e => e.preventDefault()); bin.addEventListener('drop', e => { e.preventDefault(); put(); }); bin.addEventListener('click', put); });
+        function checkSort() { let r = 0, p = 0; document.querySelectorAll('.bin').forEach(bin => bin.querySelectorAll('.chip').forEach(ch => { p++; const ok = ch.dataset.d === bin.dataset.d; ch.classList.toggle('right', ok); ch.classList.toggle('wrong', !ok); if (ok) r++; }));
+            t1.innerHTML = `${r} of 16 correct` + (p < 16 ? ` (${16 - p} still to place)` : '') + (r === 16 ? ' 🎉 Mutually exclusive = they can NEVER happen at the same time.' : ''); }
+        const EVS = { 'even': n => n % 2 === 0, 'odd': n => n % 2 === 1, 'prime': n => [2, 3, 5].includes(n), 'less than 4': n => n < 4, 'greater than 4': n => n > 4, 'greater than 3': n => n > 3, 'less than 3': n => n < 3, 'a 1': n => n === 1, 'a 6': n => n === 6, 'a multiple of 3': n => n % 3 === 0 };
+        function drawVenn() {
+            const A = EVS[va.value], B = EVS[vb.value], nums = [1, 2, 3, 4, 5, 6];
+            const onlyA = nums.filter(n => A(n) && !B(n)), both = nums.filter(n => A(n) && B(n)), onlyB = nums.filter(n => !A(n) && B(n)), out = nums.filter(n => !A(n) && !B(n));
+            const place = (arr, cx, cy) => arr.map((n, k) => `<text x="${cx + (k % 2) * 28 - (arr.length > 1 ? 14 : 0)}" y="${cy + Math.floor(k / 2) * 30 - (arr.length > 2 ? 15 : 0)}" font-size="22" font-weight="bold" text-anchor="middle">${n}</text>`).join('');
+            venn.innerHTML = `<svg viewBox="0 0 420 240" style="width: 100%; max-width: 520px;"><rect x="2" y="2" width="416" height="236" fill="#fff" stroke="#4a5568" stroke-width="2"/><circle cx="160" cy="125" r="90" fill="rgba(144,205,244,0.35)" stroke="#2b6cb0" stroke-width="3"/><circle cx="260" cy="125" r="90" fill="rgba(251,182,206,0.35)" stroke="#d53f8c" stroke-width="3"/><text x="100" y="26" font-size="16" font-weight="bold" fill="#2b6cb0">A: ${va.value}</text><text x="250" y="26" font-size="16" font-weight="bold" fill="#d53f8c">B: ${vb.value}</text>${place(onlyA, 120, 130)}${place(both, 210, 130)}${place(onlyB, 300, 130)}${place(out, 385, 205)}</svg>`;
+            const pA = onlyA.length + both.length, pB = onlyB.length + both.length, pAB = onlyA.length + both.length + onlyB.length, me = both.length === 0;
+            t2.className = 'sim-text ' + (me ? 'good' : 'bad');
+            t2.innerHTML = `P(A) + P(B) = ${frac(pA, 6)} + ${frac(pB, 6)} = ${frac(pA + pB, 6)} &nbsp;·&nbsp; P(A or B) = ${pAB}/6 = <strong>${frac(pAB, 6)}</strong><br>` + (me ? '✅ The overlap is empty: A and B are MUTUALLY EXCLUSIVE, so P(A or B) = P(A) + P(B).' : `⚠️ ${both.join(' and ')} ${both.length > 1 ? 'are' : 'is'} in both: NOT mutually exclusive — adding counts the overlap twice.`);
+        }
+        function drawGrid10() {
+            const a = +pa.value, b = +pb.value; pav.textContent = (a / 10).toFixed(1); pbv.textContent = (b / 10).toFixed(1);
+            let h = '<svg viewBox="0 0 330 330" style="width: 330px;">';
+            for (let i = 0; i < 10; i++) for (let j = 0; j < 10; j++) { const A = j < a, Bv = i < b; h += `<rect x="${20 + j * 30}" y="${20 + i * 30}" width="30" height="30" fill="${A && Bv ? '#d6bcfa' : A ? '#9ae6b4' : Bv ? '#90cdf4' : '#fff'}" stroke="#a0aec0"/>`; }
+            g10.innerHTML = h + '<text x="170" y="14" text-anchor="middle" font-size="12" font-weight="bold" fill="#276749">A scores: ' + a + ' columns</text><text x="10" y="170" font-size="12" font-weight="bold" fill="#2b6cb0" transform="rotate(-90 10 170)" text-anchor="middle">B scores: ' + b + ' rows</text></svg>';
+            const pA = a / 10, pB = b / 10, ex1 = pA * (1 - pB) + (1 - pA) * pB;
+            t3.innerHTML = `🟪 both = ${(pA * pB).toFixed(2)} · 🟩 only A = ${(pA * (1 - pB)).toFixed(2)} · 🟦 only B = ${((1 - pA) * pB).toFixed(2)} · ⬜ neither = ${((1 - pA) * (1 - pB)).toFixed(2)}<br>P(exactly one) = <strong>${ex1.toFixed(2)}</strong> · P(at least one) = 1 − ${((1 - pA) * (1 - pB)).toFixed(2)} = <strong>${(1 - (1 - pA) * (1 - pB)).toFixed(2)}</strong>`;
+        }
+        function redraw() {}
+        window.addEventListener('load', () => { const opts = Object.keys(EVS).map(k => `<option>${k}</option>`).join(''); va.innerHTML = opts; vb.innerHTML = opts; va.value = 'even'; vb.value = 'less than 4'; buildSort(); drawVenn(); drawGrid10(); });
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

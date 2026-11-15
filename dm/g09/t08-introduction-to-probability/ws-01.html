@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 1 - Probability Scale and Trials</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 1: Gacha, Higher or Lower &amp; Trials<small>Grade 9 · Topic 8 · Meeting 1 — Probability scale &amp; relative frequency (8.1) · Discovery Learning</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+
+        <div class="walt"><strong>WALT:</strong> place events on the probability scale, find relative frequency from trials, and estimate expected occurrences.</div>
+        <div class="phase engage"><span>🎮 PHASE 1–2 · Stimulation &amp; Problem Statement · Gacha &amp; Higher or Lower</span><span>25 min</span></div>
+        <div class="box action">
+            <p><span class="qn">1.</span> 🎁 A Rare Mystery Box has a $\frac14$ (25%) drop rate for a legendary skin. If you open 4 boxes, are you <strong>guaranteed</strong> exactly 1 legendary skin? Why or why not?</p>
+            <div class="line"></div><div class="line"></div>
+        </div>
+        <div class="box guide">
+            <p><span class="qn">2.</span> Write each letter at its place on the probability scale.</p>
+            <div style="display: flex; justify-content: center;"><svg viewBox="0 0 640 70" style="width: 165mm; height: 18.0mm;"><line x1="20" y1="30" x2="620" y2="30" stroke="#1a365d" stroke-width="3"/><line x1="20" y1="20" x2="20" y2="40" stroke="#1a365d" stroke-width="2.5"/><text x="20" y="56" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a365d">0</text><text x="20" y="14" font-size="13" text-anchor="middle" fill="#718096">impossible</text><line x1="170.0" y1="20" x2="170.0" y2="40" stroke="#1a365d" stroke-width="2.5"/><text x="170.0" y="56" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a365d">¼ = 0.25</text><text x="170.0" y="14" font-size="13" text-anchor="middle" fill="#718096">unlikely</text><line x1="320.0" y1="20" x2="320.0" y2="40" stroke="#1a365d" stroke-width="2.5"/><text x="320.0" y="56" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a365d">½ = 0.5</text><text x="320.0" y="14" font-size="13" text-anchor="middle" fill="#718096">even chance</text><line x1="470.0" y1="20" x2="470.0" y2="40" stroke="#1a365d" stroke-width="2.5"/><text x="470.0" y="56" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a365d">¾ = 0.75</text><text x="470.0" y="14" font-size="13" text-anchor="middle" fill="#718096">likely</text><line x1="620" y1="20" x2="620" y2="40" stroke="#1a365d" stroke-width="2.5"/><text x="620" y="56" font-size="15" text-anchor="middle" font-weight="bold" fill="#1a365d">1</text><text x="620" y="14" font-size="13" text-anchor="middle" fill="#718096">certain</text><line x1="80.0" y1="25" x2="80.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="140.0" y1="25" x2="140.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="200.0" y1="25" x2="200.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="260.0" y1="25" x2="260.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="380.0" y1="25" x2="380.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="440.0" y1="25" x2="440.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="500.0" y1="25" x2="500.0" y2="35" stroke="#1a365d" stroke-width="1"/><line x1="560.0" y1="25" x2="560.0" y2="35" stroke="#1a365d" stroke-width="1"/></svg></div>
+            <p style="font-size: 9.5pt;"><strong>A</strong> rolling a 7 on a normal die &nbsp; <strong>B</strong> a coin lands heads &nbsp; <strong>C</strong> the sun rises tomorrow &nbsp; <strong>D</strong> legendary skin from one box ($\frac14$) &nbsp; <strong>E</strong> rolling less than 6 on a die &nbsp; <strong>F</strong> your calculator's <code>ran#</code> gives more than 0.9</p>
+        </div>
+        <div class="box action">
+            <p><span class="qn">3.</span> 🔢 <strong>Higher or Lower</strong> (<code>ran#</code> gives a number from 0 to 1). The screen shows the number below. What is the probability that the next number is <strong>higher</strong>? What do you guess?</p>
+            <table class="tbl"><tr><th>Number on screen</th><th>0.27</th><th>0.81</th><th>0.50</th><th>0.06</th></tr><tr><td>$P(\text{next is higher})$</td><td></td><td></td><td></td><td></td></tr><tr><td>My guess (H / L)</td><td></td><td></td><td></td><td></td></tr></table>
+            <p>Strategy: guess "higher" when the number is <span class="blank" style="min-width: 25mm;"></span>.</p>
+        </div>
+        <div class="phase explore"><span>🗑️ PHASE 3–4 · Data Collection &amp; Processing · Trial Lab (Hands-on 1 or Interactive Media 1)</span><span>30 min</span></div>
+        <table class="tbl"><tr><th class="l">Data</th><th>Number of trials</th><th>Number of successes</th><th>Relative frequency $= \frac{\text{successes}}{\text{trials}}$</th></tr>
+            <tr><td class="l">My 25 trials</td><td>25</td><td></td><td></td></tr>
+            <tr><td class="l">Whole class (pooled)</td><td></td><td></td><td></td></tr>
+            <tr><td class="l">Worked Example 1: 15 hits in 125 throws</td><td>125</td><td>15</td><td></td></tr></table>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 Process your data</span>
+            <p>Which estimate is more reliable: mine or the class's? Why? <span class="blank" style="min-width: 95mm;"></span></p>
+            <p>Rule: the <span class="blank" style="min-width: 25mm;"></span> trials you run, the more reliable the relative frequency becomes.</p>
+            <p>Expected number of successes in $n$ trials $= n \times$ <span class="blank" style="min-width: 25mm;"></span></p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 1 · Meeting 1 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="phase explain"><span>✔️ PHASE 5 · Verification · Practice</span><span>fraction, decimal or %</span></div><div class="grow" style="display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 1fr); gap: 3mm; min-height: 0; flex: 1 1 0;"><div class="q"><div><span class="qn">4.</span> A die is thrown 100 times. <table class="tbl" style="font-size: 9pt;"><tr><th>Score</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th></tr><tr><td>Frequency</td><td>15</td><td>18</td><td>16</td><td>14</td><td>19</td><td>18</td></tr></table>(a) Find the relative frequency of a 5. (b) Find the relative frequency of an even number. (c) Do you think the die is fair? Explain.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div><div class="q"><div><span class="qn">5.</span> A spinner with 8 equal sectors is spun 200 times and lands on red 68 times. (a) Find the relative frequency of red. (b) How many reds would you expect in 500 spins?</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div><div class="q"><div><span class="qn">6.</span> From 400 drops, a bottle cap landed face-up with relative frequency 0.35. How many face-up landings do you expect in 60 drops?</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div><div class="q"><div><span class="qn">7.</span> 50 phone batteries were tested. <table class="tbl" style="font-size: 9pt;"><tr><th>Lifetime</th><th>&lt; 2 yr</th><th>2–3 yr</th><th>3–4 yr</th><th>&gt; 4 yr</th></tr><tr><td>Batteries</td><td>6</td><td>19</td><td>21</td><td>4</td></tr></table>(a) Estimate $P(\text{a battery lasts more than 3 years})$. (b) In a shipment of 400, how many would you expect to last less than 2 years?</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div></div><div class="phase evaluate"><span>🎯 PHASE 6 · Generalization · Exit Ticket</span><span></span></div>
+        <div class="row" style="height: 38mm;">
+            <div class="q"><div><span class="qn">8.</span> A game's win rate is 12%. How many wins do you expect in 150 plays?</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div>
+            <div class="q"><div><span class="qn">9.</span> Write $\frac38$ as a decimal and as a percentage. Why is 0.12 from 125 throws more reliable than 0.2 from 5 throws?</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div>
+        </div>
+        <div class="tbox">📘 <strong>Textbook:</strong> Exercise 8.1 Q1–Q3 (pp. 233–234).</div>
+        <div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can place events on the probability scale.</td><td>😀 😐 😟</td></tr><tr><td>I can find relative frequency from my trials.</td><td>😀 😐 😟</td></tr><tr><td>I can find expected occurrences: $n \times P(A)$.</td><td>😀 😐 😟</td></tr></table></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 1 · Meeting 1 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

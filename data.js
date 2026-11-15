@@ -206,6 +206,48 @@ const LEARNING_KIT_DATA = {
             },
           },
         },
+        {
+          id: 8,
+          slug: "t08-introduction-to-probability",
+          title: "Introduction to Probability",
+          sections: {
+            lp: { label: "Lesson Plan", files: [{ file: "lp.html", title: "Lesson Plan" }] },
+            bd: { label: "Board", files: [{ index: 1, file: "bd-01.html", title: "Board 1 (Discovery Learning)" }] },
+            im: {
+              label: "Interactive Media",
+              files: [
+                { index: 1, file: "im-01.html", title: "Interactive Media 1 Probability Line & Trial Lab (Meeting 1)" },
+                { index: 2, file: "im-02.html", title: "Interactive Media 2 Badge Tiles & Myth Lab (Meeting 2)" },
+                { index: 3, file: "im-03.html", title: "Interactive Media 3 Bazaar Booth & Sample Spaces (Meeting 3)" },
+                { index: 4, file: "im-04.html", title: "Interactive Media 4 Two Spinners & Area Model (Meeting 4)" },
+                { index: 5, file: "im-05.html", title: "Interactive Media 5 Sort, Venn & Exactly One (Meeting 5)" },
+                { index: 6, file: "im-06.html", title: "Interactive Media 6 Food Stall & Review Loop (Meeting 6)" },
+              ],
+            },
+            ws: {
+              label: "Worksheet",
+              files: [
+                { index: 1, file: "ws-01.html", title: "Worksheet 1 Probability Scale & Trials (Meeting 1)" },
+                { index: 2, file: "ws-02.html", title: "Worksheet 2 Theoretical Probability & Complements (Meeting 2)" },
+                { index: 3, file: "ws-03.html", title: "Worksheet 3 Sample Space Diagrams (Meeting 3)" },
+                { index: 4, file: "ws-04.html", title: "Worksheet 4 Independent Events (AND) (Meeting 4)" },
+                { index: 5, file: "ws-05.html", title: "Worksheet 5 Mutually Exclusive Events (OR) (Meeting 5)" },
+                { index: 6, file: "ws-06.html", title: "🔒 Worksheet 6 Chapter 8 Test (Meeting 6)" },
+              ],
+            },
+            ha: {
+              label: "Hands-on Activity",
+              files: [
+                { index: 1, file: "ha-01.html", title: "Hands-on 1 Probability Line & Trial Lab (Meeting 1)" },
+                { index: 2, file: "ha-02.html", title: "Hands-on 2 Badge Tiles & Myth Cards (Meeting 2)" },
+                { index: 3, file: "ha-03.html", title: "Hands-on 3 Bazaar Dice Booth (Meeting 3)" },
+                { index: 4, file: "ha-04.html", title: "Hands-on 4 Two Spinners & Area Model (Meeting 4)" },
+                { index: 5, file: "ha-05.html", title: "Hands-on 5 Card Sort & Venn Mat (Meeting 5)" },
+                { index: 6, file: "ha-06.html", title: "Hands-on 6 Food Stall & Review Loop (Meeting 6)" },
+              ],
+            },
+          },
+        },
       ],
     },
     {

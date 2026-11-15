@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 2 - Badge Tiles and Myth Lab</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.05em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+        .match { color: var(--success); font-weight: bold; } .nomatch { color: var(--danger); font-weight: bold; }
+        .cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+        .mcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; min-height: 64px; display: flex; align-items: center; justify-content: center; font-size: 1.15em; cursor: pointer; user-select: none; padding: 6px; text-align: center; }
+        .mcard:hover { border-color: var(--secondary); }
+        .mcard.sel { border-color: var(--warn); background: #fffaf0; }
+        .mcard.done { cursor: default; opacity: 0.9; }
+        .mcard.shake { animation: shake 0.35s; border-color: var(--danger); }
+        @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
+        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; cursor: grab; user-select: none; font-size: 1.05em; }
+        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
+        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 160px; }
+        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 0.95em; text-align: center; }
+        .bin .slot { display: flex; flex-direction: column; gap: 6px; }
+        .strip { background: #fff; border: 2px solid #805ad5; border-radius: 6px; padding: 8px 12px; cursor: pointer; margin: 5px 0; display: flex; gap: 10px; align-items: center; user-select: none; }
+        .strip .lt { font-weight: bold; color: #805ad5; }
+        .strip.placed { border-color: var(--secondary); background: #ebf8ff; }
+        .strip.ok { border-color: var(--success); background: #f0fff4; } .strip.bad { border-color: var(--danger); background: #fff5f5; }
+        .proof-area { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 10px; min-height: 120px; }
+        .num-in { width: 70px; padding: 6px; border: 2px solid #cbd5e0; border-radius: 4px; font-size: 1em; text-align: center; }
+        .num-in.ok { border-color: var(--success); background: #f0fff4; } .num-in.bad { border-color: var(--danger); background: #fff5f5; }
+        .big-card { background: #fff; border: 3px solid var(--secondary); border-radius: 12px; padding: 25px; text-align: center; max-width: 560px; margin: 10px auto; }
+        .big-card .have { font-size: 2.2em; color: var(--primary); font-weight: bold; margin: 10px 0 18px; }
+        .big-card .who { font-size: 1.5em; border-top: 2px dotted #a0aec0; padding-top: 14px; }
+        .choice { display: block; width: 100%; text-align: left; margin: 6px 0; padding: 10px 14px; border: 2px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 1.1em; cursor: pointer; }
+        .choice.right { border-color: var(--success); background: #f0fff4; } .choice.wrong { border-color: var(--danger); background: #fff5f5; }
+        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
+
+        .track { position: relative; height: 230px; margin: 10px 20px 30px; border-bottom: 4px solid var(--primary); cursor: crosshair; background: linear-gradient(90deg, #fff5f5, #fffff0 50%, #f0fff4); border-radius: 6px 6px 0 0; }
+        .track .tick { position: absolute; bottom: -26px; transform: translateX(-50%); font-weight: bold; color: var(--primary); font-size: 0.9em; text-align: center; }
+        .track .tick::before { content: ''; position: absolute; left: 50%; top: -12px; height: 16px; border-left: 2px solid var(--primary); }
+        .track .pin { position: absolute; transform: translateX(-50%); background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 2px 6px; font-size: 0.8em; max-width: 120px; text-align: center; }
+        .track .pin::after { content: ''; position: absolute; left: 50%; bottom: -8px; border: 5px solid transparent; border-top-color: var(--secondary); transform: translateX(-50%); }
+        .track .pin.ok { border-color: var(--success); background: #f0fff4; } .track .pin.bad { border-color: var(--danger); background: #fff5f5; }
+        .bignum { font-size: 3.2em; font-weight: bold; text-align: center; color: var(--primary); font-family: 'Courier New', monospace; }
+        .mythcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+        .mythcard .row-btn { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; margin-top: 6px; }
+        .tilebtn { width: 46px; height: 46px; font-size: 1.4em; font-weight: bold; border: 2px solid #2d3748; border-radius: 6px; background: #fefcbf; cursor: pointer; margin: 3px; }
+        .tilebtn.sel { background: #f6ad55; }
+        .ssg { border-collapse: collapse; margin: 8px auto; }
+        .ssg td, .ssg th { border: 1px solid #a0aec0; width: 44px; height: 34px; text-align: center; font-weight: bold; }
+        .ssg th { background: #ebf8ff; color: var(--primary); }
+        .ssg td.hit { background: #fbd38d; color: #7b341e; }
+        .ssg td.hitA { background: #bee3f8; } .ssg td.hitB { background: #fed7e2; } .ssg td.hitAB { background: #d6bcfa; }
+        .tally { border-collapse: collapse; margin: 8px auto; }
+        .tally td, .tally th { border: 1px solid #cbd5e0; padding: 5px 10px; text-align: center; }
+        .tally th { background: #ebf8ff; }
+        .dieface { display: inline-block; width: 44px; height: 44px; border: 2px solid #2d3748; border-radius: 8px; font-size: 1.6em; font-weight: bold; line-height: 44px; margin: 0 4px; }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🕵️ Digital Lab 2: Badge Tiles &amp; Myth-Busting</h1>
+        <span class="badge">Grade 9 · Topic 8 · Meeting 2 · Digital twin of Hands-on 2</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Badge Tiles</button><button class="tab-btn" onclick="openTab('s2', this)">2. Myth Lab</button><button class="tab-btn" onclick="openTab('s3', this)">3. Practice</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>🏅 Badge Tiles</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 2, page 1</strong>.</div>
+                <div class="sim-area">
+                    <div class="controls-row" style="justify-content: center;"><label>word</label><select id="word" onchange="buildTiles()"><option>HOLLYWOOD</option><option>SEMESTA99</option></select><button class="action-btn" onclick="drawTiles(30)">Draw 30 (with replacement)</button><button class="action-btn ghost" onclick="drawTiles(0)">Reset draws</button></div>
+                    <div id="tiles" style="text-align: center;"></div>
+                    <div class="sim-text" id="t1">Tap a tile to see the probability of drawing that letter.</div>
+                    <table class="tally" id="ttab"></table>
+                </div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>🕵️ Myth Lab</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 2, page 2</strong>.</div>
+                <p>Decide: BUSTED or TRUE? Then run the simulations to collect evidence.</p>
+                <div class="mythcard"><div>📝 "On a 10-question True/False quiz, guessing guarantees exactly 5 right."</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(0, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(0, 'true')">TRUE</button><button class="action-btn ghost" onclick="simQuiz()">🎲 Simulate</button></div><div class="feedback" id="my0"></div></div><div class="mythcard"><div>⚽ "In a match you win, lose or draw — so your chance of winning is always $\frac13$."</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(1, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(1, 'true')">TRUE</button></div><div class="feedback" id="my1"></div></div><div class="mythcard"><div>🎲 "I rolled four 6s in 10 rolls. That PROVES the die is rigged!"</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(2, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(2, 'true')">TRUE</button><button class="action-btn ghost" onclick="simSixes()">🎲 Simulate</button></div><div class="feedback" id="my2"></div></div><div class="mythcard"><div>🎁 "I lost 5 gacha pulls in a row, so the next one MUST be legendary."</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(3, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(3, 'true')">TRUE</button><button class="action-btn ghost" onclick="simGacha()">🎲 Simulate</button></div><div class="feedback" id="my3"></div></div><div class="mythcard"><div>🌧️ "A 30% chance of rain means it will rain for 30% of the day."</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(4, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(4, 'true')">TRUE</button></div><div class="feedback" id="my4"></div></div><div class="mythcard"><div>🎯 "The probability of NOT rolling a 6 on a fair die is $\frac56$."</div><div class="row-btn"><button class="action-btn alt" onclick="verdict(5, 'busted')">BUSTED</button><button class="action-btn" onclick="verdict(5, 'true')">TRUE</button></div><div class="feedback" id="my5"></div></div>
+                <canvas class="plot" id="cv2" style="height: 240px;"></canvas>
+                <div class="sim-text" id="t2"></div>
+            </div>
+        </div>
+        <div id="s3" class="section-container">
+            <div class="module">
+                <h2>✏️ Practice (type fractions like 2/5)</h2>
+                <div class="ex-row">Socks (8 red, 10 blue, 2 green): P(red) = <input type="text" id="p1" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p1', 0.4, 0.001, 'fp1', '8/20 = 2/5')">Check</button><div class="feedback" id="fp1"></div></div><div class="ex-row">P(not green) = <input type="text" id="p2" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p2', 0.9, 0.001, 'fp2', '18/20 = 9/10, or 1 − 2/20')">Check</button><div class="feedback" id="fp2"></div></div><div class="ex-row">HOLLYWOOD: P(O) = <input type="text" id="p3" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p3', 0.3333333333333333, 0.002, 'fp3', '3/9 = 1/3')">Check</button><div class="feedback" id="fp3"></div></div><div class="ex-row">Jas passes with probability 2/3. P(fails) = <input type="text" id="p4" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p4', 0.3333333333333333, 0.002, 'fp4', '1 − 2/3 = 1/3')">Check</button><div class="feedback" id="fp4"></div></div><div class="ex-row">P(rain) = 0.35. P(no rain) = <input type="text" id="p5" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p5', 0.65, 0.001, 'fp5', '1 − 0.35 = 0.65')">Check</button><div class="feedback" id="fp5"></div></div><div class="ex-row">Exit ticket A: P(more than 2 on a die) = <input type="text" id="p6" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p6', 0.6666666666666666, 0.002, 'fp6', '4/6 = 2/3')">Check</button><div class="feedback" id="fp6"></div></div><div class="ex-row">Exit ticket B: P(red) from 12 red, 12 white, 6 blue = <input type="text" id="p7" class="exercise-input" placeholder="e.g. 2/5"><button class="action-btn" onclick="checkVal('p7', 0.4, 0.001, 'fp7', '12/30 = 2/5')">Check</button><div class="feedback" id="fp7"></div></div>
+            </div>
+        </div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        function gcdI(a, b) { return b ? gcdI(b, a % b) : Math.abs(a); }
+        function frac(n, d) { if (n === 0) return '0'; const g = gcdI(n, d); return (d / g === 1) ? String(n / g) : (n / g) + '/' + (d / g); }
+        function parseVal(s) { s = String(s || '').trim().replace(',', '.').replace('%', ''); if (!s) return NaN; if (s.includes('/')) { const [a, b] = s.split('/').map(Number); return a / b; } const v = Number(s); return String(s).includes('%') ? v / 100 : v; }
+        function checkVal(id, expected, tol, fbId, explanation) {
+            const raw = document.getElementById(id).value, fb = document.getElementById(fbId);
+            let v = parseVal(raw); if (raw.trim().endsWith('%')) v = v / 100;
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Type a fraction (e.g. 2/5), a decimal or a percentage.'; return; }
+            const ok = Math.abs(v - expected) <= tol;
+            fb.className = 'feedback ' + (ok ? 'correct' : 'wrong'); fb.innerText = ok ? '✅ Correct! ' + explanation : '❌ Not quite — count the favourable and possible outcomes again.';
+        }
+        function rf(k, n) { return n ? (k / n).toFixed(3) : '–'; }
+
+        const VERD = ["busted", "busted", "busted", "busted", "busted", "true"], WHY = ["Each answer is a 50–50 guess, but the results vary: exactly 5 right happens only about 25% of the time (simulate it!).", "The three outcomes are not equally likely — a strong team wins far more than 1/3 of its matches.", "Four or more 6s in 10 rolls happens about 7% of the time with a FAIR die (about 1 in 14). Ten rolls is far too few to prove anything.", "Every pull is independent: the chance is still 1/4 after 5 losses. The box has no memory (simulate it!).", "30% means it rains on about 30 of every 100 days with this forecast — not for 30% of the hours.", "P(not 6) = 1 − 1/6 = 5/6. ✔ This one is TRUE."];
+        let draws = [];
+        function buildTiles() {
+            const w = word.value; draws = [];
+            tiles.innerHTML = [...w].map((c, i) => `<button class="tilebtn" data-c="${c}" onclick="tileP('${c}')">${c}</button>`).join('');
+            t1.textContent = 'Tap a tile to see the probability of drawing that letter.'; tallyTable();
+        }
+        function tileP(c) {
+            const w = word.value, k = [...w].filter(x => x === c).length;
+            document.querySelectorAll('.tilebtn').forEach(b => b.classList.toggle('sel', b.dataset.c === c));
+            t1.innerHTML = `P(${c}) = ${k}/${w.length} = <strong>${frac(k, w.length)}</strong> &nbsp;·&nbsp; P(not ${c}) = 1 − ${frac(k, w.length)} = <strong>${frac(w.length - k, w.length)}</strong>`;
+        }
+        function drawTiles(n) { const w = word.value; if (!n) draws = []; for (let i = 0; i < n; i++) draws.push(w[Math.floor(Math.random() * w.length)]); tallyTable(); }
+        function tallyTable() {
+            const w = word.value, letters = [...new Set(w)].concat(w === 'HOLLYWOOD' ? ['Z'] : []), N = draws.length;
+            ttab.innerHTML = '<tr><th>Letter</th>' + letters.map(c => `<th>${c}</th>`).join('') + '</tr><tr><td>Tally</td>' + letters.map(c => `<td>${draws.filter(x => x === c).length}</td>`).join('') + '</tr><tr><td>Experimental</td>' + letters.map(c => `<td>${N ? frac(draws.filter(x => x === c).length, N) : '–'}</td>`).join('') + '</tr><tr><td>Theoretical</td>' + letters.map(c => `<td>${frac([...w].filter(x => x === c).length, w.length)}</td>`).join('') + '</tr>';
+        }
+        function verdict(i, v) { const fb = document.getElementById('my' + i), ok = v === VERD[i]; fb.className = 'feedback ' + (ok ? 'correct' : 'wrong'); fb.innerText = (ok ? '✅ Right — ' : '❌ Think again — ') + (ok ? WHY[i] : 'look for evidence (try the simulation or use a probability).'); }
+        function bars(counts, labels, highlight, title) {
+            const c = setupCanvas(cv2); if (!c) return; const { ctx, W, H } = c; const m = Math.max(...counts, 1), n = counts.length, bw = (W - 80) / n;
+            counts.forEach((v, i) => { const h = v / m * (H - 60); ctx.fillStyle = highlight(i) ? '#f6ad55' : '#90cdf4'; ctx.fillRect(50 + i * bw + 4, H - 30 - h, bw - 8, h); label(ctx, 50 + i * bw + bw / 2, H - 12, labels[i], '#2d3748', 12); label(ctx, 50 + i * bw + bw / 2, H - 34 - h, v, '#4a5568', 11); });
+            label(ctx, W / 2, 18, title, '#1a365d', 14);
+        }
+        function simQuiz() { const cnt = Array(11).fill(0); for (let t = 0; t < 1000; t++) { let s = 0; for (let q = 0; q < 10; q++) s += Math.random() < 0.5; cnt[s]++; } bars(cnt, [...Array(11).keys()], i => i === 5, '1000 students guessing 10 True/False questions: number right'); t2.innerHTML = `Exactly 5 right: <strong>${cnt[5]} of 1000</strong> (≈ ${(cnt[5] / 10).toFixed(1)}%). Theory: 252/1024 ≈ 24.6%. Guessing does NOT guarantee 5!`; }
+        function simSixes() { const cnt = Array(11).fill(0); for (let t = 0; t < 1000; t++) { let s = 0; for (let q = 0; q < 10; q++) s += Math.random() < 1 / 6; cnt[s]++; } const k = cnt.slice(4).reduce((a, b) => a + b, 0); bars(cnt, [...Array(11).keys()], i => i >= 4, '1000 people each roll a FAIR die 10 times: number of 6s'); t2.innerHTML = `Four or more 6s with a fair die: <strong>${k} of 1000</strong> (theory ≈ 7%). It happens — so it proves nothing!`; }
+        function simGacha() { let after = 0, wins = 0, run = 0; for (let t = 0; t < 200000; t++) { const win = Math.random() < 0.25; if (run >= 5) { after++; if (win) wins++; } run = win ? 0 : run + 1; } bars([wins, after - wins], ['legendary', 'common'], i => i === 0, 'Pulls made right after 5 losses in a row'); t2.innerHTML = `After 5 losses in a row, the next pull was legendary <strong>${(100 * wins / after).toFixed(1)}%</strong> of the time — still about 25%. The box has no memory!`; }
+        function redraw() {}
+        window.addEventListener('load', () => { buildTiles(); });
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

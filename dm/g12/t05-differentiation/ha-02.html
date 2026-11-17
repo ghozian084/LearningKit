@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 2 - Gradients of e^x and ln x and Chain Triples</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 2 · Meeting 2: Measuring Gradients of $e^x$ and $\ln x$</h1><p>Grade 12 · Topic 4 · Phase 3 · individual · you need a ruler · <em>digital twin: Interactive Media 2</em></p></div>
+        <div class="teacher-note">At each marked point lay your ruler as a <strong>tangent</strong> (touching the curve, not cutting it) and draw it. Pick two far-apart points on your tangent and find gradient $= \frac{\text{rise}}{\text{run}}$ using the <strong>axis numbers</strong>. Both axes use the same scale.</div>
+        <div style="display: flex; justify-content: space-around; align-items: flex-end;">
+            <div style="text-align: center;"><strong style="color: #2b6cb0;">$y = e^x$</strong><br><svg viewBox="0 0 261 440" style="width: 65.2mm; height: 110.0mm;"><line x1="30.0" y1="415.0" x2="30.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="40.8" y1="415.0" x2="40.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="51.6" y1="415.0" x2="51.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="62.4" y1="415.0" x2="62.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="73.2" y1="415.0" x2="73.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="84.0" y1="415.0" x2="84.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="94.8" y1="415.0" x2="94.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="105.6" y1="415.0" x2="105.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="116.4" y1="415.0" x2="116.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="127.2" y1="415.0" x2="127.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="138.0" y1="415.0" x2="138.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="148.8" y1="415.0" x2="148.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="159.6" y1="415.0" x2="159.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="170.4" y1="415.0" x2="170.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="181.2" y1="415.0" x2="181.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="192.0" y1="415.0" x2="192.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="202.8" y1="415.0" x2="202.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="213.6" y1="415.0" x2="213.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="224.4" y1="415.0" x2="224.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="235.2" y1="415.0" x2="235.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="246.0" y1="415.0" x2="246.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="415.0" x2="246.0" y2="415.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="404.2" x2="246.0" y2="404.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="393.4" x2="246.0" y2="393.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="382.6" x2="246.0" y2="382.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="371.8" x2="246.0" y2="371.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="361.0" x2="246.0" y2="361.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="350.2" x2="246.0" y2="350.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="339.4" x2="246.0" y2="339.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="328.6" x2="246.0" y2="328.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="317.8" x2="246.0" y2="317.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="307.0" x2="246.0" y2="307.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="296.2" x2="246.0" y2="296.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="285.4" x2="246.0" y2="285.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="274.6" x2="246.0" y2="274.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="263.8" x2="246.0" y2="263.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="253.0" x2="246.0" y2="253.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="242.2" x2="246.0" y2="242.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="231.4" x2="246.0" y2="231.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="220.6" x2="246.0" y2="220.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="209.8" x2="246.0" y2="209.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="199.0" x2="246.0" y2="199.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="188.2" x2="246.0" y2="188.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="177.4" x2="246.0" y2="177.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="166.6" x2="246.0" y2="166.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="155.8" x2="246.0" y2="155.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="145.0" x2="246.0" y2="145.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="134.2" x2="246.0" y2="134.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="123.4" x2="246.0" y2="123.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="112.6" x2="246.0" y2="112.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="101.8" x2="246.0" y2="101.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="91.0" x2="246.0" y2="91.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="80.2" x2="246.0" y2="80.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="69.4" x2="246.0" y2="69.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="58.6" x2="246.0" y2="58.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="47.8" x2="246.0" y2="47.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="37.0" x2="246.0" y2="37.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="26.2" x2="246.0" y2="26.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="15.4" x2="246.0" y2="15.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="415.0" x2="30.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="30.0" y="431.0" font-size="12" text-anchor="middle">-2</text><line x1="84.0" y1="415.0" x2="84.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="84.0" y="431.0" font-size="12" text-anchor="middle">-1</text><line x1="138.0" y1="415.0" x2="138.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="138.0" y="431.0" font-size="12" text-anchor="middle">0</text><line x1="192.0" y1="415.0" x2="192.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="192.0" y="431.0" font-size="12" text-anchor="middle">1</text><line x1="246.0" y1="415.0" x2="246.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="246.0" y="431.0" font-size="12" text-anchor="middle">2</text><line x1="30.0" y1="415.0" x2="246.0" y2="415.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="419.0" font-size="12" text-anchor="end">0</text><line x1="30.0" y1="361.0" x2="246.0" y2="361.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="365.0" font-size="12" text-anchor="end">1</text><line x1="30.0" y1="307.0" x2="246.0" y2="307.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="311.0" font-size="12" text-anchor="end">2</text><line x1="30.0" y1="253.0" x2="246.0" y2="253.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="257.0" font-size="12" text-anchor="end">3</text><line x1="30.0" y1="199.0" x2="246.0" y2="199.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="203.0" font-size="12" text-anchor="end">4</text><line x1="30.0" y1="145.0" x2="246.0" y2="145.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="149.0" font-size="12" text-anchor="end">5</text><line x1="30.0" y1="91.0" x2="246.0" y2="91.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="95.0" font-size="12" text-anchor="end">6</text><line x1="30.0" y1="37.0" x2="246.0" y2="37.0" stroke="#a0aec0" stroke-width="1"/><text x="134.0" y="41.0" font-size="12" text-anchor="end">7</text><line x1="30.0" y1="415.0" x2="246.0" y2="415.0" stroke="#2d3748" stroke-width="2"/><line x1="138.0" y1="415.0" x2="138.0" y2="10.0" stroke="#2d3748" stroke-width="2"/><polyline points="30.0,407.7 31.1,407.5 32.2,407.4 33.2,407.2 34.3,407.1 35.4,406.9 36.5,406.8 37.6,406.6 38.6,406.4 39.7,406.3 40.8,406.1 41.9,405.9 43.0,405.7 44.0,405.5 45.1,405.3 46.2,405.1 47.3,404.9 48.4,404.7 49.4,404.5 50.5,404.3 51.6,404.1 52.7,403.9 53.8,403.7 54.8,403.4 55.9,403.2 57.0,403.0 58.1,402.7 59.2,402.5 60.2,402.2 61.3,401.9 62.4,401.7 63.5,401.4 64.6,401.1 65.6,400.9 66.7,400.6 67.8,400.3 68.9,400.0 70.0,399.7 71.0,399.4 72.1,399.1 73.2,398.7 74.3,398.4 75.4,398.1 76.4,397.7 77.5,397.4 78.6,397.0 79.7,396.7 80.8,396.3 81.8,395.9 82.9,395.5 84.0,395.1 85.1,394.7 86.2,394.3 87.2,393.9 88.3,393.5 89.4,393.0 90.5,392.6 91.6,392.1 92.6,391.7 93.7,391.2 94.8,390.7 95.9,390.2 97.0,389.7 98.0,389.2 99.1,388.7 100.2,388.2 101.3,387.6 102.4,387.1 103.4,386.5 104.5,386.0 105.6,385.4 106.7,384.8 107.8,384.2 108.8,383.5 109.9,382.9 111.0,382.2 112.1,381.6 113.2,380.9 114.2,380.2 115.3,379.5 116.4,378.8 117.5,378.1 118.6,377.3 119.6,376.6 120.7,375.8 121.8,375.0 122.9,374.2 124.0,373.4 125.0,372.5 126.1,371.7 127.2,370.8 128.3,369.9 129.4,369.0 130.4,368.1 131.5,367.1 132.6,366.1 133.7,365.2 134.8,364.1 135.8,363.1 136.9,362.1 138.0,361.0 139.1,359.9 140.2,358.8 141.2,357.7 142.3,356.5 143.4,355.3 144.5,354.1 145.6,352.9 146.6,351.6 147.7,350.4 148.8,349.0 149.9,347.7 151.0,346.4 152.0,345.0 153.1,343.6 154.2,342.1 155.3,340.6 156.4,339.1 157.4,337.6 158.5,336.0 159.6,334.4 160.7,332.8 161.8,331.2 162.8,329.5 163.9,327.7 165.0,326.0 166.1,324.2 167.2,322.3 168.2,320.5 169.3,318.6 170.4,316.6 171.5,314.6 172.6,312.6 173.6,310.5 174.7,308.4 175.8,306.3 176.9,304.1 178.0,301.8 179.0,299.5 180.1,297.2 181.2,294.8 182.3,292.4 183.4,289.9 184.4,287.4 185.5,284.8 186.6,282.2 187.7,279.5 188.8,276.8 189.8,274.0 190.9,271.1 192.0,268.2 193.1,265.2 194.2,262.2 195.2,259.1 196.3,256.0 197.4,252.8 198.5,249.5 199.6,246.2 200.6,242.7 201.7,239.3 202.8,235.7 203.9,232.1 205.0,228.4 206.0,224.6 207.1,220.8 208.2,216.9 209.3,212.9 210.4,208.8 211.4,204.6 212.5,200.4 213.6,196.0 214.7,191.6 215.8,187.1 216.8,182.5 217.9,177.8 219.0,173.0 220.1,168.1 221.2,163.1 222.2,158.0 223.3,152.8 224.4,147.5 225.5,142.1 226.6,136.6 227.6,131.0 228.7,125.3 229.8,119.4 230.9,113.4 232.0,107.3 233.0,101.1 234.1,94.8 235.2,88.3 236.3,81.7 237.4,75.0 238.4,68.1 239.5,61.1 240.6,54.0 241.7,46.7 242.8,39.2 243.8,31.6 244.9,23.9 246.0,16.0" fill="none" stroke="#2b6cb0" stroke-width="3"/><circle cx="138.0" cy="361.0" r="5" fill="#c53030"/><text x="146.0" y="353.0" font-size="14" font-weight="bold" fill="#c53030">P₁</text><circle cx="192.0" cy="268.2" r="5" fill="#c53030"/><text x="200.0" y="260.2" font-size="14" font-weight="bold" fill="#c53030">P₂</text><circle cx="219.0" cy="173.0" r="5" fill="#c53030"/><text x="181.0" y="165.0" font-size="14" font-weight="bold" fill="#c53030">P₃</text></svg></div>
+            <div style="text-align: center;"><strong style="color: #805ad5;">$y = \ln x$</strong><br><svg viewBox="0 0 315 224" style="width: 78.8mm; height: 56.0mm;"><line x1="30.0" y1="199.0" x2="30.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="40.8" y1="199.0" x2="40.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="51.6" y1="199.0" x2="51.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="62.4" y1="199.0" x2="62.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="73.2" y1="199.0" x2="73.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="84.0" y1="199.0" x2="84.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="94.8" y1="199.0" x2="94.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="105.6" y1="199.0" x2="105.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="116.4" y1="199.0" x2="116.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="127.2" y1="199.0" x2="127.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="138.0" y1="199.0" x2="138.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="148.8" y1="199.0" x2="148.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="159.6" y1="199.0" x2="159.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="170.4" y1="199.0" x2="170.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="181.2" y1="199.0" x2="181.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="192.0" y1="199.0" x2="192.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="202.8" y1="199.0" x2="202.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="213.6" y1="199.0" x2="213.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="224.4" y1="199.0" x2="224.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="235.2" y1="199.0" x2="235.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="246.0" y1="199.0" x2="246.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="256.8" y1="199.0" x2="256.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="267.6" y1="199.0" x2="267.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="278.4" y1="199.0" x2="278.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="289.2" y1="199.0" x2="289.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="300.0" y1="199.0" x2="300.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="199.0" x2="300.0" y2="199.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="188.2" x2="300.0" y2="188.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="177.4" x2="300.0" y2="177.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="166.6" x2="300.0" y2="166.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="155.8" x2="300.0" y2="155.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="145.0" x2="300.0" y2="145.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="134.2" x2="300.0" y2="134.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="123.4" x2="300.0" y2="123.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="112.6" x2="300.0" y2="112.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="101.8" x2="300.0" y2="101.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="91.0" x2="300.0" y2="91.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="80.2" x2="300.0" y2="80.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="69.4" x2="300.0" y2="69.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="58.6" x2="300.0" y2="58.6" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="47.8" x2="300.0" y2="47.8" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="37.0" x2="300.0" y2="37.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="26.2" x2="300.0" y2="26.2" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="15.4" x2="300.0" y2="15.4" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="199.0" x2="30.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="30.0" y="120.5" font-size="12" text-anchor="middle">0</text><line x1="84.0" y1="199.0" x2="84.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="84.0" y="120.5" font-size="12" text-anchor="middle">1</text><line x1="138.0" y1="199.0" x2="138.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="138.0" y="120.5" font-size="12" text-anchor="middle">2</text><line x1="192.0" y1="199.0" x2="192.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="192.0" y="120.5" font-size="12" text-anchor="middle">3</text><line x1="246.0" y1="199.0" x2="246.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="246.0" y="120.5" font-size="12" text-anchor="middle">4</text><line x1="300.0" y1="199.0" x2="300.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="300.0" y="120.5" font-size="12" text-anchor="middle">5</text><line x1="30.0" y1="158.5" x2="300.0" y2="158.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="162.5" font-size="12" text-anchor="end">-1</text><line x1="30.0" y1="50.5" x2="300.0" y2="50.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="54.5" font-size="12" text-anchor="end">1</text><line x1="30.0" y1="104.5" x2="300.0" y2="104.5" stroke="#2d3748" stroke-width="2"/><line x1="30.0" y1="199.0" x2="30.0" y2="10.0" stroke="#2d3748" stroke-width="2"/><polyline points="40.8,191.4 42.1,185.3 43.4,179.8 44.7,174.8 46.0,170.2 47.3,166.0 48.6,162.1 49.9,158.5 51.2,155.1 52.5,151.9 53.8,148.8 55.1,146.0 56.4,143.2 57.6,140.6 58.9,138.2 60.2,135.8 61.5,133.5 62.8,131.4 64.1,129.3 65.4,127.3 66.7,125.3 68.0,123.5 69.3,121.6 70.6,119.9 71.9,118.2 73.2,116.5 74.5,115.0 75.8,113.4 77.1,111.9 78.4,110.4 79.7,109.0 81.0,107.6 82.3,106.3 83.6,104.9 84.9,103.6 86.2,102.4 87.5,101.2 88.8,99.9 90.0,98.8 91.3,97.6 92.6,96.5 93.9,95.4 95.2,94.3 96.5,93.2 97.8,92.2 99.1,91.2 100.4,90.2 101.7,89.2 103.0,88.2 104.3,87.3 105.6,86.3 106.9,85.4 108.2,84.5 109.5,83.6 110.8,82.7 112.1,81.9 113.4,81.0 114.7,80.2 116.0,79.4 117.3,78.6 118.6,77.8 119.9,77.0 121.2,76.2 122.4,75.5 123.7,74.7 125.0,74.0 126.3,73.2 127.6,72.5 128.9,71.8 130.2,71.1 131.5,70.4 132.8,69.7 134.1,69.0 135.4,68.4 136.7,67.7 138.0,67.1 139.3,66.4 140.6,65.8 141.9,65.2 143.2,64.5 144.5,63.9 145.8,63.3 147.1,62.7 148.4,62.1 149.7,61.5 151.0,61.0 152.3,60.4 153.6,59.8 154.8,59.2 156.1,58.7 157.4,58.1 158.7,57.6 160.0,57.0 161.3,56.5 162.6,56.0 163.9,55.5 165.2,54.9 166.5,54.4 167.8,53.9 169.1,53.4 170.4,52.9 171.7,52.4 173.0,51.9 174.3,51.4 175.6,50.9 176.9,50.5 178.2,50.0 179.5,49.5 180.8,49.1 182.1,48.6 183.4,48.1 184.7,47.7 186.0,47.2 187.2,46.8 188.5,46.3 189.8,45.9 191.1,45.5 192.4,45.0 193.7,44.6 195.0,44.2 196.3,43.8 197.6,43.3 198.9,42.9 200.2,42.5 201.5,42.1 202.8,41.7 204.1,41.3 205.4,40.9 206.7,40.5 208.0,40.1 209.3,39.7 210.6,39.3 211.9,38.9 213.2,38.5 214.5,38.2 215.8,37.8 217.1,37.4 218.4,37.0 219.6,36.7 220.9,36.3 222.2,35.9 223.5,35.6 224.8,35.2 226.1,34.9 227.4,34.5 228.7,34.1 230.0,33.8 231.3,33.4 232.6,33.1 233.9,32.8 235.2,32.4 236.5,32.1 237.8,31.7 239.1,31.4 240.4,31.1 241.7,30.7 243.0,30.4 244.3,30.1 245.6,29.7 246.9,29.4 248.2,29.1 249.5,28.8 250.8,28.5 252.0,28.1 253.3,27.8 254.6,27.5 255.9,27.2 257.2,26.9 258.5,26.6 259.8,26.3 261.1,26.0 262.4,25.7 263.7,25.4 265.0,25.1 266.3,24.8 267.6,24.5 268.9,24.2 270.2,23.9 271.5,23.6 272.8,23.3 274.1,23.0 275.4,22.8 276.7,22.5 278.0,22.2 279.3,21.9 280.6,21.6 281.9,21.3 283.2,21.1 284.4,20.8 285.7,20.5 287.0,20.2 288.3,20.0 289.6,19.7 290.9,19.4 292.2,19.2 293.5,18.9 294.8,18.6 296.1,18.4 297.4,18.1 298.7,17.9 300.0,17.6" fill="none" stroke="#805ad5" stroke-width="3"/><circle cx="84.0" cy="104.5" r="5" fill="#c53030"/><text x="92.0" y="122.5" font-size="14" font-weight="bold" fill="#c53030">Q₁</text><circle cx="138.0" cy="67.1" r="5" fill="#c53030"/><text x="146.0" y="85.1" font-size="14" font-weight="bold" fill="#c53030">Q₂</text><circle cx="246.0" cy="29.6" r="5" fill="#c53030"/><text x="254.0" y="47.6" font-size="14" font-weight="bold" fill="#c53030">Q₃</text></svg>
+                <table class="tbl" style="margin-top: 3mm; font-size: 9pt;"><tr><th>Point</th><th>$x$</th><th>gradient (measured)</th><th>$\frac1x$</th></tr><tr><td>Q₁</td><td>1</td><td></td><td></td></tr><tr><td>Q₂</td><td>2</td><td></td><td></td></tr><tr><td>Q₃</td><td>4</td><td></td><td></td></tr></table>
+                <table class="tbl" style="margin-top: 3mm; font-size: 9pt;"><tr><th>Point</th><th>$x$</th><th>$y = e^x$</th><th>gradient (measured)</th></tr><tr><td>P₁</td><td>0</td><td></td><td></td></tr><tr><td>P₂</td><td>1</td><td></td><td></td></tr><tr><td>P₃</td><td>1.5</td><td></td><td></td></tr></table></div>
+        </div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <span class="box-title">🧠 Conclude</span>
+            <p>For $y = e^x$ the gradient is always equal to <span class="blank" style="min-width: 40mm;"></span>, so $\frac{d}{dx}e^x =$ <span class="blank"></span></p>
+            <p>For $y = \ln x$ the gradient is always equal to <span class="blank" style="min-width: 40mm;"></span>, so $\frac{d}{dx}\ln x =$ <span class="blank"></span></p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 2 · Meeting 2 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 2 · Meeting 2: Chain-Rule Triples</h1><p>Phase 3–4 · cut out the 24 cards and make 8 groups of three: function → $f'(x)$ → derivative · <em>digital twin: Interactive Media 2</em></p></div>
+        <div class="teacher-note">For $e^{f(x)}$ the derivative is $f'(x)e^{f(x)}$; for $\ln f(x)$ it is $\frac{f'(x)}{f(x)}$. Find each function's inner $f(x)$, its $f'(x)$ card and its derivative card. Stick each group in your book.</div>
+        <div class="tiles grow" style="grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); gap: 3mm;"><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$2xe^{x^2}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = \ln(7x-2)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 3x^2+2$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = \ln(x^2+4x)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = -4$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$\dfrac{1}{x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$\dfrac{3x^2+2}{x^3+2x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = \ln(x^3+2x)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = e^{1-4x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 7$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 5$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 2x+4$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$-4e^{1-4x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = e^{3x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = e^{x^3+1}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$3x^2e^{x^3+1}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = e^{x^2}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$\dfrac{2x+4}{x^2+4x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$3e^{3x}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 3$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$\dfrac{7}{7x-2}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$y = \ln(5x)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 2x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 11pt;">$f'(x) = 3x^2$</span></div></div>
+        <div class="box action"><p>Which derivative surprised you? Why is $\frac{d}{dx}\ln(5x)$ so simple? <span class="blank" style="min-width: 80mm;"></span></p></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 2 · Meeting 2 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Media 1 - Heated Plate and Dominoes</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] } };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root { --primary: #1a365d; --secondary: #2b6cb0; --accent: #ebf8ff; --success: #38a169; --danger: #e53e3e; --warn: #dd6b20; --bg-color: #f7fafc; --border-color: #e2e8f0; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--bg-color); color: #2d3748; margin: 0; display: flex; flex-direction: column; height: 100vh; }
+        header { background: var(--primary); color: white; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 10; }
+        header h1 { margin: 0; font-size: 1.45em; }
+        .badge { background: var(--secondary); padding: 5px 10px; border-radius: 5px; font-size: 0.9em; }
+        .tabs { display: flex; background: #2d3748; padding: 0 20px; overflow-x: auto; }
+        .tab-btn { background: none; border: none; color: #a0aec0; padding: 15px; font-size: 1.05em; cursor: pointer; font-weight: bold; border-bottom: 4px solid transparent; white-space: nowrap; }
+        .tab-btn:hover { color: white; }
+        .tab-btn.active { color: white; border-bottom-color: #63b3ed; }
+        .main-content { flex: 1; padding: 30px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+        .section-container { display: none; width: 100%; max-width: 1000px; animation: fadeIn 0.4s ease-in-out; }
+        .section-container.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .module { background: #fff; border: 1px solid var(--border-color); border-radius: 10px; padding: 25px; margin-bottom: 25px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .module h2 { margin-top: 0; color: var(--primary); border-bottom: 2px solid var(--accent); padding-bottom: 10px; }
+        .twin { background: #faf5ff; border-left: 4px solid #805ad5; padding: 8px 12px; border-radius: 4px; color: #553c9a; font-size: 0.95em; margin-bottom: 12px; }
+        .sim-area { background: #edf2f7; border-radius: 8px; padding: 18px; margin-top: 12px; }
+        .controls-row { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; margin-bottom: 12px; }
+        .controls-row label { font-weight: bold; color: var(--primary); }
+        .controls-row input[type=range] { width: 150px; vertical-align: middle; }
+        select { padding: 7px; border: 1px solid #cbd5e0; border-radius: 5px; font-size: 1em; max-width: 100%; }
+        .big-value { font-weight: bold; color: var(--secondary); }
+        canvas.plot { width: 100%; height: 380px; background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; display: block; touch-action: none; }
+        button.action-btn { background: var(--secondary); color: white; border: none; padding: 9px 16px; border-radius: 5px; font-size: 1em; font-weight: bold; cursor: pointer; }
+        button.action-btn:hover { background: var(--primary); }
+        button.action-btn.alt { background: var(--warn); }
+        button.action-btn.ghost { background: #718096; }
+        button.action-btn:disabled { background: #a0aec0; cursor: not-allowed; }
+        .sim-text { font-size: 1.1em; font-weight: bold; text-align: center; margin-top: 10px; min-height: 26px; color: var(--primary); }
+        .good { color: var(--success); } .bad { color: var(--danger); }
+        table.vals { width: 100%; border-collapse: collapse; background: white; margin-top: 10px; }
+        table.vals th, table.vals td { border: 1px solid #cbd5e0; padding: 7px 9px; text-align: center; }
+        table.vals th { background: var(--accent); color: var(--primary); }
+        table.vals td.l, table.vals th.l { text-align: left; }
+        .exercise-input { padding: 9px; font-size: 1.05em; border: 2px solid #cbd5e0; border-radius: 5px; width: 140px; margin-right: 10px; }
+        .feedback { margin-top: 8px; font-weight: bold; min-height: 22px; }
+        .feedback.correct { color: var(--success); } .feedback.wrong { color: var(--danger); }
+        .ex-row { margin-top: 16px; }
+        .hint { color: #718096; font-size: 0.9em; font-style: italic; }
+        
+
+        .step-box { background: #f7fafc; border-left: 5px solid var(--secondary); padding: 15px; border-radius: 5px; }
+        .step { display: none; margin-top: 10px; font-size: 1.05em; }
+        .step.show { display: block; animation: fadeIn 0.4s; }
+        .match { color: var(--success); font-weight: bold; } .nomatch { color: var(--danger); font-weight: bold; }
+        .cardgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+        .mcard { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; min-height: 64px; display: flex; align-items: center; justify-content: center; font-size: 1.15em; cursor: pointer; user-select: none; padding: 6px; text-align: center; }
+        .mcard:hover { border-color: var(--secondary); }
+        .mcard.sel { border-color: var(--warn); background: #fffaf0; }
+        .mcard.done { cursor: default; opacity: 0.9; }
+        .mcard.shake { animation: shake 0.35s; border-color: var(--danger); }
+        @keyframes shake { 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+        .pool { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; min-height: 50px; margin-bottom: 12px; }
+        .chip { background: #fff; border: 2px solid var(--secondary); border-radius: 6px; padding: 8px 12px; cursor: grab; user-select: none; font-size: 1.05em; }
+        .chip.sel { background: #fefcbf; } .chip.right { border-color: var(--success); background: #f0fff4; } .chip.wrong { border-color: var(--danger); background: #fff5f5; }
+        .bins { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+        .bin { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 8px; min-height: 160px; }
+        .bin h3 { margin: 0 0 6px 0; color: var(--primary); font-size: 0.95em; text-align: center; }
+        .bin .slot { display: flex; flex-direction: column; gap: 6px; }
+        .strip { background: #fff; border: 2px solid #805ad5; border-radius: 6px; padding: 8px 12px; cursor: pointer; margin: 5px 0; display: flex; gap: 10px; align-items: center; user-select: none; }
+        .strip .lt { font-weight: bold; color: #805ad5; }
+        .strip.placed { border-color: var(--secondary); background: #ebf8ff; }
+        .strip.ok { border-color: var(--success); background: #f0fff4; } .strip.bad { border-color: var(--danger); background: #fff5f5; }
+        .proof-area { background: #fff; border: 3px dashed #a0aec0; border-radius: 8px; padding: 10px; min-height: 120px; }
+        .num-in { width: 70px; padding: 6px; border: 2px solid #cbd5e0; border-radius: 4px; font-size: 1em; text-align: center; }
+        .num-in.ok { border-color: var(--success); background: #f0fff4; } .num-in.bad { border-color: var(--danger); background: #fff5f5; }
+        .big-card { background: #fff; border: 3px solid var(--secondary); border-radius: 12px; padding: 25px; text-align: center; max-width: 560px; margin: 10px auto; }
+        .big-card .have { font-size: 2.2em; color: var(--primary); font-weight: bold; margin: 10px 0 18px; }
+        .big-card .who { font-size: 1.5em; border-top: 2px dotted #a0aec0; padding-top: 14px; }
+        .choice { display: block; width: 100%; text-align: left; margin: 6px 0; padding: 10px 14px; border: 2px solid #cbd5e0; border-radius: 6px; background: #fff; font-size: 1.1em; cursor: pointer; }
+        .choice.right { border-color: var(--success); background: #f0fff4; } .choice.wrong { border-color: var(--danger); background: #fff5f5; }
+        @media (max-width: 600px) { .bins { grid-template-columns: 1fr; } }
+
+        .mcard.lock { cursor: default; }
+        .ecase { background: #fff; border: 2px solid #cbd5e0; border-radius: 8px; padding: 10px 14px; margin: 10px 0; }
+        .eline { display: block; width: 100%; text-align: left; margin: 4px 0; padding: 6px 10px; border: 1px solid #cbd5e0; border-radius: 5px; background: #f7fafc; cursor: pointer; font-size: 1.05em; }
+        .eline.bad { border-color: var(--danger); background: #fff5f5; } .eline.miss { border-color: #a0aec0; background: #edf2f7; }
+        .dcol { display: flex; flex-direction: column; gap: 8px; }
+        .dgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .readout { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 10px; }
+        .readout div { background: #fff; border: 1px solid #cbd5e0; border-radius: 6px; padding: 6px 10px; text-align: center; }
+        .readout b { display: block; font-size: 1.3em; color: var(--primary); }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🔥 Digital Lab 1: Product &amp; Quotient Rules</h1>
+        <span class="badge">Grade 12 · Topic 4 Differentiation · Meeting 1 · Digital twin of Hands-on 1</span>
+    </header>
+    <div class="tabs"><button class="tab-btn active" onclick="openTab('s1', this)">1. Heated Plate</button><button class="tab-btn" onclick="openTab('s2', this)">2. Dominoes</button><button class="tab-btn" onclick="openTab('s3', this)">3. Quick Check</button></div>
+    <div class="main-content">
+
+        <div id="s1" class="section-container active">
+            <div class="module">
+                <h2>🔥 The Heated Plate — Why $uv' + vu'$?</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 1, page 1</strong>.</div>
+                <div class="sim-area">
+                    <div class="controls-row"><label>$L$</label><input type="range" id="L0" min="2" max="8" step="0.5" value="6" oninput="drawPlate()"><label>$W$</label><input type="range" id="W0" min="2" max="6" step="0.5" value="4" oninput="drawPlate()"><label>$\frac{dL}{dt}$</label><input type="range" id="dL" min="0" max="2" step="0.25" value="1" oninput="drawPlate()"><label>$\frac{dW}{dt}$</label><input type="range" id="dW" min="0" max="2" step="0.25" value="0.5" oninput="drawPlate()"></div>
+                    <div class="controls-row"><label>$\Delta t$</label><input type="range" id="dt" min="0" max="1" step="0.01" value="1" oninput="drawPlate()"><span class="big-value" id="dtv"></span><button class="action-btn" onclick="shrink()">Let $\Delta t \to 0$ ▶</button></div>
+                    <canvas class="plot" id="cv1" style="height: 330px;"></canvas>
+                    <div class="readout" id="ro1"></div>
+                    <div class="sim-text" id="t1"></div>
+                </div>
+            </div>
+        </div>
+        <div id="s2" class="section-container">
+            <div class="module">
+                <h2>🁫 Derivative Dominoes</h2>
+                <div class="twin">💡 No printer? On-screen version of <strong>Hands-on 1, page 2</strong>.</div>
+                <p>Tap a function (left), then its derivative (right). Use your $u, v, u', v'$ grid on paper!</p>
+                <div class="sim-area"><div class="dgrid"><div class="dcol" id="dl"></div><div class="dcol" id="dr"></div></div>
+                    <div class="controls-row" style="justify-content: center; margin-top: 10px;"><button class="action-btn ghost" onclick="buildDom()">Shuffle</button><span style="font-weight: bold;">Matched: <span id="dfound">0</span> / 12 · Mistakes: <span id="dmiss">0</span></span></div>
+                    <div class="sim-text" id="t2"></div></div>
+            </div>
+        </div>
+        <div id="s3" class="section-container"><div class="module"><h2>✏️ Quick Check (4 d.p. where needed)</h2><div class="ex-row">y = x²(2x + 1)³: dy/dx at x = 1 = <input type="text" id="c1" class="exercise-input"><button class="action-btn" onclick="checkNum('c1', 108.0, 0.001, 'fc1', '2x(2x+1)²(5x+1) = 2·9·6 = 108')">Check</button><div class="feedback" id="fc1"></div></div><div class="ex-row">y = 3x/(x² + 1): dy/dx at x = 0 = <input type="text" id="c2" class="exercise-input"><button class="action-btn" onclick="checkNum('c2', 3.0, 0.001, 'fc2', '3(1−x²)/(x²+1)² = 3')">Check</button><div class="feedback" id="fc2"></div></div><div class="ex-row">y = x(3x − 1)⁴: dy/dx at x = 1 = <input type="text" id="c3" class="exercise-input"><button class="action-btn" onclick="checkNum('c3', 112.0, 0.001, 'fc3', '(3x−1)³(15x−1) = 8·14 = 112')">Check</button><div class="feedback" id="fc3"></div></div><div class="ex-row">y = (2x − 1)/(x + 3): dy/dx at x = 1 = <input type="text" id="c4" class="exercise-input"><button class="action-btn" onclick="checkNum('c4', 0.4375, 0.00051, 'fc4', '7/(x+3)² = 7/16 = 0.4375')">Check</button><div class="feedback" id="fc4"></div></div><div class="ex-row">y = (x + 2)/(x − 3): gradient at x = 4 = <input type="text" id="c5" class="exercise-input"><button class="action-btn" onclick="checkNum('c5', -5.0, 0.001, 'fc5', '−5/(x−3)² = −5')">Check</button><div class="feedback" id="fc5"></div></div></div></div>
+    </div>
+    <script>
+        const D = Math.PI / 180;
+        function openTab(id, btn) {
+            document.querySelectorAll('.section-container').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(id).classList.add('active'); btn.classList.add('active');
+            if (window.redraw) redraw();
+        }
+        function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+        function checkNum(inputId, expected, tol, fbId, explanation) {
+            const fb = document.getElementById(fbId);
+            const v = parseFloat(document.getElementById(inputId).value.replace(',', '.'));
+            if (isNaN(v)) { fb.className = 'feedback wrong'; fb.innerText = 'Please type a number.'; return; }
+            if (Math.abs(v - expected) <= tol) { fb.className = 'feedback correct'; fb.innerText = '✅ Correct! ' + explanation; }
+            else { fb.className = 'feedback wrong'; fb.innerText = '❌ Not quite — check your working and try again.'; }
+        }
+        const r1 = v => Math.round(v * 10) / 10, r2 = v => Math.round(v * 100) / 100;
+        function setupCanvas(cv) {
+            const dpr = window.devicePixelRatio || 1, W = cv.clientWidth, H = cv.clientHeight;
+            if (!W) return null;
+            cv.width = W * dpr; cv.height = H * dpr;
+            const ctx = cv.getContext('2d'); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, W, H);
+            return { ctx, W, H };
+        }
+        function gridBg(ctx, W, H, k, ox, oy) {
+            ctx.strokeStyle = '#e2e8f0'; ctx.lineWidth = 1;
+            for (let x = ox % k; x < W; x += k) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke(); }
+            for (let y = oy % k; y < H; y += k) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke(); }
+        }
+        function poly(ctx, pts, fill, stroke, dash) {
+            ctx.beginPath(); pts.forEach((p, i) => i ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1])); ctx.closePath();
+            if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+            if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.setLineDash(dash || []); ctx.stroke(); ctx.setLineDash([]); }
+        }
+        function label(ctx, x, y, t, col, size, align) { ctx.fillStyle = col || '#1a365d'; ctx.font = 'bold ' + (size || 14) + 'px Segoe UI'; ctx.textAlign = align || 'center'; ctx.fillText(t, x, y); }
+
+        function shuffle(a) { for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+        const fx = v => (Math.abs(v) < 5e-5 ? 0 : v).toFixed(4).replace(/\.?0+$/, '');
+        // tap-three-cards matcher: groups = [[a, b, c], ...]
+        function buildTriples(gridId, groups, outId, foundId) {
+            const grid = document.getElementById(gridId), cards = shuffle(groups.flatMap((g, gi) => g.map(c => ({ c, gi }))));
+            grid.innerHTML = ''; grid._sel = []; grid._found = 0; document.getElementById(foundId).textContent = 0; document.getElementById(outId).textContent = '';
+            cards.forEach(({ c, gi }) => { const el = document.createElement('div'); el.className = 'mcard'; el.innerHTML = c; el.dataset.g = gi;
+                el.onclick = () => { if (el.classList.contains('lock')) return; if (el.classList.contains('sel')) { el.classList.remove('sel'); grid._sel = grid._sel.filter(x => x !== el); return; }
+                    el.classList.add('sel'); grid._sel.push(el); if (grid._sel.length < 3) return;
+                    const ok = grid._sel.every(x => x.dataset.g === grid._sel[0].dataset.g), out = document.getElementById(outId);
+                    if (ok) { grid._sel.forEach(x => { x.classList.remove('sel'); x.classList.add('lock'); x.style.background = '#c6f6d5'; x.style.borderColor = '#38a169'; }); grid._found++; document.getElementById(foundId).textContent = grid._found; out.className = 'sim-text good'; out.textContent = grid._found === groups.length ? '🎉 All groups found!' : '✅ A correct group!'; }
+                    else { grid._sel.forEach(x => { x.classList.remove('sel'); x.classList.add('shake'); setTimeout(() => x.classList.remove('shake'), 400); }); out.className = 'sim-text bad'; out.textContent = '❌ Those three do not belong together — check the inner function.'; }
+                    grid._sel = []; };
+                grid.appendChild(el); });
+            typeset(grid);
+        }
+        // plotting helper: axes for [x0, x1] x [y0, y1]
+        function axes(cv, x0, x1, y0, y1, xticks, yticks, equal) {
+            const c = setupCanvas(cv); if (!c) return null; const { ctx, W, H } = c;
+            if (equal) { const k = Math.min((W - 60) / (x1 - x0), (H - 40) / (y1 - y0)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = (W - 60) / k / 2, hh = (H - 40) / k / 2; x0 = cx - hw; x1 = cx + hw; y0 = cy - hh; y1 = cy + hh; }
+            const X = v => 45 + (v - x0) / (x1 - x0) * (W - 60), Y = v => H - 25 - (v - y0) / (y1 - y0) * (H - 40);
+            ctx.strokeStyle = '#edf2f7'; ctx.lineWidth = 1;
+            (xticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(v), Y(y0)); ctx.lineTo(X(v), Y(y1)); ctx.stroke(); });
+            (yticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); });
+            ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 1.5; ctx.beginPath();
+            if (y0 <= 0 && 0 <= y1) { ctx.moveTo(X(x0), Y(0)); ctx.lineTo(X(x1), Y(0)); }
+            if (x0 <= 0 && 0 <= x1) { ctx.moveTo(X(0), Y(y0)); ctx.lineTo(X(0), Y(y1)); } ctx.stroke();
+            (xticks || []).forEach(([v, t]) => label(ctx, X(v), (y0 <= 0 && 0 <= y1 ? Y(0) : Y(y0)) + 16, t, '#4a5568', 11));
+            (yticks || []).forEach(([v, t]) => label(ctx, (x0 <= 0 && 0 <= x1 ? X(0) : X(x0)) - 6, Y(v) + 4, t, '#4a5568', 11, 'right'));
+            return { ctx, W, H, X, Y };
+        }
+        function plotF(P, f, a, b, col, w, dash) { const { ctx, X, Y } = P; ctx.strokeStyle = col; ctx.lineWidth = w || 2.5; ctx.setLineDash(dash || []); ctx.beginPath(); let pen = false, prev = null;
+            for (let i = 0; i <= 400; i++) { const v = a + (b - a) * i / 400, fv = f(v); if (!isFinite(fv) || Math.abs(fv) > 50 || (prev !== null && Math.abs(fv - prev) > 20)) { pen = false; prev = isFinite(fv) ? fv : null; continue; } pen ? ctx.lineTo(X(v), Y(fv)) : ctx.moveTo(X(v), Y(fv)); pen = true; prev = fv; } ctx.stroke(); ctx.setLineDash([]); }
+        function tangent(P, x0, y0, m, len, col) { const { ctx, X, Y } = P; ctx.strokeStyle = col || '#c53030'; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(X(x0 - len), Y(y0 - m * len)); ctx.lineTo(X(x0 + len), Y(y0 + m * len)); ctx.stroke();
+            ctx.fillStyle = col || '#c53030'; ctx.beginPath(); ctx.arc(X(x0), Y(y0), 6, 0, 2 * Math.PI); ctx.fill(); }
+
+        const DOM = [["x(x+1)^2", "(x+1)(3x+1)"], ["x^2(x-3)", "3x^2-6x"], ["\\dfrac{x+2}{x-1}", "-\\dfrac{3}{(x-1)^2}"], ["\\dfrac{x}{x+1}", "\\dfrac{1}{(x+1)^2}"], ["(2x+1)(x-3)", "4x-5"], ["x^3(x+1)", "4x^3+3x^2"], ["\\dfrac{x-1}{x+1}", "\\dfrac{2}{(x+1)^2}"], ["x(2x-1)^3", "(2x-1)^2(8x-1)"], ["\\dfrac{1}{x^2+1}", "-\\dfrac{2x}{(x^2+1)^2}"], ["\\dfrac{x^2}{x+1}", "\\dfrac{x(x+2)}{(x+1)^2}"], ["(x^2+1)(x-1)", "3x^2-2x+1"], ["\\sqrt{x}\\,(x+1)", "\\dfrac{3x+1}{2\\sqrt{x}}"]];
+        let shrinkAnim = null;
+        function drawPlate() {
+            const L = +L0.value, W = +W0.value, a = +dL.value, b = +dW.value, t = +dt.value; dtv.textContent = t.toFixed(2) + ' s';
+            const c = setupCanvas(cv1); if (!c) return; const { ctx, W: CW, H } = c;
+            const s = Math.min((CW - 120) / (L + 2), (H - 60) / (W + 2)), ox = 60, oy = H - 30, dLv = a * t, dWv = b * t;
+            const R = (x0, y0, w, h, col) => { ctx.fillStyle = col; ctx.fillRect(ox + x0 * s, oy - (y0 + h) * s, w * s, h * s); ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 2; ctx.strokeRect(ox + x0 * s, oy - (y0 + h) * s, w * s, h * s); };
+            R(0, 0, L, W, 'rgba(190,227,248,0.9)'); if (dLv) R(L, 0, dLv, W, 'rgba(154,230,180,0.9)'); if (dWv) R(0, W, L, dWv, 'rgba(250,240,137,0.9)'); if (dLv && dWv) R(L, W, dLv, dWv, 'rgba(254,178,178,0.95)');
+            label(ctx, ox + L * s / 2, oy - W * s / 2, 'A = L × W = ' + fx(L * W), '#1a365d', 18);
+            if (dLv * s > 30) label(ctx, ox + (L + dLv / 2) * s, oy - W * s / 2, 'W·ΔL', '#276749', 13);
+            if (dWv * s > 16) label(ctx, ox + L * s / 2, oy - (W + dWv / 2) * s + 5, 'L·ΔW', '#975a16', 13);
+            const dA = (L + dLv) * (W + dWv) - L * W, rate = t ? dA / t : W * a + L * b;
+            ro1.innerHTML = `<div>W·ΔL<b>${fx(W * dLv)}</b></div><div>L·ΔW<b>${fx(L * dWv)}</b></div><div>ΔL·ΔW (corner)<b>${fx(dLv * dWv)}</b></div><div>ΔA/Δt<b>${t ? fx(rate) : '→ ' + fx(rate)}</b></div><div>W·L' + L·W'<b>${fx(W * a + L * b)}</b></div><div>L' × W' (wrong!)<b>${fx(a * b)}</b></div>`;
+            t1.innerHTML = t > 0 ? `ΔA/Δt = W·L' + L·W' + L'W'·Δt = ${fx(W * a + L * b)} + ${fx(a * b * t)}. The red corner term shrinks with Δt…` : `As Δt → 0 the corner vanishes: <strong>dA/dt = W·dL/dt + L·dW/dt = ${fx(W * a + L * b)}</strong> — the Product Rule $\\frac{d(uv)}{dt} = u v' + v u'$.`;
+            typeset(t1);
+        }
+        function shrink() { if (shrinkAnim) cancelAnimationFrame(shrinkAnim); const t0 = performance.now(), v0 = +dt.value; const step = now => { const k = Math.min(1, (now - t0) / 2000); dt.value = (v0 * (1 - k)).toFixed(2); drawPlate(); if (k < 1) shrinkAnim = requestAnimationFrame(step); }; shrinkAnim = requestAnimationFrame(step); }
+        let dsel = null, dfoundN = 0, dmissN = 0;
+        function buildDom() {
+            dsel = null; dfoundN = 0; dmissN = 0; dfound.textContent = 0; dmiss.textContent = 0; t2.textContent = '';
+            dl.innerHTML = shuffle(DOM.map((d, i) => i)).map(i => `<div class="mcard" data-i="${i}" onclick="pickL(this)">$y = ${DOM[i][0]}$</div>`).join('');
+            dr.innerHTML = shuffle(DOM.map((d, i) => i)).map(i => `<div class="mcard" data-i="${i}" onclick="pickR(this)">$\\dfrac{dy}{dx} = ${DOM[i][1]}$</div>`).join('');
+            typeset(dl); typeset(dr);
+        }
+        function pickL(el) { if (el.classList.contains('lock')) return; document.querySelectorAll('#dl .mcard').forEach(x => x.classList.remove('sel')); el.classList.add('sel'); dsel = el; }
+        function pickR(el) {
+            if (el.classList.contains('lock')) return; if (!dsel) { t2.textContent = 'Tap a function on the left first.'; return; }
+            if (el.dataset.i === dsel.dataset.i) { [el, dsel].forEach(x => { x.classList.remove('sel'); x.classList.add('lock'); x.style.background = '#c6f6d5'; x.style.borderColor = '#38a169'; }); dfoundN++; dfound.textContent = dfoundN; t2.className = 'sim-text good'; t2.textContent = dfoundN === 12 ? '🎉 All 12 dominoes matched — the loop is closed!' : '✅ Correct!'; }
+            else { dmissN++; dmiss.textContent = dmissN; el.classList.add('shake'); setTimeout(() => el.classList.remove('shake'), 400); t2.className = 'sim-text bad'; t2.textContent = '❌ Not that one — write u, v, u\', v\' first.'; }
+            dsel = null; document.querySelectorAll('#dl .mcard').forEach(x => x.classList.remove('sel'));
+        }
+        function redraw() { drawPlate(); }
+        window.addEventListener('load', () => { drawPlate(); buildDom(); });
+        window.addEventListener('resize', () => { if (window.redraw) redraw(); });
+    </script>
+</body>
+</html>

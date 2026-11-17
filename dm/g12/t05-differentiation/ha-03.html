@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hands-on 3 - Slope Graph and Trig Triples</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Media</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 3 · Meeting 3: The Slope Graph of $\sin x$</h1><p>Grade 12 · Topic 4 · Phase 3 · individual · $x$ in radians · you need a ruler · <em>digital twin: Interactive Media 3</em></p></div>
+        <div class="teacher-note">At each red point draw the tangent to $y = \sin x$ and estimate its gradient (use the axis numbers: 1 small square across = $\frac{\pi}{20}$, up = 0.1). Record it, then plot (point, gradient) on the lower axes and join with a smooth curve.</div>
+        <div style="text-align: center;"><strong style="color: #2b6cb0;">$y = \sin x$</strong><br><svg viewBox="0 0 642 282" style="width: 160.5mm; height: 70.5mm;"><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="44.9" y1="257.0" x2="44.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="59.8" y1="257.0" x2="59.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="74.8" y1="257.0" x2="74.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="89.7" y1="257.0" x2="89.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="104.6" y1="257.0" x2="104.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="119.5" y1="257.0" x2="119.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="134.5" y1="257.0" x2="134.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="149.4" y1="257.0" x2="149.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="164.3" y1="257.0" x2="164.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="179.2" y1="257.0" x2="179.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="194.1" y1="257.0" x2="194.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="209.1" y1="257.0" x2="209.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="224.0" y1="257.0" x2="224.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="238.9" y1="257.0" x2="238.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="253.8" y1="257.0" x2="253.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="268.8" y1="257.0" x2="268.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="283.7" y1="257.0" x2="283.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="298.6" y1="257.0" x2="298.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="313.5" y1="257.0" x2="313.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="328.5" y1="257.0" x2="328.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="343.4" y1="257.0" x2="343.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="358.3" y1="257.0" x2="358.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="373.2" y1="257.0" x2="373.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="388.1" y1="257.0" x2="388.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="403.1" y1="257.0" x2="403.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="418.0" y1="257.0" x2="418.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="432.9" y1="257.0" x2="432.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="447.8" y1="257.0" x2="447.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="462.8" y1="257.0" x2="462.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="477.7" y1="257.0" x2="477.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="492.6" y1="257.0" x2="492.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="507.5" y1="257.0" x2="507.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="522.4" y1="257.0" x2="522.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="537.4" y1="257.0" x2="537.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="552.3" y1="257.0" x2="552.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="567.2" y1="257.0" x2="567.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="582.1" y1="257.0" x2="582.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="597.1" y1="257.0" x2="597.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="612.0" y1="257.0" x2="612.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="626.9" y1="257.0" x2="626.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="257.0" x2="626.9" y2="257.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="247.5" x2="626.9" y2="247.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="238.0" x2="626.9" y2="238.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="228.5" x2="626.9" y2="228.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="219.0" x2="626.9" y2="219.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="209.5" x2="626.9" y2="209.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="200.0" x2="626.9" y2="200.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="190.5" x2="626.9" y2="190.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="181.0" x2="626.9" y2="181.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="171.5" x2="626.9" y2="171.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="162.0" x2="626.9" y2="162.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="152.5" x2="626.9" y2="152.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="143.0" x2="626.9" y2="143.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="133.5" x2="626.9" y2="133.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="124.0" x2="626.9" y2="124.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="114.5" x2="626.9" y2="114.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="105.0" x2="626.9" y2="105.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="95.5" x2="626.9" y2="95.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="86.0" x2="626.9" y2="86.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="76.5" x2="626.9" y2="76.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="67.0" x2="626.9" y2="67.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="57.5" x2="626.9" y2="57.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="48.0" x2="626.9" y2="48.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="38.5" x2="626.9" y2="38.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="29.0" x2="626.9" y2="29.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="19.5" x2="626.9" y2="19.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="10.0" x2="626.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="30.0" y="149.5" font-size="12" text-anchor="middle">0</text><line x1="179.2" y1="257.0" x2="179.2" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="179.2" y="149.5" font-size="12" text-anchor="middle">π/2</text><line x1="328.5" y1="257.0" x2="328.5" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="328.5" y="149.5" font-size="12" text-anchor="middle">π</text><line x1="477.7" y1="257.0" x2="477.7" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="477.7" y="149.5" font-size="12" text-anchor="middle">3π/2</text><line x1="626.9" y1="257.0" x2="626.9" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="626.9" y="149.5" font-size="12" text-anchor="middle">2π</text><line x1="30.0" y1="228.5" x2="626.9" y2="228.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="232.5" font-size="12" text-anchor="end">−1</text><line x1="30.0" y1="38.5" x2="626.9" y2="38.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="42.5" font-size="12" text-anchor="end">1</text><line x1="30.0" y1="133.5" x2="626.9" y2="133.5" stroke="#2d3748" stroke-width="2"/><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#2d3748" stroke-width="2"/><polyline points="30.0,133.5 33.0,130.5 36.0,127.5 39.0,124.6 41.9,121.6 44.9,118.6 47.9,115.7 50.9,112.8 53.9,109.9 56.9,107.0 59.8,104.1 62.8,101.3 65.8,98.5 68.8,95.8 71.8,93.1 74.8,90.4 77.8,87.7 80.7,85.1 83.7,82.6 86.7,80.1 89.7,77.7 92.7,75.3 95.7,72.9 98.6,70.7 101.6,68.5 104.6,66.3 107.6,64.2 110.6,62.2 113.6,60.3 116.6,58.4 119.5,56.6 122.5,54.9 125.5,53.3 128.5,51.7 131.5,50.3 134.5,48.9 137.4,47.5 140.4,46.3 143.4,45.2 146.4,44.1 149.4,43.1 152.4,42.3 155.3,41.5 158.3,40.8 161.3,40.2 164.3,39.7 167.3,39.2 170.3,38.9 173.3,38.7 176.2,38.5 179.2,38.5 182.2,38.5 185.2,38.7 188.2,38.9 191.2,39.2 194.1,39.7 197.1,40.2 200.1,40.8 203.1,41.5 206.1,42.3 209.1,43.1 212.1,44.1 215.0,45.2 218.0,46.3 221.0,47.5 224.0,48.9 227.0,50.3 230.0,51.7 232.9,53.3 235.9,54.9 238.9,56.6 241.9,58.4 244.9,60.3 247.9,62.2 250.9,64.2 253.8,66.3 256.8,68.5 259.8,70.7 262.8,72.9 265.8,75.3 268.8,77.7 271.7,80.1 274.7,82.6 277.7,85.1 280.7,87.7 283.7,90.4 286.7,93.1 289.7,95.8 292.6,98.5 295.6,101.3 298.6,104.1 301.6,107.0 304.6,109.9 307.6,112.8 310.5,115.7 313.5,118.6 316.5,121.6 319.5,124.6 322.5,127.5 325.5,130.5 328.5,133.5 331.4,136.5 334.4,139.5 337.4,142.4 340.4,145.4 343.4,148.4 346.4,151.3 349.3,154.2 352.3,157.1 355.3,160.0 358.3,162.9 361.3,165.7 364.3,168.5 367.2,171.2 370.2,173.9 373.2,176.6 376.2,179.3 379.2,181.9 382.2,184.4 385.2,186.9 388.1,189.3 391.1,191.7 394.1,194.1 397.1,196.3 400.1,198.5 403.1,200.7 406.0,202.8 409.0,204.8 412.0,206.7 415.0,208.6 418.0,210.4 421.0,212.1 424.0,213.7 426.9,215.3 429.9,216.7 432.9,218.1 435.9,219.5 438.9,220.7 441.9,221.8 444.8,222.9 447.8,223.9 450.8,224.7 453.8,225.5 456.8,226.2 459.8,226.8 462.8,227.3 465.7,227.8 468.7,228.1 471.7,228.3 474.7,228.5 477.7,228.5 480.7,228.5 483.6,228.3 486.6,228.1 489.6,227.8 492.6,227.3 495.6,226.8 498.6,226.2 501.6,225.5 504.5,224.7 507.5,223.9 510.5,222.9 513.5,221.8 516.5,220.7 519.5,219.5 522.4,218.1 525.4,216.7 528.4,215.3 531.4,213.7 534.4,212.1 537.4,210.4 540.4,208.6 543.3,206.7 546.3,204.8 549.3,202.8 552.3,200.7 555.3,198.5 558.3,196.3 561.2,194.1 564.2,191.7 567.2,189.3 570.2,186.9 573.2,184.4 576.2,181.9 579.2,179.3 582.1,176.6 585.1,173.9 588.1,171.2 591.1,168.5 594.1,165.7 597.1,162.9 600.0,160.0 603.0,157.1 606.0,154.2 609.0,151.3 612.0,148.4 615.0,145.4 617.9,142.4 620.9,139.5 623.9,136.5 626.9,133.5" fill="none" stroke="#2b6cb0" stroke-width="3"/><circle cx="30.0" cy="133.5" r="5" fill="#c53030"/><text x="38.0" y="125.5" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="104.6" cy="66.3" r="5" fill="#c53030"/><text x="112.6" y="58.3" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="179.2" cy="38.5" r="5" fill="#c53030"/><text x="187.2" y="30.5" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="253.8" cy="66.3" r="5" fill="#c53030"/><text x="261.8" y="58.3" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="328.5" cy="133.5" r="5" fill="#c53030"/><text x="336.5" y="125.5" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="403.1" cy="200.7" r="5" fill="#c53030"/><text x="411.1" y="192.7" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="477.7" cy="228.5" r="5" fill="#c53030"/><text x="485.7" y="220.5" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="552.3" cy="200.7" r="5" fill="#c53030"/><text x="560.3" y="192.7" font-size="14" font-weight="bold" fill="#c53030"></text><circle cx="626.9" cy="133.5" r="5" fill="#c53030"/><text x="634.9" y="125.5" font-size="14" font-weight="bold" fill="#c53030"></text></svg></div>
+        <table class="tbl"><tr><th>$x$</th><th>0</th><th>$\frac{\pi}{4}$</th><th>$\frac{\pi}{2}$</th><th>$\frac{3\pi}{4}$</th><th>$\pi$</th><th>$\frac{5\pi}{4}$</th><th>$\frac{3\pi}{2}$</th><th>$\frac{7\pi}{4}$</th><th>$2\pi$</th></tr><tr><td>gradient</td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td><td style="height: 9mm;"></td></tr></table>
+        <div style="text-align: center;"><strong style="color: #c53030;">Slope graph: gradient of $\sin x$</strong><br><svg viewBox="0 0 642 282" style="width: 160.5mm; height: 70.5mm;"><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="44.9" y1="257.0" x2="44.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="59.8" y1="257.0" x2="59.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="74.8" y1="257.0" x2="74.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="89.7" y1="257.0" x2="89.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="104.6" y1="257.0" x2="104.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="119.5" y1="257.0" x2="119.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="134.5" y1="257.0" x2="134.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="149.4" y1="257.0" x2="149.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="164.3" y1="257.0" x2="164.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="179.2" y1="257.0" x2="179.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="194.1" y1="257.0" x2="194.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="209.1" y1="257.0" x2="209.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="224.0" y1="257.0" x2="224.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="238.9" y1="257.0" x2="238.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="253.8" y1="257.0" x2="253.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="268.8" y1="257.0" x2="268.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="283.7" y1="257.0" x2="283.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="298.6" y1="257.0" x2="298.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="313.5" y1="257.0" x2="313.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="328.5" y1="257.0" x2="328.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="343.4" y1="257.0" x2="343.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="358.3" y1="257.0" x2="358.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="373.2" y1="257.0" x2="373.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="388.1" y1="257.0" x2="388.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="403.1" y1="257.0" x2="403.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="418.0" y1="257.0" x2="418.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="432.9" y1="257.0" x2="432.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="447.8" y1="257.0" x2="447.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="462.8" y1="257.0" x2="462.8" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="477.7" y1="257.0" x2="477.7" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="492.6" y1="257.0" x2="492.6" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="507.5" y1="257.0" x2="507.5" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="522.4" y1="257.0" x2="522.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="537.4" y1="257.0" x2="537.4" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="552.3" y1="257.0" x2="552.3" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="567.2" y1="257.0" x2="567.2" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="582.1" y1="257.0" x2="582.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="597.1" y1="257.0" x2="597.1" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="612.0" y1="257.0" x2="612.0" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="626.9" y1="257.0" x2="626.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="257.0" x2="626.9" y2="257.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="247.5" x2="626.9" y2="247.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="238.0" x2="626.9" y2="238.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="228.5" x2="626.9" y2="228.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="219.0" x2="626.9" y2="219.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="209.5" x2="626.9" y2="209.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="200.0" x2="626.9" y2="200.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="190.5" x2="626.9" y2="190.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="181.0" x2="626.9" y2="181.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="171.5" x2="626.9" y2="171.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="162.0" x2="626.9" y2="162.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="152.5" x2="626.9" y2="152.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="143.0" x2="626.9" y2="143.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="133.5" x2="626.9" y2="133.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="124.0" x2="626.9" y2="124.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="114.5" x2="626.9" y2="114.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="105.0" x2="626.9" y2="105.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="95.5" x2="626.9" y2="95.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="86.0" x2="626.9" y2="86.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="76.5" x2="626.9" y2="76.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="67.0" x2="626.9" y2="67.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="57.5" x2="626.9" y2="57.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="48.0" x2="626.9" y2="48.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="38.5" x2="626.9" y2="38.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="29.0" x2="626.9" y2="29.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="19.5" x2="626.9" y2="19.5" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="10.0" x2="626.9" y2="10.0" stroke="#e2e8f0" stroke-width="0.6"/><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="30.0" y="149.5" font-size="12" text-anchor="middle">0</text><line x1="179.2" y1="257.0" x2="179.2" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="179.2" y="149.5" font-size="12" text-anchor="middle">π/2</text><line x1="328.5" y1="257.0" x2="328.5" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="328.5" y="149.5" font-size="12" text-anchor="middle">π</text><line x1="477.7" y1="257.0" x2="477.7" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="477.7" y="149.5" font-size="12" text-anchor="middle">3π/2</text><line x1="626.9" y1="257.0" x2="626.9" y2="10.0" stroke="#a0aec0" stroke-width="1"/><text x="626.9" y="149.5" font-size="12" text-anchor="middle">2π</text><line x1="30.0" y1="228.5" x2="626.9" y2="228.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="232.5" font-size="12" text-anchor="end">−1</text><line x1="30.0" y1="38.5" x2="626.9" y2="38.5" stroke="#a0aec0" stroke-width="1"/><text x="26.0" y="42.5" font-size="12" text-anchor="end">1</text><line x1="30.0" y1="133.5" x2="626.9" y2="133.5" stroke="#2d3748" stroke-width="2"/><line x1="30.0" y1="257.0" x2="30.0" y2="10.0" stroke="#2d3748" stroke-width="2"/></svg></div>
+        <div class="box guide grow" style="display: flex; flex-direction: column; justify-content: space-around;">
+            <p>🧠 My slope graph looks like $y =$ <span class="blank" style="min-width: 25mm;"></span>, so $\frac{d}{dx}\sin x =$ <span class="blank"></span>. &nbsp; Predict the slope graph of $\cos x$: <span class="blank" style="min-width: 30mm;"></span></p>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 3 · Meeting 3 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="media-header"><h1>Hands-on 3 · Meeting 3: Trig Triples — Spot the Trap</h1><p>Phase 3–4 · make 8 groups: function → method → derivative · <em>digital twin: Interactive Media 3</em></p></div>
+        <div class="teacher-note">Match each function to the method card that tells you how to start, and to its derivative. ⚠️ Watch $\sin(x^2)$ vs $\sin^2 x$ — they look alike but are very different!</div>
+        <div class="tiles grow" style="grid-template-columns: repeat(6, 1fr); grid-template-rows: repeat(4, 1fr); gap: 3mm;"><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">rewrite as $(\cos x)^2$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">product: $u = e^x$, $v = \sin x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$e^x(\sin x + \cos x)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \cos(2x+1)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">inner $3x$, outer $\tan^{-1}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$3\sec^2 3x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \sin 5x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$3\sin^2 x\cos x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">inner $2x+1$, outer $\cos$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">inner $3x$, outer $\tan$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">inner $5x$, outer $\sin$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$5\cos 5x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \cos^2 x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \sin^3 x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">rewrite as $(\sin x)^3$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \sin(x^2)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$-2\sin(2x+1)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \tan 3x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = e^x\sin x$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">inner $x^2$ (angle squared)</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$y = \tan^{-1}(3x)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$\dfrac{3}{1+9x^2}$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$2x\cos(x^2)$</span></div><div class="tile" style="height: 100%;"><span class="sc">✂️</span><span style="font-size: 10.5pt;">$-2\sin x\cos x$</span></div></div>
+        <div class="box action"><p>Explain the difference between $\sin(x^2)$ and $\sin^2 x$ in your own words: <span class="blank" style="min-width: 80mm;"></span></p></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Hands-on 3 · Meeting 3 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>

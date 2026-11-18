@@ -179,11 +179,14 @@
             typeset(grid);
         }
         // plotting helper: axes for [x0, x1] x [y0, y1]
-        function axes(cv, x0, x1, y0, y1, xticks, yticks, equal) {
+        function axes(cv, x0, x1, y0, y1, xticks, yticks, equal, minor) {
             const c = setupCanvas(cv); if (!c) return null; const { ctx, W, H } = c;
             if (equal) { const k = Math.min((W - 60) / (x1 - x0), (H - 40) / (y1 - y0)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = (W - 60) / k / 2, hh = (H - 40) / k / 2; x0 = cx - hw; x1 = cx + hw; y0 = cy - hh; y1 = cy + hh; }
             const X = v => 45 + (v - x0) / (x1 - x0) * (W - 60), Y = v => H - 25 - (v - y0) / (y1 - y0) * (H - 40);
-            ctx.strokeStyle = '#edf2f7'; ctx.lineWidth = 1;
+            if (minor) { ctx.strokeStyle = '#f1f4f8'; ctx.lineWidth = 1;
+                for (let v = Math.ceil(x0 / minor.x) * minor.x; v <= x1 + 1e-9; v += minor.x) { ctx.beginPath(); ctx.moveTo(X(v), Y(y0)); ctx.lineTo(X(v), Y(y1)); ctx.stroke(); }
+                for (let v = Math.ceil(y0 / minor.y) * minor.y; v <= y1 + 1e-9; v += minor.y) { ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); } }
+            ctx.strokeStyle = minor ? '#d5dde8' : '#edf2f7'; ctx.lineWidth = 1;
             (xticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(v), Y(y0)); ctx.lineTo(X(v), Y(y1)); ctx.stroke(); });
             (yticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); });
             ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 1.5; ctx.beginPath();

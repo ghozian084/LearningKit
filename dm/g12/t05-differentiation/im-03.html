@@ -180,11 +180,14 @@
             typeset(grid);
         }
         // plotting helper: axes for [x0, x1] x [y0, y1]
-        function axes(cv, x0, x1, y0, y1, xticks, yticks, equal) {
+        function axes(cv, x0, x1, y0, y1, xticks, yticks, equal, minor) {
             const c = setupCanvas(cv); if (!c) return null; const { ctx, W, H } = c;
             if (equal) { const k = Math.min((W - 60) / (x1 - x0), (H - 40) / (y1 - y0)), cx = (x0 + x1) / 2, cy = (y0 + y1) / 2, hw = (W - 60) / k / 2, hh = (H - 40) / k / 2; x0 = cx - hw; x1 = cx + hw; y0 = cy - hh; y1 = cy + hh; }
             const X = v => 45 + (v - x0) / (x1 - x0) * (W - 60), Y = v => H - 25 - (v - y0) / (y1 - y0) * (H - 40);
-            ctx.strokeStyle = '#edf2f7'; ctx.lineWidth = 1;
+            if (minor) { ctx.strokeStyle = '#f1f4f8'; ctx.lineWidth = 1;
+                for (let v = Math.ceil(x0 / minor.x) * minor.x; v <= x1 + 1e-9; v += minor.x) { ctx.beginPath(); ctx.moveTo(X(v), Y(y0)); ctx.lineTo(X(v), Y(y1)); ctx.stroke(); }
+                for (let v = Math.ceil(y0 / minor.y) * minor.y; v <= y1 + 1e-9; v += minor.y) { ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); } }
+            ctx.strokeStyle = minor ? '#d5dde8' : '#edf2f7'; ctx.lineWidth = 1;
             (xticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(v), Y(y0)); ctx.lineTo(X(v), Y(y1)); ctx.stroke(); });
             (yticks || []).forEach(([v]) => { ctx.beginPath(); ctx.moveTo(X(x0), Y(v)); ctx.lineTo(X(x1), Y(v)); ctx.stroke(); });
             ctx.strokeStyle = '#2d3748'; ctx.lineWidth = 1.5; ctx.beginPath();
@@ -201,16 +204,17 @@
 
         const TR = [["$y = \\sin 5x$", "inner $5x$, outer $\\sin$", "$5\\cos 5x$"], ["$y = \\cos(2x+1)$", "inner $2x+1$, outer $\\cos$", "$-2\\sin(2x+1)$"], ["$y = \\tan 3x$", "inner $3x$, outer $\\tan$", "$3\\sec^2 3x$"], ["$y = \\sin^3 x$", "rewrite as $(\\sin x)^3$", "$3\\sin^2 x\\cos x$"], ["$y = \\cos^2 x$", "rewrite as $(\\cos x)^2$", "$-2\\sin x\\cos x$"], ["$y = \\sin(x^2)$", "inner $x^2$ (angle squared)", "$2x\\cos(x^2)$"], ["$y = e^x\\sin x$", "product: $u = e^x$, $v = \\sin x$", "$e^x(\\sin x + \\cos x)$"], ["$y = \\tan^{-1}(3x)$", "inner $3x$, outer $\\tan^{-1}$", "$\\dfrac{3}{1+9x^2}$"]];
         const TF = [{ f: Math.sin, d: Math.cos, n: 'cos x' }, { f: Math.cos, d: v => -Math.sin(v), n: '−sin x' }, { f: v => Math.sin(2 * v), d: v => 2 * Math.cos(2 * v), n: '2cos 2x' }, { f: Math.tan, d: v => 1 / Math.cos(v) ** 2, n: 'sec²x' }];
-        const PI = Math.PI, XT = [[PI / 2, 'π/2'], [PI, 'π'], [3 * PI / 2, '3π/2'], [2 * PI, '2π']];
+        const PI = Math.PI, XT = [[PI / 4, 'π/4'], [PI / 2, 'π/2'], [3 * PI / 4, '3π/4'], [PI, 'π'], [5 * PI / 4, '5π/4'], [3 * PI / 2, '3π/2'], [7 * PI / 4, '7π/4'], [2 * PI, '2π']];
+        const YT = [[-2, '−2'], [-1.5, ''], [-1, '−1'], [-0.5, '−0.5'], [0.5, '0.5'], [1, '1'], [1.5, ''], [2, '2']], MINOR = { x: PI / 12, y: 0.25 };
         let trace = [], sweepAnim = null;
         function curX() { return 2 * PI * (+tx.value) / 1000; }
         function addTrace() { const F = TF[+tsel.value], v = curX(), m = F.d(v); if (Math.abs(m) < 6) trace.push([v, m]); }
         function clearTrace() { trace = []; drawT(); }
         function drawT() {
             const F = TF[+tsel.value], v = curX(), y = F.f(v), m = F.d(v); txv.textContent = (v / PI).toFixed(2) + 'π';
-            const P = axes(cv1, 0, 2 * PI, -2.2, 2.2, XT, [[-2, '−2'], [-1, '−1'], [1, '1'], [2, '2']]); if (!P) return;
+            const P = axes(cv1, 0, 2 * PI, -2.2, 2.2, XT, YT, false, MINOR); if (!P) return;
             plotF(P, F.f, 0, 2 * PI, '#2b6cb0', 3); if (Math.abs(y) < 3) tangent(P, v, y, m, 0.6);
-            const Q = axes(cv2, 0, 2 * PI, -2.2, 2.2, XT, [[-2, '−2'], [-1, '−1'], [1, '1'], [2, '2']]);
+            const Q = axes(cv2, 0, 2 * PI, -2.2, 2.2, XT, YT, false, MINOR);
             if (tshow.checked) plotF(Q, F.d, 0, 2 * PI, '#38a169', 2.5, [7, 5]);
             Q.ctx.fillStyle = '#c53030'; trace.forEach(([a, b]) => { if (Math.abs(b) < 2.2) { Q.ctx.beginPath(); Q.ctx.arc(Q.X(a), Q.Y(b), 2.5, 0, 2 * Math.PI); Q.ctx.fill(); } });
             label(Q.ctx, Q.W - 10, 18, 'slope graph (red dots = gradient at each x)', '#c53030', 12, 'right');

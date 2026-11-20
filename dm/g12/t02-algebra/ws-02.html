@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Worksheet 2 - Polynomial Division</title>
+    <!-- MathJax Configuration -->
+    <script>
+        MathJax = {
+            tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #1a365d;
+            --secondary: #2b6cb0;
+            --cut-line: #718096;
+            --engage: #d69e2e;
+            --explore: #38a169;
+            --explain: #3182ce;
+            --elaborate: #805ad5;
+            --evaluate: #e53e3e;
+        }
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #333; margin: 0; padding: 20px 0; background-color: #718096;
+            line-height: 1.3; font-size: 10.5pt;
+            -webkit-print-color-adjust: exact; print-color-adjust: exact;
+        }
+        mjx-container { font-size: 1.05em !important; }
+        p { margin: 0.8mm 0; }
+
+        /* Print Button */
+        .print-btn {
+            position: fixed; top: 20px; right: 20px; background-color: var(--secondary);
+            color: #fff; border: none; padding: 10px 20px; font-weight: bold;
+            border-radius: 5px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); z-index: 1000;
+        }
+        .print-btn:hover { background-color: var(--primary); }
+
+        /* Full A4 pages: every .page is exactly one printed sheet, nothing splits */
+        @page { size: A4; margin: 0; }
+        .page {
+            width: 210mm; height: 296mm; margin: 0 auto 8mm; padding: 10mm 12mm 11mm;
+            background: #fff; display: flex; flex-direction: column; gap: 2mm;
+            position: relative; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        .page-footer { position: absolute; bottom: 4mm; left: 0; right: 0; text-align: center; font-size: 8pt; font-style: italic; color: #666; }
+        @media print {
+            body { background: none; padding: 0; }
+            .print-btn { display: none !important; }
+            .page { margin: 0; box-shadow: none; break-after: page; page-break-after: always; }
+            .page:last-child { break-after: auto; page-break-after: auto; }
+        }
+
+        /* Layout helpers */
+        .grow { flex: 1 1 0; min-height: 0; }
+        .row { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+        .row3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3mm; }
+        .grid22 { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3mm; }
+        .q { display: flex; flex-direction: column; gap: 1mm; min-height: 0; }
+        .qn { font-weight: bold; color: var(--primary); }
+        .work {
+            border: 1px dashed #a0aec0; border-radius: 3px; flex: 1; min-height: 12mm;
+            padding: 1mm 2mm; color: #a0aec0; font-style: italic; font-size: 8pt;
+        }
+        .blank { display: inline-block; min-width: 14mm; border-bottom: 1px solid #333; height: 1.1em; vertical-align: bottom; }
+        .line { border-bottom: 1px solid #555; height: 6.5mm; }
+
+        /* Headers */
+        .ws-header { display: flex; justify-content: space-between; gap: 6mm; border-bottom: 2px solid var(--primary); padding-bottom: 2mm; }
+        .ws-title { font-size: 14pt; font-weight: bold; color: var(--primary); }
+        .ws-title small { display: block; font-size: 9pt; color: #718096; font-weight: normal; }
+        .student-info { width: 62mm; flex-shrink: 0; display: flex; flex-direction: column; gap: 2.2mm; font-size: 9.5pt; }
+        .student-info div { border-bottom: 1px dotted #718096; }
+        .media-header { text-align: center; border-bottom: 2px solid var(--primary); padding-bottom: 1.5mm; }
+        .media-header h1 { color: var(--primary); margin: 0; font-size: 14pt; }
+        .media-header p { margin: 0.5mm 0 0 0; color: #4a5568; font-size: 9pt; }
+        .walt { font-size: 9pt; background: #e0f2fe; color: #1e3a8a; padding: 1.3mm 3mm; border-radius: 3px; }
+        .teacher-note { font-size: 8.5pt; background: #f7fafc; border-left: 4px solid var(--secondary); padding: 1.3mm 3mm; }
+
+        /* 5E phase banners */
+        .phase { color: #fff; font-weight: bold; padding: 1.1mm 3mm; border-radius: 3px; display: flex; justify-content: space-between; font-size: 10pt; }
+        .engage { background: var(--engage); } .explore { background: var(--explore); } .explain { background: var(--explain); }
+        .elaborate { background: var(--elaborate); } .evaluate { background: var(--evaluate); }
+
+        /* Boxes */
+        .box { padding: 1.6mm 3mm; border-radius: 3px; border-left: 4px solid; }
+        .guide { background: #fffff0; border-color: #ecc94b; }
+        .action { background: #f0fff4; border-color: #38a169; }
+        .box-title { font-weight: bold; color: #276749; }
+        .guide .box-title { color: #b7791f; }
+
+        /* Tables */
+        .tbl { width: 100%; border-collapse: collapse; }
+        .tbl th, .tbl td { border: 1px solid #a0aec0; padding: 1.2mm 2mm; text-align: center; }
+        .tbl th { background: #ebf8ff; color: var(--primary); font-size: 9.5pt; }
+        .tbl td.l, .tbl th.l { text-align: left; }
+        .check { border: 1.5px solid var(--secondary); border-radius: 3px; padding: 1.5mm 3mm; font-size: 9pt; }
+        .check table { width: 100%; border-collapse: collapse; }
+        .check td { padding: 0.8mm 1mm; border-bottom: 1px dotted #cbd5e0; }
+        .check td:last-child { text-align: right; white-space: nowrap; }
+
+        /* Fraction bars */
+        .bar { display: flex; height: 7mm; border: 1.5px solid #2d3748; flex: 1; }
+        .bar div { flex: 1; border-right: 1px solid #2d3748; }
+        .bar div:last-child { border-right: none; }
+        .bar-row { display: flex; align-items: center; gap: 2mm; margin: 0.8mm 0; }
+        .bar-row span { width: 18mm; font-weight: bold; }
+
+        /* Cut-out cards */
+        .theme { display: inline-block; padding: 0 2mm; border-radius: 3px; font-weight: bold; font-size: 9pt; }
+        .t-nut { background: #c6f6d5; } .t-dis { background: #bee3f8; } .t-exe { background: #fed7d7; } .t-hyd { background: #fefcbf; }
+        .card { border: 2px dashed var(--cut-line); position: relative; background: #fff; }
+        .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+
+        /* Digit strips */
+        .digits { display: flex; }
+        .digits span { width: 7.5mm; height: 8.5mm; border: 1px solid #4a5568; margin-right: -1px; display: flex; align-items: center; justify-content: center; font-family: 'Courier New', monospace; font-weight: bold; font-size: 12pt; }
+        .digits span.pt { border: none; width: 3mm; color: #e53e3e; }
+    </style>
+</head>
+
+    <style>
+        .tiles { display: grid; gap: 2mm; }
+        .tile { border: 2px dashed var(--cut-line, #718096); display: flex; align-items: center; justify-content: center; text-align: center; padding: 1.5mm; position: relative; background: #fff; }
+        .tile .sc { position: absolute; top: -3.2mm; left: -2.5mm; font-size: 9pt; background: #fff; padding: 0 0.5mm; }
+        .ssd { border-collapse: collapse; margin: 0 auto; }
+        .ssd td, .ssd th { border: 1px solid #4a5568; text-align: center; padding: 0; }
+        .ssd th { background: #ebf8ff; color: #1a365d; font-size: 9pt; }
+        .ssd td.c { background: #f7fafc; font-weight: bold; color: #1a365d; }
+        .verdict { display: inline-block; border: 1.5px solid #4a5568; border-radius: 3px; padding: 0 2mm; margin-right: 1mm; font-size: 8.5pt; font-weight: bold; }
+        .lines { flex: 1; background-image: repeating-linear-gradient(transparent, transparent 6.2mm, #a0aec0 6.2mm, #a0aec0 6.5mm); min-height: 7mm; }
+        .tbox { border: 1.5px solid #2b6cb0; border-radius: 3px; padding: 1.2mm 2.5mm; font-size: 9pt; background: #ebf8ff; }
+    </style>
+
+    <style>
+        .syn { border-collapse: collapse; margin: 1mm auto; font-size: 11pt; }
+        .syn td { padding: 1mm 3.5mm; text-align: center; min-width: 9mm; }
+        .syn td.a { border-right: 2px solid #1a365d; font-weight: bold; color: #c53030; vertical-align: top; }
+        .syn td.mid { border-bottom: 2px solid #1a365d; color: #2b6cb0; }
+        .syn td.res { font-weight: bold; } .syn td.res.rem { border: 2px solid #c53030; color: #c53030; }
+        .syn .arr { color: #38a169; font-size: 9pt; }
+        .ld { border-collapse: collapse; margin: 0 auto; font-size: 10.5pt; }
+        .ld td { padding: 0.4mm 2.2mm; text-align: left; white-space: nowrap; }
+        .ld td.dv { border-right: 2px solid #1a365d; text-align: right; padding-right: 2mm; }
+        .ld td.top { border-top: 2px solid #1a365d; }
+        .ld td.ul { border-bottom: 1.5px solid #4a5568; }
+        .rule { background: #ebf8ff; border-left: 4px solid #2b6cb0; padding: 1.5mm 3mm; border-radius: 3px; font-size: 9.5pt; }
+    </style>
+<body>
+
+    <button class="print-btn" onclick="window.print()">🖨️ Print Worksheet</button>
+
+    <!-- ===================== PAGE 1 ===================== -->
+    <div class="page">
+        <div class="ws-header">
+            <div class="ws-title">Worksheet 2: Polynomial Division<small>Grade 12 · Topic 1 Algebra · Meetings 4–5 — Division of polynomials (Subtopic 1.4) · Pure Mathematics 2 &amp; 3</small></div>
+            <div class="student-info">
+                <div>Name:</div>
+                <div>Class:</div>
+                <div>Date:</div>
+            </div>
+        </div>
+
+        <div class="walt"><strong>WALT:</strong> divide a polynomial by a linear divisor with <strong>synthetic division</strong> and by any divisor with <strong>long division</strong>, and write $P(x) = D(x)\,Q(x) + R(x)$.</div>
+        <div class="phase engage"><span>⚡ PART A · Synthetic Division (linear divisors only)</span><span>Meeting 4</span></div>
+        <div class="row" style="align-items: stretch;">
+            <div class="rule">
+                <p><strong>How it works</strong> — divisor $(x - a)$: write $a$ on the left and the coefficients of $P(x)$ in order.</p>
+                <p>① Bring the first coefficient down. ② Multiply by $a$, write it under the next coefficient (↗). ③ Add. Repeat.</p>
+                <p>The last number is the <strong>remainder</strong>; the others are the coefficients of the <strong>quotient</strong> (one degree lower).</p>
+                <p>⚠️ Missing term? Write a <strong>0</strong> placeholder (e.g. $x^3 - 8 \to 1,\ 0,\ 0,\ -8$).</p>
+                <p>⚠️ Divisor $(cx - d)$? Use $a = \frac{d}{c}$, then <strong>divide the quotient coefficients by $c$</strong> (the remainder stays the same).</p>
+            </div>
+            <div class="box action" style="text-align: center;">
+                <p style="text-align: left;"><span class="qn">1.</span> <strong>Worked example:</strong> $(2x^3 - 5x^2 + x - 7) \div (x - 3)$, so $a = 3$</p>
+                <table class="syn"><tr><td class="a" rowspan="2">$3$</td><td>$2$</td><td>$-5$</td><td>$1$</td><td>$-7$</td></tr><tr><td class="mid"></td><td class="mid">$6$ <span class="arr">↗</span></td><td class="mid">$3$ <span class="arr">↗</span></td><td class="mid">$12$ <span class="arr">↗</span></td></tr><tr><td></td><td class="res">$2$</td><td class="res">$1$</td><td class="res">$4$</td><td class="res rem">$5$</td></tr></table>
+                <p>Quotient $2x^2 + x + 4$, remainder $5$:</p>
+                <p style="font-size: 12pt;">$2x^2 + x + 4 + \dfrac{5}{x - 3}$</p>
+                <p style="font-size: 9pt;">Check: $(x - 3)(2x^2 + x + 4) + 5 = 2x^3 - 5x^2 + x - 7$ ✓</p>
+            </div>
+        </div>
+        <div class="tbox">✍️ Divide using synthetic division. Write each answer as $Q(x) + \dfrac{R}{D(x)}$ on the line.</div>
+        <div class="grow" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 3mm; min-height: 0;"><div class="q"><div><span class="qn">2.</span> $(3 x^{3} + 5 x^{2} - 11 x + 7) \div (x + 3)$</div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div><div class="q"><div><span class="qn">3.</span> $(x^{3} - 8) \div (x - 2)$ &nbsp;<em style="font-size: 9pt; color: #718096;">(placeholders!)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div><div class="q"><div><span class="qn">4.</span> $(4 x^{3} - 21 x^{2} + 15 x + 8) \div (x - 4)$</div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div><div class="q"><div><span class="qn">5.</span> $(6 x^{3} + 7 x^{2} - 9 x + 2) \div (2 x - 1)$ &nbsp;<em style="font-size: 9pt; color: #718096;">($a = \frac12$, then ÷ 2)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div><div class="q"><div><span class="qn">6.</span> $(x^{4} - 5 x^{2} + 3 x - 10) \div (x + 2)$ &nbsp;<em style="font-size: 9pt; color: #718096;">(missing $x^3$)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div><div class="q"><div><span class="qn">7.</span> $(9 x^{4} + 3 x^{3} - 8 x^{2} + 8 x + 11) \div (3 x + 2)$ &nbsp;<em style="font-size: 9pt; color: #718096;">($a = -\frac23$, then ÷ 3)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">Answer:</div></div></div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 2 · Meetings 4–5 · Page 1 of 2</div>
+    </div>
+
+    <!-- ===================== PAGE 2 ===================== -->
+    <div class="page">
+<div class="phase explain"><span>📐 PART B · Long Division (any divisor — linear or quadratic)</span><span>Meetings 4–5</span></div>
+        <div class="box action" style="display: flex; gap: 5mm; align-items: center;">
+            <div style="flex-shrink: 0;">
+                <p><span class="qn">8.</span> <strong>Worked example:</strong> $(x^4 + 2x^3 - 3x^2 + 4x - 5) \div (x^2 - x + 2)$</p>
+                <table class="ld"><tr><td></td><td></td><td></td><td>$x^{2}$</td><td>$+ 3 x$</td><td>$- 2$</td></tr><tr><td class="dv">$x^{2} - x + 2$</td><td class="top">$x^{4}$</td><td class="top">$+ 2 x^{3}$</td><td class="top">$-  3 x^{2}$</td><td class="top">$+ 4 x$</td><td class="top">$- 5$</td></tr><tr><td></td><td class="ul">$(-)\;x^{4}$</td><td class="ul">$-  x^{3}$</td><td class="ul">$+ 2 x^{2}$</td><td class="ul"></td><td class="ul"></td></tr><tr><td></td><td></td><td>$3 x^{3}$</td><td>$-  5 x^{2}$</td><td>$+ 4 x$</td><td>$- 5$</td></tr><tr><td></td><td></td><td class="ul">$(-)\;3 x^{3}$</td><td class="ul">$-  3 x^{2}$</td><td class="ul">$+ 6 x$</td><td class="ul"></td></tr><tr><td></td><td></td><td></td><td>$- 2 x^{2}$</td><td>$-  2 x$</td><td>$- 5$</td></tr><tr><td></td><td></td><td></td><td class="ul">$(-)\;- 2 x^{2}$</td><td class="ul">$+ 2 x$</td><td class="ul">$- 4$</td></tr><tr><td></td><td></td><td></td><td></td><td>$- 4 x$</td><td>$- 1$</td></tr></table>
+            </div>
+            <div class="rule" style="flex: 1; min-width: 0;">
+                <p><strong>Divide → Multiply → Subtract → Bring down</strong>, until the remainder's degree is <strong>less than</strong> the divisor's degree.</p>
+                <p>Quotient $Q(x) = x^2 + 3x - 2$</p>
+                <p>Remainder $R(x) = -4x - 1$ — a quadratic divisor can leave a <strong>linear</strong> remainder $ax + b$.</p>
+                <p>Check: $x^4 + 2x^3 - 3x^2 + 4x - 5$</p>
+                <p>$\quad = (x^2 - x + 2)(x^2 + 3x - 2) - 4x - 1$ ✓</p>
+                <p>⚠️ Subtract the <strong>whole</strong> line — change every sign!</p>
+            </div>
+        </div>
+        <div class="tbox">✍️ Solve by long division. State the quotient $Q(x)$ and remainder $R(x)$.</div>
+        <div class="grow" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: repeat(3, 1fr); gap: 3mm; min-height: 0;"><div class="q"><div><span class="qn">9.</span> $x - 3\ \big)\ \overline{4 x^{3} - 10 x^{2} - 7 x + 6}$</div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">$Q(x) =$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(x) =$</div></div><div class="q"><div><span class="qn">10.</span> $2 x + 1\ \big)\ \overline{6 x^{3} + 7 x^{2} - 4 x + 5}$</div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">$Q(x) =$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(x) =$</div></div><div class="q"><div><span class="qn">11.</span> $x^{2} + 2 x - 3\ \big)\ \overline{x^{4} + 3 x^{3} - 2 x^{2} + x - 4}$ <em style="font-size: 9pt; color: #718096;">(remainder $ax + b$)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">$Q(x) =$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(x) =$</div></div><div class="q"><div><span class="qn">12.</span> $x - 2\ \big)\ \overline{x^4 + 0x^3 + 0x^2 + 0x - 16}$ <em style="font-size: 9pt; color: #718096;">(placeholders written for you)</em></div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">$Q(x) =$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(x) =$</div></div><div class="q"><div><span class="qn">13.</span> $x^{2} + 1\ \big)\ \overline{3 x^{4} - x^{3} + 5 x^{2} + 2 x - 1}$</div><div class="work" style="flex: 1;"></div><div style="border-bottom: 1px solid #333; height: 7mm; font-size: 9pt; color: #718096;">$Q(x) =$ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$R(x) =$</div></div><div class="q"><div><span class="qn">14.</span> 📦 A box has volume $V = 2x^3 + 7x^2 + 2x - 3$ and height $(x + 3)$. Find the base area, then factorise it to find the length and width.</div><div class="work" style="flex: 1;"></div></div></div>
+        <div class="row">
+            <div class="q"><div><span class="qn">15.</span> 🎟️ Exit ticket: divide $x^3 - 2x^2 + 5$ by $(x + 1)$ (either method). State the remainder.</div><div style="display: flex; gap: 2mm; flex: 1; min-height: 0;"><div class="work" style="flex: 1;"></div></div></div>
+            <div class="check"><strong style="color: var(--primary);">✅ Self-Check (WILT)</strong><table><tr><td>I can use synthetic division (with placeholders).</td><td>😀 😐 😟</td></tr><tr><td>I can do long division by a quadratic.</td><td>😀 😐 😟</td></tr><tr><td>I can write $P(x) = D(x)Q(x) + R(x)$.</td><td>😀 😐 😟</td></tr></table></div>
+        </div>
+        <div class="page-footer">Made with ❤️ by Mr Ghozi · Worksheet 2 · Meetings 4–5 · Page 2 of 2</div>
+    </div>
+
+</body>
+</html>
